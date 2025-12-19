@@ -34,6 +34,25 @@
     <div id="researchActivities-id" class="govuk-hint">
       Select all that apply
     </div>
+
+    {% if (data['participantGroups']) == "People who are known to be deceased prior to their inclusion in the project" %} 
+      <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="previouslyCollected" name="researchActivities" type="checkbox" value="Use of previously collected data about people">
+        <label class="govuk-label govuk-checkboxes__label" for="waste">
+          Use of previously collected data about people
+        </label>
+      </div>
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="previouslyCollected-2" name="researchActivities" type="checkbox" value="Use of previously collected human biological samples">
+        <label class="govuk-label govuk-checkboxes__label" for="previouslyCollected-2">
+          Use of previously collected human biological samples
+        </label>
+      </div>
+      </div>
+    {% else %}
+    
+    
     <div class="govuk-checkboxes" data-module="govuk-checkboxes">
       <div class="govuk-checkboxes__item">
         <input class="govuk-checkboxes__input" id="previouslyCollected" name="researchActivities" type="checkbox" value="Use of previously collected data about people">
@@ -81,7 +100,9 @@
   </fieldset>
 </div>
 
+{% endif %}
 
+        
         {{ govukButton({
           text: "Continue"
         }) }}
