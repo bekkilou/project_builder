@@ -109,36 +109,7 @@
     </div>
 {% endif %}
   </fieldset>
-</div>
-
-
-<!-- CTIMP -->
-{% if (data['researchActivities']) == "Treatment, such as medicines, devices, surgery, vaccines or therapies" %} 
-{{ govukRadios({
-  classes: "govuk-radios--inline",
-  name: "isCTIMP",
-  fieldset: {
-    legend: {
-      text: "Is this project a clinical trial of an investigational medicinal product (CTIMP)?",
-      isPageHeading: true,
-      classes: "govuk-fieldset__legend--l"
-    }
-  },
-  items: [
-    {
-      value: "yes",
-      text: "Yes"
-    },
-    {
-      value: "no",
-      text: "No"
-    }
-  ]
-}) }}
-
-        {% endif %}
-        
-        
+</div>        
         {{ govukButton({
           text: "Continue"
         }) }}
