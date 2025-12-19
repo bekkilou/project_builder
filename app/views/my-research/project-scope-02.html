@@ -25,7 +25,7 @@
         <!-- Research activities -->
 
 <div class="govuk-form-group">
-  <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+  <fieldset class="govuk-fieldset" aria-describedby="researchActivities-hint">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
       <h2 class="govuk-fieldset__heading">
         Select which activities will be involved in this project
@@ -110,6 +110,31 @@
 {% endif %}
   </fieldset>
 </div>
+
+<!-- CTIMP -->
+{% if (data['researchActivities']) == "Treatment, such as medicines, devices, surgery, vaccines or therapies" %} 
+{{ govukRadios({
+  classes: "govuk-radios--inline",
+  name: "isCTIMP",
+  fieldset: {
+    legend: {
+      text: "Is this project a clinical trial of an investigational medicinal product (CTIMP)?",
+      isPageHeading: true,
+      classes: "govuk-fieldset__legend--l"
+    }
+  },
+  items: [
+    {
+      value: "yes",
+      text: "Yes"
+    },
+    {
+      value: "no",
+      text: "No"
+    }
+  ]
+}) }}
+
         
         {{ govukButton({
           text: "Continue"
