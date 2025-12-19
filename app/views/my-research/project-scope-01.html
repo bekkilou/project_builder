@@ -83,6 +83,81 @@
         }) }}
 
 
+<!-- Research activities -->
+
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading">
+        Select which activities will be involved in this project
+      </h1>
+    </legend>
+    <div id="waste-hint" class="govuk-hint">
+      Select all that apply
+    </div>
+    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="previouslyCollected" name="researchActivities" type="checkbox" value="Use of previously collected data about people">
+        <label class="govuk-label govuk-checkboxes__label" for="waste">
+          Use of previously collected data about people
+        </label>
+      </div>
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="previouslyCollected-2" name="researchActivities" type="checkbox" value="Use of previously collected human biological samples">
+        <label class="govuk-label govuk-checkboxes__label" for="previouslyCollected-2">
+          Use of previously collected human biological samples
+        </label>
+      </div>
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="nonClinicalStaff" name="researchActivities" type="checkbox" value="Non-clinical activies with staff, such as interviews, questionnaires and observations">
+        <label class="govuk-label govuk-checkboxes__label" for="nonClinicalStaff">
+          Non-clinical activies with staff, such as interviews, questionnaires and observations
+        </label>
+      </div>
+    </div>
+  </fieldset>
+</div>
+<!--
+    {
+      value: "Non-clinical activities with people, such as interviews or surveys",
+      text: "Non-clinical activities with people, such as interviews or surveys"
+    },
+    {
+      value: "Non-clinical activities with people, such as non-clinical assessments, observations or care procedures",
+      text: "Non-clinical activities with people, such as non-clinical assessments, observations or care procedures"
+    },
+    {
+      value: "People who are known to be deceased prior to their inclusion in the project",
+      text: "People who are known to be deceased prior to their inclusion in the project"
+    },
+    {
+      value: "Patients or service users of NHS or HSC provided or commissioned services",
+      text: "Patients or service users of NHS or HSC provided or commissioned services"
+    },
+    {
+      value: "Service users in other social care settings",
+      text: "Service users in other social care settings"
+    },
+    {
+      value: "Staff working in NHS or HSC provided or commissioned services",
+      text: "Staff working in NHS or HSC provided or commissioned services"
+    },
+    {
+      value: "Staff working in other care settings",
+      text: "Staff working in other care settings"
+    },
+    {
+      value: "Other",
+      text: "Other"
+    }
+  ]
+}) }}
+
+-->
+
+
+
+
         {{ govukButton({
           text: "Continue"
         }) }}
