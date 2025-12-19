@@ -1,7 +1,7 @@
 {% extends "layouts/main.html" %}
 
 {% block pageTitle %}
-  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+  Scope your project – {{ serviceName }} – GOV.UK Prototype Kit
 {% endblock %}
 
 {% block beforeContent %}
@@ -22,11 +22,65 @@
 
       <form class="form" action="/path/of/next/page" method="post">
 
-        <p>
-          [Insert question content here - see the
-          <a href="https://design-system.service.gov.uk">GOV.UK Design System</a>
-          for examples]
-        </p>
+        <!-- Research activities -->
+
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading">
+        Select which activities will be involved in this project
+      </h1>
+    </legend>
+    <div id="researchActivities-id" class="govuk-hint">
+      Select all that apply
+    </div>
+    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="previouslyCollected" name="researchActivities" type="checkbox" value="Use of previously collected data about people">
+        <label class="govuk-label govuk-checkboxes__label" for="waste">
+          Use of previously collected data about people
+        </label>
+      </div>
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="previouslyCollected-2" name="researchActivities" type="checkbox" value="Use of previously collected human biological samples">
+        <label class="govuk-label govuk-checkboxes__label" for="previouslyCollected-2">
+          Use of previously collected human biological samples
+        </label>
+      </div>
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="nonClinicalStaff" name="researchActivities" type="checkbox" value="Non-clinical activies with staff, such as interviews, questionnaires and observations">
+        <label class="govuk-label govuk-checkboxes__label" for="nonClinicalStaff">
+          Non-clinical activies with staff, such as interviews, questionnaires and observations
+        </label>
+      </div>
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="nonClinicalSurvey" name="researchActivities" type="checkbox" value="Non-clinical activities with people, such as interviews or surveys">
+        <label class="govuk-label govuk-checkboxes__label" for="nonClinicalSurvey">
+          Non-clinical activities with people, such as interviews or surveys
+        </label>
+      </div>
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="nonClinicalProcedure" name="researchActivities" type="checkbox" value="Non-clinical activities with people, such as non-clinical assessments, observations or care procedures">
+        <label class="govuk-label govuk-checkboxes__label" for="nonClinicalProcedure">
+          Non-clinical activities with people, such as non-clinical assessments, observations or care procedures
+        </label>
+      </div>
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="clinicalActivities" name="researchActivities" type="checkbox" value="Clinical activities with people, such as collecting human biological samples, imaging investigations or diagnostics">
+        <label class="govuk-label govuk-checkboxes__label" for="clinicalActivities">
+          Clinical activities with people, such as collecting human biological samples, imaging investigations or diagnostics
+        </label>
+      </div>
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="nonClinicalStaff" name="researchActivities" type="checkbox" value="Treatment, such as medicines, devices, surgery, vaccines or therapies">
+        <label class="govuk-label govuk-checkboxes__label" for="nonClinicalStaff">
+          Treatment, such as medicines, devices, surgery, vaccines or therapies
+        </label>
+      </div>
+    </div>
+  </fieldset>
+</div>
+
 
         {{ govukButton({
           text: "Continue"
