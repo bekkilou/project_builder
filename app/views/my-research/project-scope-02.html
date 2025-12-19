@@ -27,9 +27,9 @@
 <div class="govuk-form-group">
   <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-      <h1 class="govuk-fieldset__heading">
+      <h2 class="govuk-fieldset__heading">
         Select which activities will be involved in this project
-      </h1>
+      </h2>
     </legend>
     <div id="researchActivities-id" class="govuk-hint">
       Select all that apply
@@ -50,8 +50,18 @@
         </label>
       </div>
       </div>
-    {% else %}
     
+    {% elseif (data['participantGroups']) == "Staff working in NHS or HSC provided or commissioned services" or "Staff working in other care settings" %}
+    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+       <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="nonClinicalStaff" name="researchActivities" type="checkbox" value="Non-clinical activies with staff, such as interviews, questionnaires and observations">
+        <label class="govuk-label govuk-checkboxes__label" for="nonClinicalStaff">
+          Non-clinical activies with staff, such as interviews, questionnaires and observations
+        </label>
+      </div>
+    </div>
+    
+    {% else %}
     
     <div class="govuk-checkboxes" data-module="govuk-checkboxes">
       <div class="govuk-checkboxes__item">
@@ -97,11 +107,9 @@
         </label>
       </div>
     </div>
+{% endif %}
   </fieldset>
 </div>
-
-{% endif %}
-
         
         {{ govukButton({
           text: "Continue"
