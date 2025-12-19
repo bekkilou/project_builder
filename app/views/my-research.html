@@ -1,0 +1,64 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  My research – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+{% if (data['projectTitle']|length) %}
+      {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
+      {% set html %}
+        <h3 class="govuk-notification-banner__heading">
+          Your project record has been created
+        </h3>
+        <p class="govuk-body">Now you've created your record you can start adding other details to your project.</p>
+      {% endset %}
+
+      {{ govukNotificationBanner({
+        html: html,
+        type: "success"
+      }) }}
+
+{% endif %}
+
+
+      <h1 class="govuk-heading-l">
+        My research
+      </h1>
+{% if (data['projectTitle']|length) %}
+<div class="card card--clickable" data-test="global-search">
+    <h2 class="govuk-heading-m card__heading">
+        <a class="govuk-link card__link govuk-link--no-visited-state" href="/my-research" onclick="showAlert()">{{ data['projectTitle'] }}</a>
+    </h2>
+    <p class="govuk-body card__description">Search for someone in any establishment, or who has been released.</p>
+</div>
+
+{% else %}
+      <p>
+        You haven't started or added any projects yet.
+      </p>
+      {{ govukButton({
+        text: "Create new project",
+        href: "/my-research/create-project-01",
+        isStartButton: false
+      }) }}
+        &nbsp;
+      <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+        Add existing project
+      </button>
+{% endif %}
+    </div>
+  </div>
+
+{% endblock %}

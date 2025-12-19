@@ -1,0 +1,83 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Project details – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Basic project details
+      </h1>
+      <form class="form" action="/my-research/create-project-02" method="post">
+
+
+        {{ govukInput({
+          label: {
+            text: "Short project title"
+          },
+          id: "projectTitle",
+          name: "projectTitle",
+          value: data["projectTitle"]
+        }) }}
+
+        {{ govukTextarea({
+          name: "fullProjectTitle",
+          id: "fullProjectTitle",
+          label: {
+            text: "Full project title"
+          },
+          value: data['fullProjectTitle']
+        }) }}
+        
+        {{ govukCheckboxes({
+          name: "UKNations",
+          values: data['UKNations'],
+          fieldset: {
+            legend: {
+              text: "Which UK nations do you want your poject to take place in?"
+            }
+          },
+          hint: {
+            text: "Select all that apply"
+          },
+          items: [
+            {
+              value: "England",
+              text: "England"
+            },
+            {
+              value: "Northern Ireland",
+              text: "Northern Ireland"
+            },
+            {
+              value: "Scotland",
+              text: "Scotland"
+            },
+            {
+              value: "Wales",
+              text: "Wales"
+            }
+          ]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

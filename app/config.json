@@ -1,5 +1,5 @@
 {
-  "serviceName": "Service name goes here",
+  "serviceName": "Plan and manage health care research",
   "plugins": {
     "govuk-frontend": {
       "rebrand": true

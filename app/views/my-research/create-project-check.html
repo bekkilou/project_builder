@@ -1,0 +1,133 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Check your answers template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+
+      <h1 class="govuk-heading-xl">
+        Check your answers before creating your research project
+      </h1>
+<p>
+  </p>
+      {{ govukSummaryList({
+        rows: [
+          {
+            key: {
+              text: "Short project title"
+            },
+            value: {
+              text: data['projectTitle']
+            },
+            actions: {
+              items: [
+                {
+                  href: "/my-research/create-project-01",
+                  text: "Change",
+                  visuallyHiddenText: "Short project title"
+                }
+              ]
+            }
+          }
+          ,
+          {
+            key: {
+              text: "Full project title"
+            },
+            value: {
+              text: data['fullProjectTitle']
+            },
+            actions: {
+              items: [
+                {
+                  href: "/my-research/create-project-01",
+                  text: "Change",
+                  visuallyHiddenText: "Full project title"
+                }
+              ]
+            }
+          }
+          ,
+          {
+            key: {
+              text: "Which UK nations do you want your poject to take place in?"
+            },
+            value: {
+              text: data['UKNations']
+            },
+            actions: {
+              items: [
+                {
+                  href: "/my-research/create-project-01",
+                  text: "Change",
+                  visuallyHiddenText: "Which UK nations do you want your poject to take place in?"
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text: "Likely to be commercial research?"
+            },
+            value: {
+              text: data['commercialResearchBoolean']
+            },
+            actions: {
+              items: [
+                {
+                  href: "/my-research/create-project-02",
+                  text: "Change",
+                  visuallyHiddenText: "Likely to be commercial research?"
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text: "NIHR funding needed"
+            },
+            value: {
+              text: data['NIHRfunding']
+            },
+            actions: {
+              items: [
+                {
+                  href: "/my-research/create-project-02",
+                  text: "Change",
+                  visuallyHiddenText: "NIHR funding needed"
+                }
+              ]
+            }
+}
+        ]
+      }) }}
+
+      <h2 class="govuk-heading-m">
+        Now save your project
+      </h2>
+
+      <p>
+        Once your project has been created, you can start adding your project team, funding and site details, and determining what approvals you'll need.
+      </p>
+
+      <form action="/my-research" method="post" novalidate>
+
+        {{ govukButton({
+          text: "Save project"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "hmrc/layouts/account-header.html" %}
+
+{% block pageTitle %}
+  My account – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        My account
+      </h1>
+    <p>
+      This is your account homepage where you can access your workspaces.
+    </p>
+    <p>
+        <strong>Last logged in:</strong> 16 December 2025 at 4:40pm UK time
+    </p>
+    <hr />
+    <h2 class="govuk-heading-m">My workspaces</h2>
+    <hr />
+  </div>
+</div>
+  <ul class="govuk-grid-row card-group">
+      <li class="govuk-grid-column-one-third card-group__item">
+          <div class="card card--clickable" data-test="global-search">
+              <h2 class="govuk-heading-m card__heading">
+                  <a class="govuk-link card__link govuk-link--no-visited-state" href="/my-research" onclick="showAlert()">My research</a>
+              </h2>
+              <p class="govuk-body card__description">Search for someone in any establishment, or who has been released.</p>
+          </div>
+      </li>
+      <li class="govuk-grid-column-one-third card-group__item">
+          <div class="card card--clickable" data-test="manage-prisoner-whereabouts">
+              <h2 class="govuk-heading-m card__heading">
+                  <a class="govuk-link card__link govuk-link--no-visited-state" href="#" onclick="showAlert()">Manage prisoner whereabouts</a>
+              </h2>
+              <p class="govuk-body card__description">View unlock lists and manage attendance.</p>
+          </div>
+      </li>
+      <li class="govuk-grid-column-one-third card-group__item">
+          <div class="card card--clickable" data-test="use-of-force">
+              <h2 class="govuk-heading-m card__heading">
+                  <a class="govuk-link card__link govuk-link--no-visited-state" href="#" onclick="showAlert()">Use of force incidents</a>
+              </h2>
+              <p class="govuk-body card__description">Manage and view incident reports and statements.</p>
+          </div>
+      </li>
+  </ul>
+
+{% endblock %}
