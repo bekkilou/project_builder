@@ -1,0 +1,127 @@
+{% extends "govuk-prototype-kit/layouts/unbranded.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Scope your project
+      </h1>
+
+      <form class="form" action="/my-research/project-scope-additional" method="post">
+
+        {% if (data['adultsAndChildren']) == "Children (under 16 years old)" or "Children (under 18 years old)" %}
+          {{ govukCheckboxes({
+          name: "childAge",
+          fieldset: {
+            legend: {
+              text: "What ages are your child participants?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend"
+            }
+          },
+          hint: {
+            text: "Select all that apply"
+          },
+          items: [
+            {
+              value: "In utero",
+              text: "In utero"
+            },
+            {
+              value: "Preterm newborn infants (up to gestational age less than 37 weeks)",
+              text: "Preterm newborn infants (up to gestational age less than 37 weeks)"
+            },
+            {
+              value: "Newborn (0 to 27 days)",
+              text: "Newborn (0 to 27 days)"
+            },{
+              value: "28 days to 23 months",
+              text: "28 days to 23 months"
+            },
+            {
+              value: "2 to 9 years",
+              text: "2 to 9 years"
+            },
+            {
+              value: "10 to 15 years",
+              text: "10 to 15 years"
+            },
+            {
+              value: "16 to 17 years",
+              text: "16 to 17 years"
+            }
+          ]
+          }) }}
+        {% endif %}
+
+        {% if (data['adultsAndChildren']) == "Adults" or "Adults (including children 16-17 years old in Scotland)" %}
+          {{ govukCheckboxes({
+          name: "adultAge",
+          fieldset: {
+            legend: {
+              text: "What ages are your adult participants?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend"
+            }
+          },
+          hint: {
+            text: "Select all that apply"
+          },
+          items: [
+            {
+              value: "16 to 17 years",
+              text: "16 to 17 years"
+            },
+            {
+              value: "18 to 39 years",
+              text: "18 to 39 years"
+            },
+            {
+              value: "40 to 49 years",
+              text: "40 to 49 years"
+            },{
+              value: "50 to 59 years",
+              text: "50 to 59 years"
+            },
+            {
+              value: "60 to 69 years",
+              text: "60 to 69 years"
+            },
+            {
+              value: "70+ years",
+              text: "70+ years"
+            }
+          ]
+          }) }}
+        {% endif %}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Save as draft",
+            classes: "govuk-button--secondary",
+            href: "/my-research"
+          }) }}
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

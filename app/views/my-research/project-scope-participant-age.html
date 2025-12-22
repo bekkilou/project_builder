@@ -20,93 +20,90 @@
         Scope your project
       </h1>
 
-      <form class="form" action="/my-research/project-scope-additional" method="post">
+      <form class="form" action="/my-research/project-scope-participant-age-range" method="post">
           <!-- Participant ages -->
 
-  <div class="govuk-form-group">
-    <fieldset class="govuk-fieldset" aria-describedby="adultsAndChildren-hint">
-      <legend class="govuk-fieldset__legend">
-        Are you involving adults or children in your project?
-      </legend>
-      <div id="adultsAndChildren-id" class="govuk-hint">
-        Select all that apply
-      </div>
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset" aria-describedby="adultsAndChildren-hint">
+            <legend class="govuk-fieldset__legend">
+              Are you involving adults or children in your project?
+            </legend>
+            <div id="adultsAndChildren-id" class="govuk-hint">
+              Select all that apply
+            </div>
 
-  {% if (data['isCTIMP']) == "Yes" %}
-      <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-        <div class="govuk-checkboxes__item">
-          <input class="govuk-checkboxes__input" id="adults" name="adultsAndChildren" type="checkbox" value="Adults">
-          <label class="govuk-label govuk-checkboxes__label" for="adults">
-            Adults
-          </label>
+        {% if (data['isCTIMP']) == "Yes" %}
+            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="adults" name="adultsAndChildren" type="checkbox" value="Adults">
+                <label class="govuk-label govuk-checkboxes__label" for="adults">
+                  Adults
+                </label>
+              </div>
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="children" name="adultsAndChildren" type="checkbox" value="Children (under 16 years of age)">
+                <label class="govuk-label govuk-checkboxes__label" for="children">
+                  Children (under 16 yers of age)
+                </label>
+              </div>
+            </div>
+            {% elseif (data['isCTIMP']) == "No" %}
+            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="adults1617" name="adultsAndChildren" type="checkbox" value="Adults (including children 16-17 years old in Scotland)">
+                <label class="govuk-label govuk-checkboxes__label" for="adults1617">
+                  Adults (including children 16-17 years old in Scotland)
+                </label>
+              </div>
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="childu18" name="adultsAndChildren" type="checkbox" value="Children (under 18 years old)">
+                <label class="govuk-label govuk-checkboxes__label" for="childu18">
+                  Children (under 18 years old)
+                </label>
+              </div>
+            </div>
+            {% else %}
+            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="adults" name="adultsAndChildren" type="checkbox" value="Adults">
+                <label class="govuk-label govuk-checkboxes__label" for="adults">
+                  Adults
+                </label>
+              </div>
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="children" name="adultsAndChildren" type="checkbox" value="Children (under 16 yers of age)">
+                <label class="govuk-label govuk-checkboxes__label" for="children">
+                  Children (under 16 yers of age)
+                </label>
+              </div>
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="adults1617" name="adultsAndChildren" type="checkbox" value="Adults (including children 16-17 years old in Scotland)">
+                <label class="govuk-label govuk-checkboxes__label" for="adults1617">
+                  Adults (including children 16-17 years old in Scotland)
+                </label>
+              </div>
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="childu18" name="adultsAndChildren" type="checkbox" value="Children (under 18 years old)">
+                <label class="govuk-label govuk-checkboxes__label" for="childu18">
+                  Children (under 18 years old)
+                </label>
+              </div>
+            </div>
+        {% endif %}
+          </fieldset>
         </div>
-        <div class="govuk-checkboxes__item">
-          <input class="govuk-checkboxes__input" id="children" name="adultsAndChildren" type="checkbox" value="Children (under 16 years of age)">
-          <label class="govuk-label govuk-checkboxes__label" for="children">
-            Children (under 16 yers of age)
-          </label>
-        </div>
-      </div>
 
-      {% elseif (data['isCTIMP']) == "No" %}
-      <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-        <div class="govuk-checkboxes__item">
-          <input class="govuk-checkboxes__input" id="adults1617" name="adultsAndChildren" type="checkbox" value="Adults (including children 16-17 years old in Scotland)">
-          <label class="govuk-label govuk-checkboxes__label" for="adults1617">
-            Adults (including children 16-17 years old in Scotland)
-          </label>
-        </div>
-        <div class="govuk-checkboxes__item">
-          <input class="govuk-checkboxes__input" id="childu18" name="adultsAndChildren" type="checkbox" value="Children (under 18 years old)">
-          <label class="govuk-label govuk-checkboxes__label" for="childu18">
-            Children (under 18 years old)
-          </label>
-        </div>
-      </div>
-      {% else %}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue"
+          }) }}
 
-      <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-        <div class="govuk-checkboxes__item">
-          <input class="govuk-checkboxes__input" id="adults" name="adultsAndChildren" type="checkbox" value="Adults">
-          <label class="govuk-label govuk-checkboxes__label" for="adults">
-            Adults
-          </label>
+          {{ govukButton({
+            text: "Save as draft",
+            classes: "govuk-button--secondary",
+            href: "/my-research"
+          }) }}
         </div>
-        <div class="govuk-checkboxes__item">
-          <input class="govuk-checkboxes__input" id="children" name="adultsAndChildren" type="checkbox" value="Children (under 16 yers of age)">
-          <label class="govuk-label govuk-checkboxes__label" for="children">
-            Children (under 16 yers of age)
-          </label>
-        </div>
-        <div class="govuk-checkboxes__item">
-          <input class="govuk-checkboxes__input" id="adults1617" name="adultsAndChildren" type="checkbox" value="Adults (including children 16-17 years old in Scotland)">
-          <label class="govuk-label govuk-checkboxes__label" for="adults1617">
-            Adults (including children 16-17 years old in Scotland)
-          </label>
-        </div>
-        <div class="govuk-checkboxes__item">
-          <input class="govuk-checkboxes__input" id="childu18" name="adultsAndChildren" type="checkbox" value="Children (under 18 years old)">
-          <label class="govuk-label govuk-checkboxes__label" for="childu18">
-            Children (under 18 years old)
-          </label>
-        </div>
-      </div>
-  {% endif %}
-    </fieldset>
-  </div>
-
-
-  <div class="govuk-button-group">
-    {{ govukButton({
-      text: "Continue"
-    }) }}
-
-    {{ govukButton({
-      text: "Save as draft",
-      classes: "govuk-button--secondary",
-      href: "/my-research"
-    }) }}
-  </div>
 
       </form>
 
