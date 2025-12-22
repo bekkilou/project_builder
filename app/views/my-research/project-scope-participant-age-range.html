@@ -21,10 +21,19 @@
       </h1>
 
       <form class="form" action="/my-research/project-scope-additional" method="post">
+<!-- Rewrite for multiple options!! -->
 
-        {% if (data['adultsAndChildren']) == "Children (under 16 years old)" or "Children (under 18 years old)" %}
+        {% set childAges = data['adultsAndChildren'] | list %}
+
+          {% if
+            (
+              "Children (under 16 yers of age)" in childAges
+              or "Children (under 18 years old)" in childAges
+            )
+          %}
           {{ govukCheckboxes({
           name: "childAge",
+          value: data["childAge"],
           fieldset: {
             legend: {
               text: "What ages are your child participants?",
@@ -65,11 +74,16 @@
             }
           ]
           }) }}
-        {% endif %}
-
-        {% if (data['adultsAndChildren']) == "Adults" or "Adults (including children 16-17 years old in Scotland)" %}
+{% endif %}
+          {% if
+            (
+              "Adults" in childAges
+              or "Adults (including children 16-17 years old in Scotland)" in childAges
+            )
+          %}
           {{ govukCheckboxes({
           name: "adultAge",
+          value: data["adultAge"],
           fieldset: {
             legend: {
               text: "What ages are your adult participants?",

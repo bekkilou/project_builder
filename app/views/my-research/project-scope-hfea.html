@@ -20,18 +20,45 @@
         Heading or question goes here
       </h1>
 
-      <form class="form" action="/path/of/next/page" method="post">
+      <form class="form" action="/my-research/project-scope-check" method="post">
 
-        <p>
-          [Insert question content here - see the
-          <a href="https://design-system.service.gov.uk">GOV.UK Design System</a>
-          for examples]
-        </p>
-
-        {{ govukButton({
-          text: "Continue"
+        {{ govukRadios({
+          classes: "govuk-radios",
+          name: "isHFEA",
+          value: data["isHFEA"],
+          fieldset: {
+            legend: {
+              text: "Will this project involve activities or data regulated by the Human Fertilisation and Embryology Authority (HFEA)?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend"
+            }
+          },
+          items: [
+            {
+              value: "yes, activities regulated by HFEA",
+              text: "yes, activities regulated by HFEA"
+            },
+            {
+              value: "yes, accessing data from the HFEA register",
+              text: "yes, accessing data from the HFEA register"
+            },
+            {
+              value: "no",
+              text: "no"
+            }
+          ]
         }) }}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue"
+          }) }}
 
+          {{ govukButton({
+            text: "Save as draft",
+            classes: "govuk-button--secondary",
+            href: "/my-research"
+          }) }}
+        </div>
       </form>
 
     </div>

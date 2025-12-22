@@ -22,9 +22,12 @@
 
       <form class="form" action="/my-research/project-scope-participant-consent" method="post">
 
+        {% if (data['isCTIMP'] != "Yes") %}
+
         {{ govukRadios({
           classes: "govuk-radios--inline",
           name: "isClinical",
+          value: data["isClinical"],
           fieldset: {
             legend: {
               text: "Is this project a clinical investigation or other study of a medical device (including digital technology)?",
@@ -33,19 +36,29 @@
           },
           items: [
             {
-              value: "yes",
+              value: "Yes",
               text: "Yes"
             },
             {
-              value: "no",
+              value: "No",
               text: "No"
             }
           ]
         }) }}
+        {% endif %}
 
+        {% set activities = data['researchActivities'] | list %}
+
+          {% if
+            (
+              "Treatment, such as medicines, devices, surgery, vaccines or therapies" in activities
+              or "Clinical activities with people, such as collecting human biological samples, imaging investigations or diagnostics" in activities
+            )
+          %}
         {{ govukRadios({
           classes: "govuk-radios--inline",
           name: "isIonising",
+          value: data["isIonising"],
           fieldset: {
             legend: {
               text: "Does the project involve exposing participants to any ionising radiation?",
@@ -54,35 +67,49 @@
           },
           items: [
             {
-              value: "yes",
+              value: "Yes",
               text: "Yes"
             },
             {
-              value: "no",
+              value: "No",
               text: "No"
             }
           ]
         }) }}
-        {{ govukRadios({
-          classes: "govuk-radios--inline",
-          name: "isBioSample",
-          fieldset: {
-            legend: {
-              text: "Will you be taking or using any human biological samples?",
-              classes: "govuk-fieldset__legend"
-            }
-          },
-          items: [
-            {
-              value: "yes",
-              text: "Yes"
-            },
-            {
-              value: "no",
-              text: "No"
-            }
-          ]
-        }) }}
+        {% endif %}
+
+          {% set activities = data['researchActivities'] | list %}
+
+            {% if
+              (
+                "Treatment, such as medicines, devices, surgery, vaccines or therapies" in activities
+                or "Clinical activities with people, such as collecting human biological samples, imaging investigations or diagnostics" in activities
+              )
+              and "Use of previously collected human biological samples" not in activities
+            %}
+  <!-- render your question/content here -->
+            {{ govukRadios({
+              classes: "govuk-radios--inline",
+              name: "isBioSample",
+              value: data["isBioSample"],
+              fieldset: {
+                legend: {
+                  text: "Will you be taking or using any human biological samples?",
+                  classes: "govuk-fieldset__legend"
+                }
+              },
+              items: [
+                {
+                  value: "Yes",
+                  text: "Yes"
+                },
+                {
+                  value: "No",
+                  text: "No"
+                }
+              ]
+            }) }}
+          {% endif %}
 
         <div class="govuk-button-group">
           {{ govukButton({

@@ -20,14 +20,15 @@
         Heading or question goes here
       </h1>
 
-      <form class="form" action="/my-research/project-scope-check" method="post">
+      <form class="form" action="/my-research/project-scope-hfea" method="post">
 
         {{ govukRadios({
           classes: "govuk-radios--inline",
-          name: "isHFEA",
+          name: "isMOD",
+          value: data["isMOD"],
           fieldset: {
             legend: {
-              text: "Will this project involve activities or data regulated by the Human Fertilisation and Embryology Authority (HFEA)?",
+              text: "Will this project involve any activity under the responsibility of the Ministry of Defence (MOD)?",
               isPageHeading: false,
               classes: "govuk-fieldset__legend"
             }

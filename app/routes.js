@@ -69,4 +69,14 @@ router.post('/my-research/project-scope-participant-age', function (req, res) {
   }
   // Default / next step (avoid looping back to the same page)
   return res.redirect('/my-research/project-scope-participant-age') // <-- change this
-})
+});
+
+router.post('/my-research/project-scope-hmpps', function (req, res) {
+  const participants = req.session.data['participantGroups']
+  if (participants == "Patients or service users of NHS or HSC provided or commissioned services") {
+    res.redirect('/my-research/project-scope-hmpps')
+  }
+  else {
+    res.redirect('/my-research/project-scope-mod')
+  }
+});
