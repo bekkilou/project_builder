@@ -1,0 +1,96 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Heading or question goes here
+      </h1>
+
+      <form class="form" action="/my-research/project-scope-mod" method="post">
+
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "isHMPPS",
+          fieldset: {
+            legend: {
+              text: "Is your research studying the health and care of prisoners or young offenders in the custody of a government prison service or of people who are offenders supervised by a probation service? OR
+Will you include any participants who are prisoners or young offenders in custody or who are offenders supervised by a probation service?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend"
+            }
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Yes"
+            },
+            {
+              value: "no",
+              text: "No"
+            }
+          ]
+        }) }}
+
+        {{ govukCheckboxes({
+          name: "hmppsNations",
+          values: data['hmppsNations'],
+          fieldset: {
+            legend: {
+              text: "In which UK nations will you include participants who are prisoners or young offenders in custody or who are offenders supervised by a probation service?"
+            }
+          },
+          hint: {
+            text: "Select all that apply"
+          },
+          items: [
+            {
+              value: "England",
+              text: "England"
+            },
+            {
+              value: "Northern Ireland",
+              text: "Northern Ireland"
+            },
+            {
+              value: "Scotland",
+              text: "Scotland"
+            },
+            {
+              value: "Wales",
+              text: "Wales"
+            }
+          ]
+        }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Save as draft",
+            classes: "govuk-button--secondary",
+            href: "/my-research"
+          }) }}
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

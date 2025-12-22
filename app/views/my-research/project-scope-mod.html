@@ -17,13 +17,32 @@
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">
-        Scope your project
+        Heading or question goes here
       </h1>
 
-      <form class="form" action="/my-research/project-scope-04" method="post">
+      <form class="form" action="/my-research/project-scope-check" method="post">
 
-
-
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "isHFEA",
+          fieldset: {
+            legend: {
+              text: "Will this project involve activities or data regulated by the Human Fertilisation and Embryology Authority (HFEA)?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend"
+            }
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Yes"
+            },
+            {
+              value: "no",
+              text: "No"
+            }
+          ]
+        }) }}
         <div class="govuk-button-group">
           {{ govukButton({
             text: "Continue"
@@ -35,6 +54,7 @@
             href: "/my-research"
           }) }}
         </div>
+
       </form>
 
     </div>

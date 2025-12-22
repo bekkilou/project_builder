@@ -1,7 +1,7 @@
 {% extends "layouts/main.html" %}
 
 {% block pageTitle %}
-  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+  Scope your project requirements – {{ serviceName }} – GOV.UK Prototype Kit
 {% endblock %}
 
 {% block beforeContent %}
@@ -17,84 +17,86 @@
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">
-        Scope your project
+        Scope your project requirements
       </h1>
 
-      <form class="form" action="/path/of/next/page" method="post">
-          <!-- Participant ages -->
+      <form class="form" action="/my-research/project-scope-activities" method="post">
 
-  <div class="govuk-form-group">
-    <fieldset class="govuk-fieldset" aria-describedby="adultsAndChildren-hint">
-      <legend class="govuk-fieldset__legend">
-        Are you involving adults or children in your project?
-      </legend>
-      <div id="adultsAndChildren-id" class="govuk-hint">
-        Select all that apply
-      </div>
 
-  {% if (data['participantGroups']) == "People who are known to be deceased prior to their inclusion in the project" %}
-      <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-        <div class="govuk-checkboxes__item">
-          <input class="govuk-checkboxes__input" id="adults" name="adultsAndChildren" type="checkbox" value="Adults">
-          <label class="govuk-label govuk-checkboxes__label" for="adults">
-            Adults
-          </label>
+        {{ govukCheckboxes({
+          name: 'participantGroups',
+          values: data['participantGroups'],
+          fieldset: {
+            legend: {
+              text: "Select which groups will participate or provide data or samples in this project."
+            }
+          },
+          hint: {
+            text: "Select all that apply"
+          },
+          items: [
+            {
+              value: "Carers, parents or legal guardians of patients or participants",
+              text: "Carers, parents or legal guardians of patients or participants"
+            },
+            {
+              value: "Healthy volunteers or controls",
+              text: "Healthy volunteers or controls"
+            },
+            {
+              value: "Members of the public",
+              text: "Members of the public"
+            },
+            {
+              value: "Patients or service users of NHS or HSC provided or commissioned services",
+              text: "Patients or service users of NHS or HSC provided or commissioned services"
+            },
+            {
+              value: "Patients or residents in care homes, independent health care clinics, nursing homes or residential care",
+              text: "Patients or residents in care homes, independent health care clinics, nursing homes or residential care"
+            },
+            {
+              value: "People who are known to be deceased prior to their inclusion in the project",
+              text: "People who are known to be deceased prior to their inclusion in the project"
+            },
+            {
+              value: "Patients or service users of NHS or HSC provided or commissioned services",
+              text: "Patients or service users of NHS or HSC provided or commissioned services"
+            },
+            {
+              value: "Service users in other social care settings",
+              text: "Service users in other social care settings"
+            },
+            {
+              value: "Staff working in NHS or HSC provided or commissioned services",
+              text: "Staff working in NHS or HSC provided or commissioned services"
+            },
+            {
+              value: "Staff working in other care settings",
+              text: "Staff working in other care settings"
+            },
+            {
+              value: "Other",
+              text: "Other"
+            }
+          ]
+        }) }}
+
+
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Save as draft",
+            classes: "govuk-button--secondary",
+            href: "/my-research"
+          }) }}
         </div>
-        <div class="govuk-checkboxes__item">
-          <input class="govuk-checkboxes__input" id="children" name="adultsAndChildren" type="checkbox" value="Children (under 16 yers of age)">
-          <label class="govuk-label govuk-checkboxes__label" for="children">
-            Children (under 16 yers of age)
-          </label>
-        </div>
-      </div>
-
-      {% else %}
-
-      <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-        <div class="govuk-checkboxes__item">
-          <input class="govuk-checkboxes__input" id="adults" name="adultsAndChildren" type="checkbox" value="Adults">
-          <label class="govuk-label govuk-checkboxes__label" for="adults">
-            Adults
-          </label>
-        </div>
-        <div class="govuk-checkboxes__item">
-          <input class="govuk-checkboxes__input" id="children" name="adultsAndChildren" type="checkbox" value="Children (under 16 yers of age)">
-          <label class="govuk-label govuk-checkboxes__label" for="children">
-            Children (under 16 yers of age)
-          </label>
-        </div>
-        <div class="govuk-checkboxes__item">
-          <input class="govuk-checkboxes__input" id="adults1617" name="adultsAndChildren" type="checkbox" value="Adults (including children 16-17 years old in Scotland)">
-          <label class="govuk-label govuk-checkboxes__label" for="adults1617">
-            Adults (including children 16-17 years old in Scotland)
-          </label>
-        </div>
-        <div class="govuk-checkboxes__item">
-          <input class="govuk-checkboxes__input" id="childu18" name="adultsAndChildren" type="checkbox" value="Children (under 18 years old)">
-          <label class="govuk-label govuk-checkboxes__label" for="childu18">
-            Children (under 18 years old)
-          </label>
-        </div>
-      </div>
-  {% endif %}
-    </fieldset>
-  </div>
-
-
-  <div class="govuk-button-group">
-    {{ govukButton({
-      text: "Continue"
-    }) }}
-
-    {{ govukButton({
-      text: "Save as draft",
-      classes: "govuk-button--secondary",
-      href: "/my-research"
-    }) }}
-  </div>
 
       </form>
-
     </div>
   </div>
 
