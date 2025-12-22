@@ -8,10 +8,10 @@ const router = govukPrototypeKit.requests.setupRouter()
 
 // Add your routes here
 // Route through CTIMP & Participants
-router.post('/my-research/project-scope-03', function (req, res) {
+router.post('/my-research/project-scope-participant-age', function (req, res) {
 
   // Make a variable and give it the value from 'how-many-balls'
-  var researchActivities = req.session.data['researchActivities']
+  var researchActivities = req.session.data['researchActivities'];
   var participantGroups = req.session.data['participantGroups']
 
   // Check whether the variable matches a condition

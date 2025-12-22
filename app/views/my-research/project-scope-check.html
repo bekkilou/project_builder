@@ -1,4 +1,4 @@
-{% extends "layouts/main.html" %}
+{% extends "govuk-prototype-kit/layouts/unbranded.html" %}
 
 {% block pageTitle %}
   Check your answers template – {{ serviceName }} – GOV.UK Prototype Kit
@@ -16,83 +16,75 @@
     <div class="govuk-grid-column-two-thirds-from-desktop">
 
       <h1 class="govuk-heading-xl">
-        Check your answers before sending your application
+        Check your answers before your pathway is configured
       </h1>
+        <h2 class="govuk-heading-m">Section title</h2>
+          <dl class="govuk-summary-list govuk-!-margin-bottom-9">
 
-      {{ govukSummaryList({
-        rows: [
-          {
-            key: {
-              text: "Question 1"
-            },
-            value: {
-              text: "Answer 1"
-            },
-            actions: {
-              items: [
-                {
-                  href: "#",
-                  text: "Change",
-                  visuallyHiddenText: "Question 1"
-                }
-              ]
-            }
-          }
-          ,
-          {
-            key: {
-              text: "Question 2"
-            },
-            value: {
-              text: "Answer 2"
-            },
-            actions: {
-              items: [
-                {
-                  href: "#",
-                  text: "Change",
-                  visuallyHiddenText: "Question 2"
-                }
-              ]
-            }
-          }
-          ,
-          {
-            key: {
-              text: "Question 3"
-            },
-            value: {
-              text: "Answer 3"
-            },
-            actions: {
-              items: [
-                {
-                  href: "#",
-                  text: "Change",
-                  visuallyHiddenText: "Question 3"
-                }
-              ]
-            }
-          }
-        ]
-      }) }}
+            {% if (data['participantGroups'])|length %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Participant groups
+              </dt>
+              <dd class="govuk-summary-list__value">
+                    {{ data['participantGroups'] }}
+              </dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="/my-research/project-scope-participants">Change<span class="govuk-visually-hidden"> name</span></a>
+              </dd>
+            </div>
+            {% endif %}
 
-      <h2 class="govuk-heading-m">
-        Now send your application
-      </h2>
+            {% if (data['researchActivities'])|length %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Research activities
+              </dt>
+              <dd class="govuk-summary-list__value">
+                    {{ data['researchActivities'] }}
+              </dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="/my-research/project-scope-activities">Change<span class="govuk-visually-hidden"> name</span></a>
+              </dd>
+            </div>
+            {% endif %}
 
-      <p>
-        By submitting this application you are confirming that, to the best of your knowledge, the details you are providing are correct.
-      </p>
+            {% if (data['isCTIMP'])|length %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Clinical trial
+              </dt>
+              <dd class="govuk-summary-list__value">
+                    {{ data['isCTIMP'] }}
+              </dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="/my-research/project-scope-ctimp">Change<span class="govuk-visually-hidden"> name</span></a>
+              </dd>
+            </div>
+              {% if (data['isCTIMP'])== "Yes" %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Clinical trial
+                </dt>
+                <dd class="govuk-summary-list__value">
+                      {{ data['CTIMPCombined'] }}
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="/my-research/project-scope-ctimp">Change<span class="govuk-visually-hidden"> name</span></a>
+                </dd>
+              </div>
+              {% endif %}
+            {% endif %}
 
-      <form action="/confirmation" method="post" novalidate>
-
-        {{ govukButton({
-          text: "Accept and send"
-        }) }}
-
-      </form>
-
+          </dl>
+        <h2 class="govuk-heading-m">Now configure your pathway</h2>
+        <p class="govuk-body">Submitting these configuration criteria, you will be generating a task list to develop and complete your approvals application process.</p>
+        <form action="/form-handler" method="post" novalidate>
+          <input type="hidden" name="answers-checked" value="true">
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Build configuration
+          </button>
+        </form>
     </div>
   </div>
 {% endblock %}
