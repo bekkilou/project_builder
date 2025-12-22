@@ -17,10 +17,10 @@
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">
-        Heading or question goes here
+        Scope your project requirements
       </h1>
 
-      <form class="form" action="/path/of/next/page" method="post">
+      <form class="form" action="/my-research/project-scope-03" method="post">
 
         <!-- Research activities -->
 
@@ -33,8 +33,8 @@
       Select all that apply
     </div>
 
-    {% if (data['participantGroups']) == "People who are known to be deceased prior to their inclusion in the project" %} 
-      <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+{% if (data['participantGroups']) == "People who are known to be deceased prior to their inclusion in the project" %}
+    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
       <div class="govuk-checkboxes__item">
         <input class="govuk-checkboxes__input" id="previouslyCollected" name="researchActivities" type="checkbox" value="Use of previously collected data about people">
         <label class="govuk-label govuk-checkboxes__label" for="waste">
@@ -47,10 +47,25 @@
           Use of previously collected human biological samples
         </label>
       </div>
-      </div>
-  
+    </div>
+
+  {% elseif (data['participantGroups']) == "Staff working in NHS or HSC provided or commissioned services" %}
+  <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+    <div class="govuk-checkboxes__item">
+      <input class="govuk-checkboxes__input" id="nonClinicalStaff" name="researchActivities" type="checkbox" value="Non-clinical activies with staff, such as interviews, questionnaires and observations">
+      <label class="govuk-label govuk-checkboxes__label" for="nonClinicalStaff">
+        Non-clinical activies with staff, such as interviews, questionnaires and observations
+      </label>
+    </div>
+    <div class="govuk-checkboxes__item">
+      <input class="govuk-checkboxes__input" id="nonClinicalSurvey" name="researchActivities" type="checkbox" value="Non-clinical activities with people, such as interviews or surveys">
+      <label class="govuk-label govuk-checkboxes__label" for="nonClinicalSurvey">
+        Non-clinical activities with people, such as interviews or surveys
+      </label>
+    </div>
+  </div>
     {% else %}
-    
+
     <div class="govuk-checkboxes" data-module="govuk-checkboxes">
       <div class="govuk-checkboxes__item">
         <input class="govuk-checkboxes__input" id="previouslyCollected" name="researchActivities" type="checkbox" value="Use of previously collected data about people">
@@ -97,11 +112,20 @@
     </div>
 {% endif %}
   </fieldset>
-</div>        
-        {{ govukButton({
-          text: "Continue"
-        }) }}
+</div>
 
+
+<div class="govuk-button-group">
+  {{ govukButton({
+    text: "Continue"
+  }) }}
+
+  {{ govukButton({
+    text: "Save as draft",
+    classes: "govuk-button--secondary",
+    href: "/my-research"
+  }) }}
+</div>
       </form>
 
     </div>

@@ -82,9 +82,19 @@
           ]
         }) }}
 
-        {{ govukButton({
-          text: "Continue"
-        }) }}
+
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Save as draft",
+            classes: "govuk-button--secondary",
+            href: "/my-research"
+          }) }}
+        </div>
 
       </form>
     </div>
