@@ -73,6 +73,36 @@
                 </p>"
             }) }}
 
+            {{ govukRadios({
+              classes: "govuk-radios--inline",
+              name: "CPMSservices",
+              fieldset: {
+                legend: {
+                  text: "Do you wish to access one or more of the CPMS services? If you select 'Yes', IRAS will share information with the CPMS once the 'continue' button at the bottom of the page has been pressed. "
+                }
+              },
+              items: [
+                {
+                  value: "Yes",
+                  text: "Yes"
+                },
+                {
+                  value: "No",
+                  text: "No"
+                }
+              ]
+              }) }}
+
+              {{ govukInput({
+                label: {
+                  text: "Provide the email of the person who will be the initial contact for CPMS.",
+                  classes: "govuk-label",
+                  isPageHeading: false
+                },
+                id: "cpms-email",
+                name: "cpmsEmail"
+              }) }}
+
         {{ govukButton({
           text: "Continue"
         }) }}
