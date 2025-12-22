@@ -12,17 +12,21 @@ router.post('/my-research/project-scope-participant-age', function (req, res) {
 
   // Make a variable and give it the value from 'how-many-balls'
   var researchActivities = req.session.data['researchActivities'];
-  var participantGroups = req.session.data['participantGroups']
+  var participantGroups = req.session.data['participantGroups'];
+  var isCTIMP = req.session.data['isCTIMP']
 
   // Check whether the variable matches a condition
-  if (researchActivities == "Treatment, such as medicines, devices, surgery, vaccines or therapies"){
-    // Send user to next page
+  if (
+  researchActivities === "Treatment, such as medicines, devices, surgery, vaccines or therapies" &&
+  !isCTIMP
+) {
+    // Send user to CTIMP
     res.redirect('/my-research/project-scope-ctimp')
-  } if (participantGroups == "People who are known to be deceased prior to their inclusion in the project"){
+  } else if (participantGroups == "People who are known to be deceased prior to their inclusion in the project"){
     // Send user to ineligible page
-    res.redirect('/my-research/project-scope-03')
+    res.redirect('/my-research/project-scope-hmpps')
   } else {
-    res.redirect('/my-research/project-scope-participants')
+    res.redirect('/my-research/project-scope-participant-age')
   }
 
 })

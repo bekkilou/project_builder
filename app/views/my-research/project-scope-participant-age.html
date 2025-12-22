@@ -32,7 +32,7 @@
         Select all that apply
       </div>
 
-  {% if (data['participantGroups']) == "People who are known to be deceased prior to their inclusion in the project" %}
+  {% if (data['isCTIMP']) == "Yes" %}
       <div class="govuk-checkboxes" data-module="govuk-checkboxes">
         <div class="govuk-checkboxes__item">
           <input class="govuk-checkboxes__input" id="adults" name="adultsAndChildren" type="checkbox" value="Adults">
@@ -41,13 +41,28 @@
           </label>
         </div>
         <div class="govuk-checkboxes__item">
-          <input class="govuk-checkboxes__input" id="children" name="adultsAndChildren" type="checkbox" value="Children (under 16 yers of age)">
+          <input class="govuk-checkboxes__input" id="children" name="adultsAndChildren" type="checkbox" value="Children (under 16 years of age)">
           <label class="govuk-label govuk-checkboxes__label" for="children">
             Children (under 16 yers of age)
           </label>
         </div>
       </div>
 
+      {% elseif (data['isCTIMP']) == "No" %}
+      <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+        <div class="govuk-checkboxes__item">
+          <input class="govuk-checkboxes__input" id="adults1617" name="adultsAndChildren" type="checkbox" value="Adults (including children 16-17 years old in Scotland)">
+          <label class="govuk-label govuk-checkboxes__label" for="adults1617">
+            Adults (including children 16-17 years old in Scotland)
+          </label>
+        </div>
+        <div class="govuk-checkboxes__item">
+          <input class="govuk-checkboxes__input" id="childu18" name="adultsAndChildren" type="checkbox" value="Children (under 18 years old)">
+          <label class="govuk-label govuk-checkboxes__label" for="childu18">
+            Children (under 18 years old)
+          </label>
+        </div>
+      </div>
       {% else %}
 
       <div class="govuk-checkboxes" data-module="govuk-checkboxes">

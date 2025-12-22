@@ -41,7 +41,7 @@
                 Research activities
               </dt>
               <dd class="govuk-summary-list__value">
-                    {{ data['researchActivities'] }}
+              {{ data['researchActivities'] }}
               </dd>
               <dd class="govuk-summary-list__actions">
                 <a class="govuk-link" href="/my-research/project-scope-activities">Change<span class="govuk-visually-hidden"> name</span></a>
@@ -55,7 +55,7 @@
                 Clinical trial
               </dt>
               <dd class="govuk-summary-list__value">
-                    {{ data['isCTIMP'] }}
+                {{ data['isCTIMP'] }}
               </dd>
               <dd class="govuk-summary-list__actions">
                 <a class="govuk-link" href="/my-research/project-scope-ctimp">Change<span class="govuk-visually-hidden"> name</span></a>
@@ -67,13 +67,27 @@
                   Clinical trial
                 </dt>
                 <dd class="govuk-summary-list__value">
-                      {{ data['CTIMPCombined'] }}
+              {{ data['CTIMPCombined'] }}
                 </dd>
                 <dd class="govuk-summary-list__actions">
                   <a class="govuk-link" href="/my-research/project-scope-ctimp">Change<span class="govuk-visually-hidden"> name</span></a>
                 </dd>
               </div>
               {% endif %}
+            {% endif %}
+
+            {% if (data['adultsAndChildren'])|length %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Are you involving adults or children in your project?
+              </dt>
+              <dd class="govuk-summary-list__value">
+              {{ data['adultsAndChildren'] }}
+              </dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="/my-research/project-scope-participant-age">Change<span class="govuk-visually-hidden"> name</span></a>
+              </dd>
+            </div>
             {% endif %}
 
           </dl>
