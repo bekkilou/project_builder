@@ -1,4 +1,4 @@
-{% extends "govuk-prototype-kit/layouts/unbranded.html" %}
+{% extends "layouts/main.html" %}
 
 {% block pageTitle %}
   Question page template – {{ serviceName }} – GOV.UK Prototype Kit
@@ -20,7 +20,7 @@
         Scope your project
       </h1>
 
-      <form class="form" action="/my-research/project-scope-hmpps" method="post">
+      <form class="form" action="/my-research/project-scope-participant-consent-01" method="post">
 
         {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
@@ -52,77 +52,6 @@
             }
           ]
         }) }}
-
-
-        {{ govukCheckboxes({
-          name: 'noConsent',
-          values: data['noConsent'],
-          fieldset: {
-            legend: {
-              text: "Select all the situations when consent or assent will not be obtained."
-            }
-          },
-          hint: {
-            text: "Select all that apply"
-          },
-          items: [
-            {
-              value: "for the use of non-identifiable patient or care data by the research team ",
-              text: "for the use of non-identifiable patient or care data by the research team "
-            },
-            {
-              value: "for access to identifiable patient or care data by the usual care team (including identification of potential participants)",
-              text: "for access to identifiable patient or care data by the usual care team (including identification of potential participants)"
-            },
-            {
-              value: "for access to identifiable patient or care data by people without an existing legal basis (including identification of potential participants)",
-              text: "for access to identifiable patient or care data by people without an existing legal basis (including identification of potential participants)"
-            },
-            {
-              value: "for the use of previously collected non-identifiable human biological samples",
-              text: "for the use of previously collected non-identifiable human biological samples"
-            },
-            {
-              value: "for the use of previously collected identifiable human biological samples without relevant consent for their use in this project",
-              text: "for the use of previously collected identifiable human biological samples without relevant consent for their use in this project"
-            },
-            {
-              value: "when adults do not have capacity to consent to their participation",
-              text: "when adults do not have capacity to consent to their participation"
-            },
-            {
-              value: "Other",
-              text: "Other"
-            }
-          ]
-        }) }}
-
-        {{ govukRadios({
-          classes: "govuk-radios",
-          name: "isCapable",
-          value: data["isCapable"],
-          fieldset: {
-            legend: {
-              text: "When recruiting adult participants, what capacity will they have to consent to their participation?",
-              classes: "govuk-fieldset__legend"
-            }
-          },
-          items: [
-            {
-              value: "all adults will have capacity to consent for themselves as participants",
-              text: "all adults will have capacity to consent for themselves as participants"
-            },
-            {
-              value: "no adults will have capacity to consent for themselves as participants",
-              text: "no adults will have capacity to consent for themselves as participants"
-            },
-            {
-              value: "some adults may lack capacity to consent for themselves as participants",
-              text: "some adults may lack capacity to consent for themselves as participants"
-            }
-          ]
-        }) }}
-
 
         <div class="govuk-button-group">
           {{ govukButton({

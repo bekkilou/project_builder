@@ -1,4 +1,4 @@
-{% extends "govuk-prototype-kit/layouts/unbranded.html" %}
+{% extends "layouts/main.html" %}
 
 {% block pageTitle %}
   Question page template – {{ serviceName }} – GOV.UK Prototype Kit
@@ -27,7 +27,7 @@
 
           {% if
             (
-              "Children (under 16 yers of age)" in childAges
+              "Children (under 16 years of age)" in childAges
               or "Children (under 18 years old)" in childAges
             )
           %}
@@ -74,7 +74,7 @@
             }
           ]
           }) }}
-{% endif %}
+          {% endif %}
           {% if
             (
               "Adults" in childAges

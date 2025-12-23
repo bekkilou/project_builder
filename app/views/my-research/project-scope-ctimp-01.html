@@ -1,0 +1,68 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">
+      Scope your project
+    </h1>
+
+    <form class="form" action="/my-research/project-scope-participant-age" method="post">
+
+
+      {% if (data['isCTIMP']) == "Yes" %}
+      {{ govukRadios({
+        classes: "govuk-radios",
+        name: "CTIMPCombined",
+        value: (data['CTIMPcombined']),
+        fieldset: {
+          legend: {
+            text: "Select the option that applies to your project:",
+            isPageHeading: false,
+            classes: "govuk-fieldset__legend"
+          }
+        },
+        items: [
+          {
+            value: "clinical trial of an investigational medicinal product",
+            text: "clinical trial of an investigational medicinal product"
+          },
+          {
+            value: "combined trial of an investigational medicinal product and an investigational medical device",
+            text: "combined trial of an investigational medicinal product and an investigational medical device"
+          }
+        ]
+      }) }}
+      {% endif%}
+
+
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+        {{ govukButton({
+          text: "Save as draft",
+          classes: "govuk-button--secondary",
+          href: "/my-research"
+        }) }}
+      </div>
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

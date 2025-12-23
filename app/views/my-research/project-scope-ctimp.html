@@ -1,4 +1,4 @@
-{% extends "govuk-prototype-kit/layouts/unbranded.html" %}
+{% extends "layouts/main.html" %}
 
 {% block pageTitle %}
   Question page template – {{ serviceName }} – GOV.UK Prototype Kit
@@ -20,55 +20,34 @@
       Scope your project
     </h1>
 
-    <form class="form" action="/my-research/project-scope-participant-age" method="post">
+    <form class="form" action="/my-research/project-scope-ctimp-01" method="post">
 
+      {% set activity = data['researchActivities'] | list %}
 
-      {% if (data['researchActivities']) == "Treatment, such as medicines, devices, surgery, vaccines or therapies" %}
-      {{ govukRadios({
-        classes: "govuk-radios--inline",
-        name: "isCTIMP",
-        fieldset: {
-          legend: {
-            text: "Is this project a clinical trial of an investigational medicinal product (CTIMP)?",
-            classes: "govuk-fieldset__legend"
-          }
-        },
-        items: [
-          {
-            value: "Yes",
-            text: "Yes"
+      {% if "Treatment" in (activity | join(" ")) %}
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "isCTIMP",
+          value: (data['isCTIMP']),
+          fieldset: {
+            legend: {
+              text: "Is this project a clinical trial of an investigational medicinal product (CTIMP)?",
+              classes: "govuk-fieldset__legend"
+            }
           },
-          {
-            value: "No",
-            text: "No"
-          }
-        ]
-      }) }}
-      {% endif%}
-
-      {{ govukRadios({
-        classes: "govuk-radios",
-        name: "CTIMPCombined",
-        fieldset: {
-          legend: {
-            text: "Select the option that applies to your project:",
-            isPageHeading: false,
-            classes: "govuk-fieldset__legend"
-          }
-        },
-        items: [
-          {
-            value: "clinical trial of an investigational medicinal product",
-            text: "clinical trial of an investigational medicinal product"
-          },
-          {
-            value: "combined trial of an investigational medicinal product and an investigational medical device",
-            text: "combined trial of an investigational medicinal product and an investigational medical device"
-          }
-        ]
-      }) }}
-
-
+          items: [
+            {
+              value: "Yes",
+              text: "Yes"
+            },
+            {
+              value: "No",
+              text: "No"
+            }
+          ]
+        }) }}
+      {% endif %}
+    
 
       <div class="govuk-button-group">
         {{ govukButton({

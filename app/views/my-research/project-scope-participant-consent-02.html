@@ -17,33 +17,38 @@
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">
-        Heading or question goes here
+        Scope your project
       </h1>
 
-      <form class="form" action="/my-research/project-scope-hfea" method="post">
+      <form class="form" action="/my-research/project-scope-hmpps" method="post">
 
-        {{ govukRadios({
-          classes: "govuk-radios--inline",
-          name: "isMOD",
-          value: data["isMOD"],
+      {{ govukRadios({
+          classes: "govuk-radios",
+          name: "isCapable",
+          value: data["isCapable"],
           fieldset: {
             legend: {
-              text: "Will this project involve any activity under the responsibility of the Ministry of Defence (MOD)?",
-              isPageHeading: false,
+              text: "When recruiting adult participants, what capacity will they have to consent to their participation?",
               classes: "govuk-fieldset__legend"
             }
           },
           items: [
             {
-              value: "yes",
-              text: "Yes"
+              value: "all adults will have capacity to consent for themselves as participants",
+              text: "all adults will have capacity to consent for themselves as participants"
             },
             {
-              value: "no",
-              text: "No"
+              value: "no adults will have capacity to consent for themselves as participants",
+              text: "no adults will have capacity to consent for themselves as participants"
+            },
+            {
+              value: "some adults may lack capacity to consent for themselves as participants",
+              text: "some adults may lack capacity to consent for themselves as participants"
             }
           ]
         }) }}
+
+
         <div class="govuk-button-group">
           {{ govukButton({
             text: "Continue"
@@ -55,7 +60,6 @@
             href: "/my-research"
           }) }}
         </div>
-
       </form>
 
     </div>

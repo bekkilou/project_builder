@@ -1,4 +1,4 @@
-{% extends "govuk-prototype-kit/layouts/unbranded.html" %}
+{% extends "layouts/main.html" %}
 
 {% block pageTitle %}
   Question page template – {{ serviceName }} – GOV.UK Prototype Kit
@@ -47,14 +47,10 @@
         }) }}
         {% endif %}
 
-        {% set activities = data['researchActivities'] | list %}
+        {% set activity = data['researchActivities'] | list %}
+        {% set joinedActivity = activity | join(" ") %}
 
-          {% if
-            (
-              "Treatment, such as medicines, devices, surgery, vaccines or therapies" in activities
-              or "Clinical activities with people, such as collecting human biological samples, imaging investigations or diagnostics" in activities
-            )
-          %}
+        {% if "Treatment" in joinedActivity or "Clinical activities" %}
         {{ govukRadios({
           classes: "govuk-radios--inline",
           name: "isIonising",
