@@ -427,8 +427,202 @@
         </details>
         </div>
 
+        {{ govukCheckboxes({
+          name: "useAI",
+          value: data['useAI'],
+          fieldset: {
+            legend: {
+              text: "Does your project use AI (artificial intelligence)?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "Select all that apply"
+          },
+          items: [
+            {
+              value: "designing, developing or testing an AI product or tool",
+              text: "designing, developing or testing an AI product or tool"
+            },
+            {
+              value: "using an existing AI product or tool for its intended purpose",
+              text: "using an existing AI product or tool for its intended purpose"
+            },
+            {
+              value: "the project does not involve the use of AI",
+              text: "the project does not involve the use of AI"
+            }
+          ]
+        }) }}
 
-        
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Guidance here?
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p>
+              Artificial Intelligence - the use of digital technology to create systems capable of performing tasks commonly thought to require human intelligence
+              (provided by data/AI team - see below)
+            </p>
+          </div>
+        </details>
+      
+
+        <!-- Show if use of AI = designing, developing -->
+
+        {{ govukCheckboxes({
+          name: "designAI",
+          value: data['designAI'],
+          fieldset: {
+            legend: {
+              text: "In relation to designing, developing or testing an AI product or tool, what best describes the type of AI?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "Select all that apply"
+          },
+          items: [
+            {
+              value: "image analysis",
+              text: "image analysis"
+            },
+            {
+              value: "other machine learning applications",
+              text: "other machine learning applications"
+            },
+            {
+              value: "natural language processing",
+              text: "natural language processing"
+            },
+            {
+              value: "generative AI or large language models",
+              text: "generative AI or large language models"
+            },
+            {
+              value: "robotics",
+              text: "robotics"
+            },
+            {
+              value: "other",
+              text: "other"
+            }
+          ]
+        }) }}
+
+
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Guidance here?
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p>
+              Data/AI team have provided brief descriptions of each type to help understand these different bits (saved to SharePoint)
+            </p>
+          </div>
+        </details>
+
+        <!-- Show if designAI = other -->
+        {{ govukCharacterCount({
+          name: "otherAI",
+          id: "other-ai",
+          value: data['otherAI'],
+          maxlength: 2000,
+          label: {
+            text: "Describe the type of AI being used in your project.",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+
+        <!-- Show if use of AI = existing -->
+
+        {{ govukCheckboxes({
+          name: "existingAI",
+          value: data['existingAI'],
+          fieldset: {
+            legend: {
+              text: "In relation to using an existing AI product or tool for its intended purpose, what best describes the type of AI?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "Select all that apply"
+          },
+          items: [
+            {
+              value: "image analysis",
+              text: "image analysis"
+            },
+            {
+              value: "other machine learning applications",
+              text: "other machine learning applications"
+            },
+            {
+              value: "natural language processing",
+              text: "natural language processing"
+            },
+            {
+              value: "generative AI or large language models",
+              text: "generative AI or large language models"
+            },
+            {
+              value: "robotics",
+              text: "robotics"
+            },
+            {
+              value: "other",
+              text: "other"
+            }
+          ]
+        }) }}
+
+        <!-- Show if designAI = other -->
+        {{ govukCharacterCount({
+          name: "otherExistingAI",
+          id: "other-existing-ai",
+          value: data['otherExistingAI'],
+          maxlength: 2000,
+          label: {
+            text: "Describe the type of AI being used in your project.",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+
+        <!-- Show always -->
+        {{ govukCharacterCount({
+          name: "willHappen",
+          id: "will-happen",
+          value: data['willHappen'],
+          maxlength: 10000,
+          label: {
+            text: "State exactly what will happen to participants, their tissue or data, how many times and in what order:",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: "complete this in language understandable to a member of the public"
+          }
+        }) }}
+
+
+
         <div class="govuk-button-group">
           {{ govukButton({
             text: "Continue"

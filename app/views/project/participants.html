@@ -22,15 +22,326 @@
 
       <form class="form" action="/path/of/next/page" method="post">
 
-        <p>
-          [Insert question content here - see the
-          <a href="https://design-system.service.gov.uk">GOV.UK Design System</a>
-          for examples]
-        </p>
-
-        {{ govukButton({
-          text: "Continue"
+        {{ govukCheckboxes({
+          name: "primaryCondition",
+          value: data['primaryCondition'],
+          fieldset: {
+            legend: {
+              text: "What are the primary conditions or problems being studied?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "Select all that apply"
+          },
+          items: [
+            {
+              value: "blood",
+              text: "blood"
+            },
+            {
+              value: "cancer and neoplasms",
+              text: "cancer and neoplasms"
+            },
+            {
+              value: "cardiovascular",
+              text: "cardiovascular"
+            },
+            {
+              value: "congenital disorders",
+              text: "congenital disorders"
+            },
+            {
+              value: "ear",
+              text: "ear"
+            },
+            {
+              value: "eye",
+              text: "eye"
+            },
+            {
+              value: "infection",
+              text: "infection"
+            },
+            {
+              value: "inflammatory and immune system",
+              text: "inflammatory and immune system"
+            },
+            {
+              value: "injuries and accidents",
+              text: "injuries and accidents"
+            },
+            {
+              value: "mental health",
+              text: "mental health"
+            },
+            {
+              value: "metabolic and endocrine",
+              text: "metabolic and endocrine"
+            },
+            {
+              value: "musculoskeletal",
+              text: "musculoskeletal"
+            },
+            {
+              value: "neurological",
+              text: "neurological"
+            },
+            {
+              value: "oral and gastrointestinal",
+              text: "oral and gastrointestinal"
+            },
+            {
+              value: "renal and urogenital",
+              text: "renal and urogenital"
+            },
+            {
+              value: "reproductive health and childbirth",
+              text: "reproductive health and childbirth"
+            },
+            {
+              value: "respiratory",
+              text: "respiratory"
+            },
+            {
+              value: "skin",
+              text: "skin"
+            },
+            {
+              value: "stroke",
+              text: "stroke"
+            },
+            {
+              value: "generic health relevance",
+              text: "generic health relevance"
+            },
+            {
+              value: "disputed aetiology and other",
+              text: "disputed aetiology and other"
+            }
+          ]
         }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Specify the primary condition or problem being studied",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: "This should be no more than 200 characters"
+          },
+          id: "primary-problem",
+          name: "primaryProblem",
+          value: data["primaryProblem"]
+        }) }}
+
+
+
+        <!-- Inclusiion and exclusiong criteria -->
+        {{ govukCharacterCount({
+          name: "principalInclusion",
+          id: "principal-inclusion",
+          value: data['principalInclusion'],
+          maxlength: 5000,
+          label: {
+            text: "List the principal inclusion criteria for selection of participants, data or samples",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: "can be copy and pasted from protocol"
+          }
+        }) }}
+
+        {{ govukCharacterCount({
+          name: "principalExclusion",
+          id: "principal-exclusion",
+          value: data['principalExclusion'],
+          maxlength: 5000,
+          label: {
+            text: "List the principal exclusion criteria or selection of participants, data or samples",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: "can be copy and pasted from protocol"
+          }
+        }) }}
+
+
+        <!-- Reflect real world -->
+
+        {{ govukCharacterCount({
+          name: "realWorldPop",
+          id: "real-world-pop",
+          value: data['realWorldPop'],
+          maxlength: 2000,
+          label: {
+            text: "How are you making sure that your study sample reflects the real-world population that the research is for and about?",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: "Consider people and communities who are often excluded from research in the field you are studying. You may attach evidence or assessments already agreed with funders or sponsors."
+          }
+        }) }}
+
+
+        <!-- Reflect real world -->
+
+        {{ govukCharacterCount({
+          name: "fullyParticipate",
+          id: "fully-Participate",
+          value: data['fullyParticipate'],
+          maxlength: 2000,
+          label: {
+            text: "How will you ensure that the people you have chosen to include in your project are able to participate fully?",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: "Consider factors such as health, identity, cultural, socioeconomic factors, literacy, accessibility, or other circumstances to facilitate participation in your research. You may attach evidence or assessments already agreed with funders or sponsors."
+          }
+        }) }}
+
+
+
+        <!-- Show if project-scope-participants = Other -->
+        {{ govukInput({
+          label: {
+            text: "You previously indicated that a different group of people to those already listed will participate or provide data or samples. Give details of the other groups participating or providing data or samples in this project",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: "This should be no more than 200 characters"
+          },
+          id: "other-participants",
+          name: "otherParticipants",
+          value: data["otherParticipants"]
+        }) }}
+
+
+
+        {{ govukDateInput({
+          id: "participant-recruitment-date",
+          namePrefix: "participantRecruitmentDate",
+          value: data['participantRecruitmentDate'],
+          fieldset: {
+            legend: {
+              text: "When do you plan to start recruiting participants or collecting samples or data?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "For example, 27 3 2007"
+          }
+        }) }}
+
+
+        <!-- If participants != data or biological material only -->
+        {{ govukInput({
+          label: {
+            text: "How long do you expect each participant to be in the project in total?",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: "This should be no more than 200 character"
+          },
+          id: "how-long-involved",
+          name: "howLongInvolved",
+          value: data["howLongInvolved"]
+        }) }}
+
+
+        <!-- If clinical or treatment -->
+
+        {{ govukCharacterCount({
+          name: "currentResearchParticipant",
+          id: "current-research-participant",
+          value: data['currentResearchParticipant'],
+          maxlength: 2000,
+          label: {
+            text: "What arrangements will apply to potential participants who are involved in current research or have recently been involved in any research prior to recruitment?",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+
+        <!-- Show if participcants == Non-clinical, clinical, treatment -->
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "consideredVulnerable",
+          value: data['consideredVulnerable'],
+          fieldset: {
+            legend: {
+              text: "Could any of the potential participants for the project be considered to be vulnerable at the time of approach?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: ""
+          },
+          items: [
+            {
+              value: "Yes",
+              text: "Yes"
+            },
+            {
+              value: "No",
+              text: "No"
+            }
+          ]
+        }) }}
+
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Guidance here?
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p>
+              give examples of 'vulnerable'
+            </p>
+          </div>
+        </details>
+
+
+
+        <!-- A placeholder -->
+        {{ govukCharacterCount({
+          name: "imposterParticipant",
+          id: "impoaster-participant",
+          value: data['imposterParticipant'],
+          maxlength: 2000,
+          label: {
+            text: "what measures are being taken to address the risk of fake or imposter participants in online data collection that might affect the validity of results",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Save as draft",
+            classes: "govuk-button--secondary",
+            href: "/project/start"
+          }) }}
+        </div>
 
       </form>
 
