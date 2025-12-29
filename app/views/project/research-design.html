@@ -1,0 +1,450 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        {{ data['projectTitle'] or "Project title"}} - Research design and methodology
+      </h1>
+
+      <form class="form" action="/project/participants" method="post">
+
+        {{ govukCheckboxes({
+          name: "methodologies",
+          value: data['methodologies'],
+          fieldset: {
+            legend: {
+              text: "Select the methodology or methodologies you will be using for this project:",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "Select all that apply"
+          },
+          items: [
+            {
+              value: "case series or case note review ",
+              text: "case series or case note review "
+            },
+            {
+              value: "case control",
+              text: "case control"
+            },
+            {
+              value: "cohort observation",
+              text: "cohort observation"
+            },
+            {
+              value: "controlled trial without randomisation",
+              text: "controlled trial without randomisation"
+            },
+            {
+              value: "cross-sectional study",
+              text: "cross-sectional study"
+            },
+            {
+              value: "database analysis",
+              text: "database analysis"
+            },
+            {
+              value: "epidemiology",
+              text: "epidemiology"
+            },
+            {
+              value: "feasibility or pilot study",
+              text: "feasibility or pilot study"
+            },
+            {
+              value: "laboratory study",
+              text: "laboratory study"
+            },
+            {
+              value: "meta-analysis",
+              text: "meta-analysis"
+            },
+            {
+              value: "qualitative research",
+              text: "qualitative research"
+            },
+            {
+              value: "questionnaire, interview or observation study",
+              text: "questionnaire, interview or observation study"
+            },
+            {
+              value: "randomised controlled trial",
+              text: "randomised controlled trial"
+            },
+            {
+              value: "other",
+              text: "other"
+            }
+          ]
+        }) }}
+
+        <!-- If methodologies = Other -->
+        {{ govukCharacterCount({
+          name: "methodologiesOther",
+          id: "methodologies-other",
+          value: data['methodologiesOther'],
+          maxlength: 200,
+          label: {
+            text: "Give details of the methodologies you will be using",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+        <!-- If methodologies = randomised or without randomisation -->
+        {{ govukCheckboxes({
+          name: "trialMethodologies",
+          value: data['trialMethodologies'],
+          fieldset: {
+            legend: {
+              text: "Select the trial methodology",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "Select all that apply"
+          },
+          items: [
+            {
+              value: "basket trial",
+              text: "basket trial"
+            },
+            {
+              value: "bayesian",
+              text: "bayesian"
+            },
+            {
+              value: "blinded",
+              text: "blinded"
+            },
+            {
+              value: "cluster-randomised",
+              text: "cluster-randomised"
+            },
+            {
+              value: "comparative",
+              text: "comparative"
+            },
+            {
+              value: "cross-over",
+              text: "cross-over"
+            },
+            {
+              value: "double-blinded",
+              text: "double-blinded"
+            },
+            {
+              value: "open",
+              text: "open"
+            },
+            {
+              value: "other complex or innovative design",
+              text: "other complex or innovative design"
+            },
+            {
+              value: "parallel arms",
+              text: "parallel arms"
+            },
+            {
+              value: "platform trial",
+              text: "platform trial"
+            },
+            {
+              value: "real-world",
+              text: "real-world"
+            },
+            {
+              value: "targeted or stratified",
+              text: "targeted or stratified"
+            },
+            {
+              value: "umbrella trial",
+              text: "umbrella trial"
+            }
+          ]
+        }) }}
+        {{ govukDetails({
+          summaryText: "Guidance here?",
+          text: "guidance for different methodologies"
+        }) }}
+
+
+        <!-- Show if trial methodology = other complex -->
+        {{ govukCharacterCount({
+          name: "methodologiesOther",
+          id: "methodologies-other",
+          value: data['methodologiesOther'],
+          maxlength: 200,
+          label: {
+            text: "Give details of the methodologies you will be using",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+        <!-- Always display -->
+        {{ govukCharacterCount({
+          name: "methodologiesDetails",
+          id: "methodologies-details",
+          value: data['methodologiesDetails'],
+          maxlength: 5000,
+          label: {
+            text: "Give details of the methodologies you will be using",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Guidance here?
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p>
+              WHO guidance - Study type consists of:
+            </p>
+            <ul>
+                <li>
+                  Type of study (interventional or observational)
+                </li>
+                <li>
+                  Study design including:
+                    <ul>
+                        <li>
+                          Method of allocation (randomized/non-randomized)
+                        </li>
+                        <li>
+                          Masking (is masking used and, if so, who is masked)
+                        </li>
+                        <li>
+                            Assignment (single arm, parallel, crossover or factorial)
+                        </li>
+                        <li>
+                            Purpose
+                        </li>
+                        <li>
+                            Phase (if applicable)
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                  For randomized trials: the allocation concealment mechanism and sequence generation will be documented.
+                </li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- If methodologies = randomised or without randomisation -->
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "novelIntervention",
+          value: data["novelIntervention"],
+          fieldset: {
+            legend: {
+              text: "Is your project a clinical trial to study a novel intervention?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: ""
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Yes"
+            },
+            {
+              value: "no",
+              text: "No"
+            }
+          ]
+        }) }}
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Guidance here?
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p>
+              Guidance on novel interventions
+            </p>
+          </div>
+        </details>
+
+        <!-- If methodologies = randomised or without randomisation & not novel intervention -->
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "compareIntervention",
+          value: data["compareIntervention"],
+          fieldset: {
+            legend: {
+              text: "Is your project a randomised clinical trial to compare any interventions in clinical practice?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: ""
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Yes"
+            },
+            {
+              value: "no",
+              text: "No"
+            }
+          ]
+        }) }}
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Guidance here?
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p>
+              how to answer if IMP tested against placebo
+            </p>
+          </div>
+        </details>
+
+        <!-- If methodologies = randomised or without randomisation & not novel intervention & not comparison -->
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "goldIntervention",
+          value: data["goldIntervention"],
+          fieldset: {
+            legend: {
+              text: "Are all the interventions that you are comparing routine 'gold standard' care options in clinical practice?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: ""
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Yes"
+            },
+            {
+              value: "no",
+              text: "No"
+            }
+          ]
+        }) }}
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Guidance here?
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p>
+              guidance to explain gold standard
+            </p>
+          </div>
+        </details>
+
+
+
+      <div data-module="moj-add-another">
+        <!-- Always display -->
+        {% call govukFieldset({
+          classes: "moj-add-another__item",
+          legend: {
+            text: "Research question(s)",
+            classes: "moj-add-another__title govuk-fieldset__legend--m",
+            isPageHeading: false
+          }
+        }) %}
+          {{ govukCharacterCount({
+            name: "researchQuestion",
+            id: "research-question",
+            value: data['researchQuestion'],
+            maxlength: 5000,
+            label: {
+              text: "What is the principal research question or objective? Describe this in language understandable to a member of the public.",
+              classes: "govuk-label--m",
+              isPageHeading: false
+            },
+            hint: {
+              text: ""
+            }
+          }) }}
+        {% endcall %}
+        <div class="moj-button-action">
+          {{ govukButton({
+            text: "Add another research question",
+            classes: "govuk-button--secondary moj-add-another__add-button govuk-!-margin-bottom-4"
+          }) }}
+        </div>
+
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Guidance here?
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p>
+              State you may copy information from PIS but not from protocol as this should be information understandable to member of public
+            </p>
+          </div>
+        </details>
+        </div>
+
+
+        
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Save as draft",
+            classes: "govuk-button--secondary",
+            href: "/project/start"
+          }) }}
+        </div>
+
+      </form>
+
+
+    </div>
+  </div>
+
+{% endblock %}

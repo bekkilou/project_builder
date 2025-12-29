@@ -83,6 +83,35 @@ router.post('/my-research/project-scope-ctimp-01', function (req, res) {
   return res.redirect('/my-research/project-scope-participant-age') // TODO: replace with the real next page after CTIMP-01
 })
 
+router.post('/my-research/project-scope-additional', function (req, res) {
+  const isCTIMP = req.session.data['isCTIMP']
+
+  if (isCTIMP === 'Yes') {
+    return res.redirect('/my-research/project-scope-additional')
+  }
+
+  return res.redirect('/my-research/project-scope-participant-consent')
+})
+
+router.post('/my-research/project-scope-participant-consent-01', function (req, res) {
+  const participantConsent = req.session.data['participantConsent']
+  const participantGroups = asArray(req.session.data['participantGroups'])
+  const PATIENTS =
+    'Patients or service users of NHS or HSC provided or commissioned services'
+
+  if (participantConsent == "Consent will not be obtained from or on behalf of any participants")
+  // or (participantConsent == "Consent will be obtained from or on behalf of participants in some situations")
+   {
+    return res.redirect('/my-research/project-scope-participant-consent-01')
+  }
+  else if (participantGroups.includes(PATIENTS)) {
+    return res.redirect('/my-research/project-scope-hmpps')
+  }
+  else {
+    return res.redirect('/my-research/project-scope-mod')
+  }
+})
+
 router.post('/my-research/project-scope-hmpps', function (req, res) {
   const participantGroups = asArray(req.session.data['participantGroups'])
 
@@ -96,13 +125,15 @@ router.post('/my-research/project-scope-hmpps', function (req, res) {
 
   return res.redirect('/my-research/project-scope-mod')
 })
-
-router.post('/my-research/project-scope-additional', function (req, res) {
-  const isCTIMP = req.session.data['isCTIMP']
-
-  if (isCTIMP === 'Yes') {
-    return res.redirect('/my-research/project-scope-additional')
+/*
+router.post('/my-research/project-scope-participant-consent-02', function (req, res) {
+  const PATIENTS =
+    'Patients or service users of NHS or HSC provided or commissioned services'
+  // If they ARE patients/service users, go to the HMPPS route/page
+  if (participantGroups.includes(PATIENTS)) {
+    return res.redirect('/my-research/project-scope-hmpps')
   }
 
-  return res.redirect('/my-research/project-scope-participant-consent')
+  return res.redirect('/my-research/project-scope-mod')
 })
+*/

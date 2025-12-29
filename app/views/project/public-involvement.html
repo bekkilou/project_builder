@@ -1,0 +1,382 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        {{ data['projectTitle'] or "Project title"}} - Public involvement
+      </h1>
+
+      <form class="form" action="/project/research-design" method="post">
+
+        {{ govukCheckboxes({
+          name: "involvedContributors",
+          value: data['involvedContributors'],
+          fieldset: {
+            legend: {
+              text: "In which aspects of the project have you already actively involved patients or their carers, service users or members of the public?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "Include patient and public involvement from wider programmes that has informed this project. Select all that apply:"
+          },
+          items: [
+            {
+              value: "identifying, developing, or prioritising the research question ",
+              text: "identifying, developing, or prioritising the research question "
+            },
+            {
+              value: "being a member of a research advisory or reference group ",
+              text: "being a member of a research advisory or reference group "
+            },
+            {
+              value: "being a member of the Trial Management Group or Data Monitoring Committee ",
+              text: "being a member of the Trial Management Group or Data Monitoring Committee "
+            },
+            {
+              value: "developing the research methods (for example, designing questionnaires, or defining endpoints or outcome measures) ",
+              text: "developing the research methods (for example, designing questionnaires, or defining endpoints or outcome measures) "
+            },
+            {
+              value: "ensuring that the design of the research is feasible from the perspective of the participants (for example, identifying potential emotional or practical obstacles for research participants) ",
+              text: "ensuring that the design of the research is feasible from the perspective of the participants (for example, identifying potential emotional or practical obstacles for research participants) "
+            },
+            {
+              value: "designing the inclusion and exclusion criteria including consideration of the demographic diversity of the study population ",
+              text: "designing the inclusion and exclusion criteria including consideration of the demographic diversity of the study population "
+            },
+            {
+              value: "developing the risk or benefit analysis (for example, identifying and evaluating the probable risks and burden involved for research participants) ",
+              text: "developing the risk or benefit analysis (for example, identifying and evaluating the probable risks and burden involved for research participants) "
+            },
+            {
+              value: "developing the recruitment and consent process (for example, how and when to approach potential participants) ",
+              text: "developing the recruitment and consent process (for example, how and when to approach potential participants) "
+            },
+            {
+              value: "developing participant information sheets, the consent forms, and other documents which are used to communicate with potential research participants ",
+              text: "developing participant information sheets, the consent forms, and other documents which are used to communicate with potential research participants "
+            },
+            {
+              value: "developing plain language research summaries",
+              text: "developing plain language research summaries"
+            },
+            {
+              value: "developing or delivering training to staff",
+              text: "developing or delivering training to staff"
+            },
+            {
+              value: "developing the dissemination plan for the research ",
+              text: "developing the dissemination plan for the research "
+            },
+            {
+              value: "preparing regulatory submissions ",
+              text: "preparing regulatory submissions "
+            },
+            {
+              value: "planning to attend the Research Ethics Committee meetings to help explain how and why the research design is likely to be acceptable to research participants",
+              text: "planning to attend the Research Ethics Committee meetings to help explain how and why the research design is likely to be acceptable to research participants"
+            },
+            {
+              value: "other",
+              text: "other"
+            },
+            {
+              value: "patients, service users or their carers, or members of the public have not been involved",
+              text: "patients, service users or their carers, or members of the public have not been involved"
+            }
+          ]
+        }) }}
+
+
+          <!-- Will need routing to new page - Answered Q1 - Other -->
+        {{ govukCharacterCount({
+          name: "publicContributors",
+          id: "public-contributors",
+          value: data['publicContributors'],
+          maxlength: 2000,
+          label: {
+            text: "Give details of how you involved public contributors",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Guidance here?
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            "public contributors" refers to patients, carers, services users or members of the public
+          </div>
+        </details>
+
+
+        <!-- Will need routing to new page - Answered Q1 - Patients, service users not involved -->
+          {{ govukCharacterCount({
+            name: "patientInsights",
+            id: "patient-insights",
+            value: data['patientInsights'],
+            maxlength: 2000,
+            label: {
+              text: "Insights from patients, carers, services users or members of the public could have helped to ensure that this research reflects the priorities, needs and concerns of both the intended participant population, and of the people the research is intended to benefit. What are your reasons for not involving these people?",
+              classes: "govuk-label--m",
+              isPageHeading: false
+            },
+            hint: {
+              text: ""
+            }
+          }) }}
+          {{ govukDetails({
+            summaryText: "Guidance here?",
+            text: "guidance to refer to quality standards of PIS and wider programme of activity (eg pharma may do PPI on disease area in general to feed into this project but the PPI was not done specifically for this project)"
+          }) }}
+
+          <!-- Will need routing to new page - Answered Q1 - NOT 'Patients, service users not involved.'
+          Also not 'Other' -->
+
+        {{ govukCheckboxes({
+          name: "identifyContributors",
+          value: data['identifyContributors'],
+          fieldset: {
+            legend: {
+              text: "How did you identify the public contributors that you involved?  Select all that apply",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "Select all that apply"
+          },
+          items: [
+            {
+              value: "we have existing arrangements in our organisation or team for involving patients, carers, service users or members of the public",
+              text: "we have existing arrangements in our organisation or team for involving patients, carers, service users or members of the public"
+            },
+            {
+              value: "we asked an existing patient and public involvement group external to our organisation or team (for example, run by an NHS Trust, university, charity, local councils) ",
+              text: "we asked an existing patient and public involvement group external to our organisation or team (for example, run by an NHS Trust, university, charity, local councils) "
+            },
+            {
+              value: "we set up a new arrangement to involve patients, carers, service users or members of the public in our project (for example, posted the opportunity on the People in Research website, local noticeboards, or through a community organisation) ",
+              text: "we set up a new arrangement to involve patients, carers, service users or members of the public in our project (for example, posted the opportunity on the People in Research website, local noticeboards, or through a community organisation) "
+            },
+            {
+              value: "we were approached by some patients, carers, service users, a patient group, or a charity with a suggestion for this research and we have worked with them to develop it",
+              text: "we were approached by some patients, carers, service users, a patient group, or a charity with a suggestion for this research and we have worked with them to develop it"
+            },
+            {
+              value: "other",
+              text: "other"
+            }
+          ]
+        }) }}
+
+        <!-- Will need routing to new page - Answered Q1 - Other -->
+        {{ govukCharacterCount({
+          name: "identifyContributorsOther",
+          id: "indentify-contributors-other",
+          value: data['identifyContributorsOther'],
+          maxlength: 2000,
+          label: {
+            text: "Give details how you identified the public contributors to that you involved.",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+        <!-- Will need routing to new page - Answered Q1 - All bar did not involve -->
+        {{ govukCharacterCount({
+          name: "contributorDetails",
+          id: "contributor-details",
+          value: data['contributorDetails'],
+          maxlength: 2000,
+          label: {
+            text: "Tell us about the public contributors you worked with:",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            html: "
+              <ul>
+                <li>
+                  how many of them were there?
+                  </li>
+                <li>
+                  were the perspectives those of patients, of carers, of service users, of people with experience of being involved in research, or of members of the public?
+                  </li>
+                <li>
+                  what was relevant about their skills and experience (this might include their demographic information)?
+                  </li>
+              </ul>"
+          }
+        }) }}
+
+
+        <!-- Will need routing to new page - Answered Q1 - All bar did not involve -->
+        {{ govukCharacterCount({
+          name: "importantContribution",
+          id: "important-contribution",
+          value: data['importantContribution'],
+          maxlength: 2000,
+          label: {
+            text: "What did your public contributors say was important to them about how this research is done?",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+        <!-- No conditions -->
+
+        {{ govukCheckboxes({
+          name: "futureContribution",
+          value: data['futureContribution'],
+          fieldset: {
+            legend: {
+              text: "How do you plan to involve public contributors in the remaining stages of the research process?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "Select all that apply"
+          },
+          items: [
+            {
+              value: "being a member of research advisory or reference group ",
+              text: "being a member of research advisory or reference group "
+            },
+            {
+              value: "being a member of the Trial Management Group or Data Monitoring Committee",
+              text: "being a member of the Trial Management Group or Data Monitoring Committee"
+            },
+            {
+              value: "developing or delivering training to staff",
+              text: "developing or delivering training to staff"
+            },
+            {
+              value: "helping to promote this research",
+              text: "helping to promote this research"
+            },
+            {
+              value: "carrying out research activities (for example, facilitating focus groups, interviewing or administering questionnaires)",
+              text: "carrying out research activities (for example, facilitating focus groups, interviewing or administering questionnaires)"
+            },
+            {
+              value: "analysing the research findings",
+              text: "analysing the research findings"
+            },
+            {
+              value: "contributing to further regulatory submissions (such as amendments)",
+              text: "contributing to further regulatory submissions (such as amendments)"
+            },
+            {
+              value: "sharing research results (for example, by presenting at conferences or disseminating the research findings via social media)",
+              text: "sharing research results (for example, by presenting at conferences or disseminating the research findings via social media)"
+            },
+            {
+              value: "developing plain language summaries of the results",
+              text: "developing plain language summaries of the results"
+            },
+            {
+              value: "there is no plan to involve public contributors in the remaining stages of the research process",
+              text: "there is no plan to involve public contributors in the remaining stages of the research process"
+            },
+            {
+              value: "other",
+              text: "other"
+            }
+          ]
+        }) }}
+
+        <!-- Will need routing to new page - Answered Q2 (but apparently 4?) - if other -->
+        {{ govukCharacterCount({
+          name: "futureContributionOther",
+          id: "future-contributor-oher",
+          value: data['futureContributionOther'],
+          maxlength: 2000,
+          label: {
+            text: "Give details of other aspects public contributors will advise on or contribute to",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+        <!-- Will need routing to new page - Answered Q2 (but apparently 4?) - if any bar no contribution -->
+        {{ govukCharacterCount({
+          name: "justifyContribution",
+          id: "justify-contribution",
+          value: data['justifyContribution'],
+          maxlength: 2000,
+          label: {
+            text: "Justify your approach and describe the benefits and challenges of involving public contributors",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+        <!-- Will need routing to new page - Answered Q2 (but apparently 4?) - if no contribution -->
+        {{ govukCharacterCount({
+          name: "justifyNoContribution",
+          id: "justify-no-contribution",
+          value: data['justifyNoContribution'],
+          maxlength: 2000,
+          label: {
+            text: "Justify the approach and absence of public involvement",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Save as draft",
+            classes: "govuk-button--secondary",
+            href: "/project/start"
+          }) }}
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}
