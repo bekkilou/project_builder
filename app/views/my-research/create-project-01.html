@@ -24,20 +24,20 @@
 
         {{ govukInput({
           label: {
-            text: "Short project title"
+            text: "Short project title",
+            classes: "govuk-label--m"
           },
           id: "projectTitle",
           name: "projectTitle",
-          classes: "govuk-label--m",
           value: data["projectTitle"]
         }) }}
 
         {{ govukTextarea({
           name: "fullProjectTitle",
           id: "fullProjectTitle",
-          classes: "govuk-label--m",
           label: {
-            text: "Full project title"
+            text: "Full project title",
+            classes: "govuk-label--m"
           },
           value: data['fullProjectTitle']
         }) }}
@@ -48,7 +48,7 @@
           fieldset: {
             legend: {
               text: "Which UK nations do you want your poject to take place in?",
-              classes: "govuk-label--m",
+              classes: "govuk-label--m"
             }
           },
           hint: {
