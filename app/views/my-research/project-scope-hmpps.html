@@ -1,7 +1,7 @@
 {% extends "layouts/main.html" %}
 
 {% block pageTitle %}
-  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+  {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – HRA Prototype
 {% endblock %}
 
 {% block beforeContent %}
@@ -17,7 +17,7 @@
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">
-        Heading or question goes here
+        {{ data['projectTitle'] or "Project title"}} Configuration
       </h1>
 
       <form class="form" action="/my-research/project-scope-mod" method="post">
@@ -31,7 +31,7 @@
               text: "Is your research studying the health and care of prisoners or young offenders in the custody of a government prison service or of people who are offenders supervised by a probation service? OR
 Will you include any participants who are prisoners or young offenders in custody or who are offenders supervised by a probation service?",
               isPageHeading: false,
-              classes: "govuk-fieldset__legend"
+              classes: "govuk-fieldset__legend--m"
             }
           },
           items: [
@@ -51,7 +51,8 @@ Will you include any participants who are prisoners or young offenders in custod
           values: data['hmppsNations'],
           fieldset: {
             legend: {
-              text: "In which UK nations will you include participants who are prisoners or young offenders in custody or who are offenders supervised by a probation service?"
+              text: "In which UK nations will you include participants who are prisoners or young offenders in custody or who are offenders supervised by a probation service?",
+              classes: "govuk-fieldset__legend--m"
             }
           },
           hint: {

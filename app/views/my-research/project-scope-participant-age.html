@@ -1,7 +1,7 @@
 {% extends "layouts/main.html" %}
 
 {% block pageTitle %}
-  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+  {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – HRA Prototype
 {% endblock %}
 
 {% block beforeContent %}
@@ -17,7 +17,7 @@
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">
-        Scope your project
+        {{ data['projectTitle'] or "Project title"}} Configuration
       </h1>
 
       <form class="form" action="/my-research/project-scope-participant-age-range" method="post">
@@ -25,7 +25,7 @@
 
         <div class="govuk-form-group">
           <fieldset class="govuk-fieldset" aria-describedby="adultsAndChildren-hint">
-            <legend class="govuk-fieldset__legend">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
               Are you involving adults or children in your project?
             </legend>
             <div id="adultsAndChildren-id" class="govuk-hint">

@@ -1,7 +1,7 @@
 {% extends "layouts/main.html" %}
 
 {% block pageTitle %}
-  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+  Project details – {{ serviceName }} – GOV.UK Prototype Kit
 {% endblock %}
 
 {% block beforeContent %}
@@ -26,7 +26,8 @@
           name: "commercialResearchBoolean",
           fieldset: {
             legend: {
-              text: "Is the project likely to be managed as commercial research?"
+              text: "Is the project likely to be managed as commercial research?",
+              classes: "govuk-fieldset__legend--m"
             }
           },
           items: [
@@ -45,7 +46,8 @@
             name: "NIHRfunding",
             fieldset: {
               legend: {
-                text: "Are you seeking NIHR funding for this project?"
+                text: "Are you seeking NIHR funding for this project?",
+                classes: "govuk-fieldset__legend--m"
               }
             },
             items: [
@@ -78,7 +80,8 @@
               name: "CPMSservices",
               fieldset: {
                 legend: {
-                  text: "Do you wish to access one or more of the CPMS services? If you select 'Yes', IRAS will share information with the CPMS once the 'continue' button at the bottom of the page has been pressed. "
+                  text: "Do you wish to access one or more of the CPMS services? If you select 'Yes', IRAS will share information with the CPMS once the 'continue' button at the bottom of the page has been pressed. ",
+                  classes: "govuk-fieldset__legend--m"
                 }
               },
               items: [
@@ -96,7 +99,7 @@
               {{ govukInput({
                 label: {
                   text: "Provide the email of the person who will be the initial contact for CPMS.",
-                  classes: "govuk-label",
+                  classes: "govuk-label--m",
                   isPageHeading: false
                 },
                 id: "cpms-email",

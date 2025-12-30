@@ -1,7 +1,7 @@
 {% extends "layouts/main.html" %}
 
 {% block pageTitle %}
-  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+  {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – HRA Prototype
 {% endblock %}
 
 {% block beforeContent %}
@@ -17,7 +17,7 @@
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">
-        Scope your project
+        {{ data['projectTitle'] or "Project title"}} Configuration
       </h1>
 
       <form class="form" action="/my-research/project-scope-participant-consent-02" method="post">
@@ -26,7 +26,8 @@
           values: data['noConsent'],
           fieldset: {
             legend: {
-              text: "Select all the situations when consent or assent will not be obtained."
+              text: "Select all the situations when consent or assent will not be obtained.",
+              classes: "govuk-fieldset__legend--m"
             }
           },
           hint: {

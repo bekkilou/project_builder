@@ -1,7 +1,7 @@
 {% extends "layouts/main.html" %}
 
 {% block pageTitle %}
-  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+  {{ data['projectTitle'] or "Project title"}} Configuration
 {% endblock %}
 
 {% block beforeContent %}
@@ -17,7 +17,7 @@
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">
-        Scope your project
+        {{ data['projectTitle'] or "Project title"}} Configuration
       </h1>
 
       <form class="form" action="/my-research/project-scope-hmpps" method="post">
@@ -29,7 +29,7 @@
           fieldset: {
             legend: {
               text: "When recruiting adult participants, what capacity will they have to consent to their participation?",
-              classes: "govuk-fieldset__legend"
+              classes: "govuk-fieldset__legend--m"
             }
           },
           items: [

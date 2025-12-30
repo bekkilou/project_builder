@@ -1,7 +1,7 @@
 {% extends "layouts/main.html" %}
 
 {% block pageTitle %}
-  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+  {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – HRA Prototype
 {% endblock %}
 
 {% block beforeContent %}
@@ -17,7 +17,7 @@
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">
-        Scope your project
+        {{ data['projectTitle'] or "Project title"}} Configuration
       </h1>
 
       <form class="form" action="/my-research/project-scope-participant-consent" method="post">
@@ -31,7 +31,7 @@
           fieldset: {
             legend: {
               text: "Is this project a clinical investigation or other study of a medical device (including digital technology)?",
-              classes: "govuk-fieldset__legend"
+              classes: "govuk-fieldset__legend--m"
             }
           },
           items: [
@@ -58,7 +58,7 @@
           fieldset: {
             legend: {
               text: "Does the project involve exposing participants to any ionising radiation?",
-              classes: "govuk-fieldset__legend"
+              classes: "govuk-fieldset__legend--m"
             }
           },
           items: [
@@ -91,7 +91,7 @@
               fieldset: {
                 legend: {
                   text: "Will you be taking or using any human biological samples?",
-                  classes: "govuk-fieldset__legend"
+                  classes: "govuk-fieldset__legend--m"
                 }
               },
               items: [

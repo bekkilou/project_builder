@@ -1,7 +1,7 @@
 {% extends "layouts/main.html" %}
 
 {% block pageTitle %}
-  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+  {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – HRA Prototype
 {% endblock %}
 
 {% block beforeContent %}
@@ -17,7 +17,7 @@
   <div class="govuk-grid-column-two-thirds">
 
     <h1 class="govuk-heading-l">
-      Scope your project
+      {{ data['projectTitle'] or "Project title"}} Configuration
     </h1>
 
     <form class="form" action="/my-research/project-scope-ctimp-01" method="post">
@@ -32,7 +32,7 @@
           fieldset: {
             legend: {
               text: "Is this project a clinical trial of an investigational medicinal product (CTIMP)?",
-              classes: "govuk-fieldset__legend"
+              classes: "govuk-fieldset__legend--m"
             }
           },
           items: [
@@ -47,7 +47,7 @@
           ]
         }) }}
       {% endif %}
-    
+
 
       <div class="govuk-button-group">
         {{ govukButton({
