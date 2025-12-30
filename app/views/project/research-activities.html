@@ -179,8 +179,39 @@
         </details>
 
 
-
-
+        <!-- If participants = non-clinical interviews -->
+        {{ govukCheckboxes({
+          name: "questionnaireType",
+          value: data['questionnaireType'],
+          fieldset: {
+            legend: {
+              text: "What type of questionnaires are you using in this project?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "Select all that apply"
+          },
+          items: [
+            {
+              value: "use of validated questionnaires within their intended purpose and intended population",
+              text: "use of validated questionnaires within their intended purpose and intended population"
+            },
+            {
+              value: "use of validated questionnaires outside of their intended purpose and population",
+              text: "use of validated questionnaires outside of their intended purpose and population"
+            },
+            {
+              value: "use of non-validated questionnaires",
+              text: "use of non-validated questionnaires"
+            },
+            {
+              value: "no questionnaires included in project",
+              text: "no questionnaires included in project"
+            }
+          ]
+        }) }}
 
         <div class="govuk-button-group">
           {{ govukButton({
