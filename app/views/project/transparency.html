@@ -22,15 +22,701 @@
 
       <form class="form" action="/path/of/next/page" method="post">
 
-        <p>
-          [Insert question content here - see the
-          <a href="https://design-system.service.gov.uk">GOV.UK Design System</a>
-          for examples]
-        </p>
-
-        {{ govukButton({
-          text: "Continue"
+        {{ govukInsetText({
+          text: "Most research should be registered in a publicly accessible registry and it is expected that all researchers, research sponsors and others meet this fundamental best practice standard."
         }) }}
+
+
+        <!-- Always display -->
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "alreadyRegistered",
+          value: data['alreadyRegistered'],
+          fieldset: {
+            legend: {
+              text: "Is the project already registered elsewhere?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: ""
+          },
+          items: [
+            {
+              value: "Yes",
+              text: "Yes"
+            },
+            {
+              value: "No",
+              text: "No"
+            }
+          ]
+        }) }}
+
+
+        <!-- If CTIMP == Yes -->
+        {{ govukRadios({
+          classes: "govuk-radios",
+          name: "requestDeferral",
+          value: data['requestDeferral'],
+          fieldset: {
+            legend: {
+              text: "Registration and research project public summary publication deferral request",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "Deferral will only be agreed where a strong justification is provided."
+          },
+          items: [
+            {
+              value: "No deferral requested",
+              text: "No deferral requested"
+            },
+            {
+              value: "I request a deferral of registration and research summary publication – for protection of commercially confidential information",
+              text: "I request a deferral of registration and research summary publication – for protection of commercially confidential information"
+            },
+            {
+              value: "I request a deferral of registration and research summary publication – other reason ",
+              text: "I request a deferral of registration and research summary publication – other reason "
+            }
+          ]
+        }) }}
+
+
+        <!-- If requestDeferral == Other -->
+        {{ govukCharacterCount({
+          name: "justifyDeferral",
+          id: "justify-deferral",
+          value: data['justifyDeferral'],
+          maxlength: 2000,
+          label: {
+            text: "Provide clear justification for the deferral request.",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Guidance here?
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p>
+              Guidance needs to say already having registered is not a reason for deferral as not asking for a deferral.
+            </p>
+          </div>
+        </details>
+
+
+        <!-- If researchActivities != Treatment && alreadyRegistered == Yes -->
+
+        {{ govukCheckboxes({
+          name: "regArrangements",
+          classes: "govuk-checkboxes",
+          value: data['regArrangements'],
+          fieldset: {
+            legend: {
+              text: "Confirm the arrangements for registration of this project.",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "Select all that apply."
+          },
+          items: [
+          { value: "The project will be registered in a registry", text: "The project will be registered in a registry" },
+          { value: "Other arrangements are in place ", text: "Other arrangements are in place " }
+        ]
+        }) }}
+
+        <!-- If regArrangements == Other -->
+        {{ govukCharacterCount({
+          name: "regArrangementsOther",
+          id: "reg-arrangements-other",
+          value: data['regArrangementsOther'],
+          maxlength: 2000,
+          label: {
+            text: "Provide details of other arrangements for project registration.",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+        <!-- If CTIMP == Yes -->
+        {% set ISRCTNHtml %}
+        {{ govukInput({
+          id: "ISRCTN-reference",
+          name: "ISRCTNReference",
+          value: data['ISRCTNReference'],
+          type: "text",
+          spellcheck: false,
+          classes: "govuk-!-width-one-third",
+          label: {
+            text: "ISRCTN reference"
+          }
+        }) }}
+        {% endset -%}
+
+        {% set ClinGovHtml %}
+        {{ govukInput({
+          id: "clin-gov-reference",
+          name: "clinGovReference",
+          value: data['ISRCTNReference'],
+          type: "text",
+          classes: "govuk-!-width-one-third",
+          label: {
+            text: "Clinicaltrials.gov reference"
+          }
+        }) }}
+        {% endset -%}
+
+        {% set otherHtml %}
+        {{ govukInput({
+          id: "other-reference",
+          name: "otherReference",
+          value: data['ISRCTNReference'],
+          type: "text",
+          classes: "govuk-!-width-one-third",
+          label: {
+            text: "Provide the name of any other registries and the reference number"
+          }
+        }) }}
+        {% endset -%}
+
+        {{ govukCheckboxes({
+          name: "CTIMPRegArrangements",
+          value: datap['CTIMPRegArrangements'],
+          fieldset: {
+            legend: {
+              text: "Confirm the arrangements for registration of this project.",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "Select all that apply"
+          },
+          items: [
+            {
+              value: "ISRCTN",
+              text: "ISRCTN",
+              conditional: {
+                html: ISRCTNHtml
+              }
+            },
+            {
+              value: "Clinicaltrials.com",
+              text: "Clinicaltrials.com",
+              conditional: {
+                html: ClinGovHtml
+              }
+            },
+            {
+              value: "Other",
+              text: "Other",
+              conditional: {
+                html: otherHtml
+              }
+            }
+          ]
+        }) }}
+
+        <!-- If researchActivities != Treatment  || Bioresource == Yes -->
+        <p>
+          The Health Research Authority will publish a summary of the project, once approved unless a deferral is requested and agreed. 
+Deferral will only be agreed where a strong justification is provided.
+          </p>
+          <p class="govuk-body-s">
+            (Include contextual help which initially needs to indicate that publication is currently on HRA website – and then update to IRAS website in due course.)
+            </p>
+          {{ govukRadios({
+            classes: "govuk-radios",
+            name: "pubilcationRequestDeferral",
+            value: data['pubilcationRequestDeferral'],
+            fieldset: {
+              legend: {
+                text: "Project public summary publication deferral request ",
+                isPageHeading: false,
+                classes: "govuk-fieldset__legend--m"
+              }
+            },
+            hint: {
+              text: "Deferral will only be agreed where a strong justification is provided."
+            },
+            items: [
+              {
+                value: "No deferral requested",
+                text: "No deferral requested"
+              },
+              {
+                value: "I request a deferral of research summary publication – for protection of commercially confidential information",
+                text: "I request a deferral of research summary publication – for protection of commercially confidential information"
+              },
+              {
+                value: "I request deferral of research summary publication – other reason",
+                text: "I request deferral of research summary publication – other reason "
+              }
+            ]
+          }) }}
+
+
+          <!-- If pubilcationRequestDeferral CONTAINS I request... -->
+          {{ govukCharacterCount({
+            name: "justifyPublicationDeferral",
+            id: "justify-publication-deferral",
+            value: data['justifyPublicationDeferral'],
+            maxlength: 5000,
+            label: {
+              text: "Provide clear justification for the deferral request.",
+              classes: "govuk-label--m",
+              isPageHeading: false
+            },
+            hint: {
+              text: ""
+            }
+          }) }}
+
+
+          <!-- Always show - IF UKOrMultiNation == Multi-nation, append with "UK study end date" or similar -->
+          <p>
+            You should define the end of your project and notify relevant bodies at the end of the project.
+            </p>
+          {{ govukDateInput({
+            id: "planned-end-date",
+            namePrefix: "plannedEndDate",
+            value: data['plannedEndDate'],
+            fieldset: {
+              legend: {
+                text: "What is the planned end date?",
+                isPageHeading: false,
+                classes: "govuk-fieldset__legend--m"
+              }
+            },
+            hint: {
+              text: "For example, 27 3 2007"
+            }
+          }) }}
+
+          <!-- IF UKOrMultiNation == Multi-nation, append with "Global study end date" or similar -->
+          {{ govukDateInput({
+            id: "planned-end-date-multi",
+            namePrefix: "plannedEndDateMulti",
+            value: data['plannedEndDateMulti'],
+            fieldset: {
+              legend: {
+                text: "What is the planned end date?",
+                isPageHeading: false,
+                classes: "govuk-fieldset__legend--m"
+              }
+            },
+            hint: {
+              text: "For example, 27 3 2007"
+            }
+          }) }}
+
+
+
+          <!-- Always show -->
+          {{ govukCheckboxes({
+            name: "DisseminateResults",
+            idPrefix: "DisseminateResults",
+            classes: "govuk-checkboxes",
+            fieldset: {
+              legend: {
+                text: "A final report should be submitted to the Research Ethics Committee (REC) within 12 months of the end of the project, including a public summary of results. How else do you intend to report and disseminate the results of the project?",
+                isPageHeading: false,
+                classes: "govuk-fieldset__legend--m"
+              }
+            },
+            hint: {
+              text: "Select all that apply."
+            },
+            items: [
+            { value: "Peer reviewed scientific journals", text: "Peer reviewed scientific journals" },
+            { value: "Internal report", text: "Internal report" },
+            { value: "Conference presentation", text: "Conference presentation" },
+            { value: "Publication on website", text: "Publication on website" },
+            { value: "Other publication", text: "Other publication" },
+            { value: "Submission to regulatory authorities", text: "Submission to regulatory authorities" },
+            { value: "Access to raw data and right to publish freely by all investigators in study or by Independent Steering Committee on behalf of all investigators", text: "Access to raw data and right to publish freely by all investigators in study or by Independent Steering Committee on behalf of all investigators" },
+            { value: "No plans to report or disseminate the results", text: "No plans to report or disseminate the results" },
+            { value: "Other", text: "Other" }
+          ]
+        }) }}
+
+
+
+
+        <!-- if DisseminateResults == Other -->
+        {{ govukCharacterCount({
+          name: "otherDisseminateResults",
+          id: "other-disseminate-results",
+          value: data['otherDisseminateResults'],
+          maxlength: 5000,
+          label: {
+            text: "Give details of other reporting and dissemination plans",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+
+        <!-- Always show -->
+        {{ govukCharacterCount({
+          name: "participantResults",
+          id: "participant-results",
+          value: data['participantResults'],
+          maxlength: 2000,
+          label: {
+            text: "Results of the research provide feedback to participants on the outcome and how they have contributed.  This information should be accessible and easy to understand.
+Explain how and when you will inform participants of the results, or give reasons if there are no arrangements to do this",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+        <!-- Always show -->
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "shareDeIdentified",
+          value: data['shareDeIdentified'],
+          fieldset: {
+            legend: {
+              text: "You should enable the sharing of study data, with appropriate safeguards in place, to other interested groups and communities. Sharing data maximises and respects the contribution of participants and enables and supports further re-use. Do you plan to share de-identified individual participant-level data?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: ""
+          },
+          items: [
+            {
+              value: "Yes",
+              text: "Yes"
+            },
+            {
+              value: "No",
+              text: "No"
+            }
+          ]
+        }) }}
+
+
+        <!-- Always show -->
+        {{ govukCharacterCount({
+          name: "shareDeIdentifiedDetails",
+          id: "share-deidentified-details",
+          value: data['shareDeIdentifiedDetails'],
+          maxlength: 2000,
+          label: {
+            text: "Give details of your plans for sharing de-identified individual participant-level data, or describe your alternative plans for making data available for scrutiny or re-use.",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+
+        <!-- If Bioresource or involves Tissue -->
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "remainingBioMaterial",
+          value: data['remainingBioMaterial'],
+          fieldset: {
+            legend: {
+              text: "Will you have any remaining human biological material at the end of the project?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: ""
+          },
+          items: [
+            {
+              value: "Yes",
+              text: "Yes"
+            },
+            {
+              value: "No",
+              text: "No"
+            }
+          ]
+        }) }}
+
+        <!-- If remainingBioMaterial == Yes -->
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "registerBioMaterial",
+          value: data['registerBioMaterial'],
+          fieldset: {
+            legend: {
+              text: "The UK Clinical Research Collaboration (UKCRC) Tissue Directory and Coordination Centre advises researchers to register sample collections with them, to maximise the use of the samples. Will you be registering any remaining samples with them?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: ""
+          },
+          items: [
+            {
+              value: "Yes",
+              text: "Yes"
+            },
+            {
+              value: "No",
+              text: "No"
+            }
+          ]
+        }) }}
+
+        <!-- If registerBioMaterial == No -->
+        {{ govukCharacterCount({
+          name: "registerBioMaterialNo",
+          id: "register-bio-material-no",
+          value: data['registerBioMaterialNo'],
+          maxlength: 2000,
+          label: {
+            text: "The Human Tissue Authority and Medical Research Council advise researchers to consider options for maximising use before disposal. You should enable the sharing of tissue samples, with appropriate safeguards in place, to other interested groups and communities. Sharing tissue maximises and respects the contribution of participants and enables and supports further research. Justify the post-study arrangements or destruction of the material.",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+
+        <!-- Always display
+          This whole block until the buttons
+       -->
+       <p>
+         What is the contact point for public queries about this project? This information will be made public so you should use generic contact details rather than naming an individual person.
+         </p>
+         {{ govukInput({
+          label: {
+            text: "Email address"
+          },
+          hint: {
+            text: "We’ll only use this to send you a receipt"
+          },
+          id: "public-email",
+          name: "publicEmail",
+          value: data['publicEmail'],
+          type: "email",
+          autocomplete: "email",
+          spellcheck: false
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "UK phone number"
+          },
+          id: "public-phone-number",
+          name: "publicPhoneNumber",
+          value: data["publicPhoneNumber"],
+          type: "tel",
+          autocomplete: "tel",
+          classes: "govuk-input--width-20"
+        }) }}
+
+
+        {% call govukFieldset({
+          legend: {
+            text: "Postal address",
+            classes: "govuk-fieldset__legend--m",
+            isPageHeading: false
+          }
+        }) %}
+
+          {{ govukInput({
+            label: {
+              text: "Address line 1"
+            },
+            id: "public-address-line-1",
+            name: "publicAddressLine1",
+            value: data["publicAddressLine1"],
+            autocomplete: "address-line1"
+          }) }}
+
+          {{ govukInput({
+            label: {
+              text: "Address line 2 (optional)"
+            },
+            id: "public-address-line-2",
+            name: "publicAddressLine2",
+            value: data["publicAddressLine2"],
+            autocomplete: "address-line2"
+          }) }}
+
+          {{ govukInput({
+            label: {
+              text: "Town or city"
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "public-address-town",
+            name: "publicAddressTown",
+            autocomplete: "address-level2",
+            value: data['publicAddressTown']
+          }) }}
+
+          {{ govukInput({
+            label: {
+              text: "County (optional)"
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "public-address-county",
+            name: "publicAddressCounty",
+            value: data["publicAddressCounty"]
+          }) }}
+
+          {{ govukInput({
+            label: {
+              text: "Postcode"
+            },
+            classes: "govuk-input--width-10",
+            id: "public-address-postcode",
+            name: "publicAddressPostcode",
+            autocomplete: "postal-code",
+            value: data["publicAddressPostcode"]
+          }) }}
+
+        {% endcall %}
+
+
+
+        <!-- Always display
+          This whole block until the buttons
+       -->
+       <p>
+         What is the contact point for scientific queries about this project? This information will be made public so you should use generic contact details rather than naming an individual person.
+         </p>
+         {{ govukInput({
+          label: {
+            text: "Email address"
+          },
+          hint: {
+            text: "We’ll only use this to send you a receipt"
+          },
+          id: "scientific-email",
+          name: "scientificEmail",
+          value: data['scientificEmail'],
+          type: "email",
+          autocomplete: "email",
+          spellcheck: false
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "UK phone number"
+          },
+          id: "scientific-phone-number",
+          name: "scientificPhoneNumber",
+          value: data["scientificPhoneNumber"],
+          type: "tel",
+          autocomplete: "tel",
+          classes: "govuk-input--width-20"
+        }) }}
+
+
+        {% call govukFieldset({
+          legend: {
+            text: "Postal address",
+            classes: "govuk-fieldset__legend--m",
+            isPageHeading: false
+          }
+        }) %}
+
+          {{ govukInput({
+            label: {
+              text: "Address line 1"
+            },
+            id: "scientific-address-line-1",
+            name: "scientificAddressLine1",
+            value: data["scientificAddressLine1"],
+            autocomplete: "address-line1"
+          }) }}
+
+          {{ govukInput({
+            label: {
+              text: "Address line 2 (optional)"
+            },
+            id: "scientific-address-line-2",
+            name: "scientificAddressLine2",
+            value: data["scientificAddressLine2"],
+            autocomplete: "address-line2"
+          }) }}
+
+          {{ govukInput({
+            label: {
+              text: "Town or city"
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "scientific-address-town",
+            name: "scientificAddressTown",
+            autocomplete: "address-level2",
+            value: data['scientificAddressTown']
+          }) }}
+
+          {{ govukInput({
+            label: {
+              text: "County (optional)"
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "scientific-address-county",
+            name: "scientificAddressCounty",
+            value: data["scientificAddressCounty"]
+          }) }}
+
+          {{ govukInput({
+            label: {
+              text: "Postcode"
+            },
+            classes: "govuk-input--width-10",
+            id: "scientific-address-postcode",
+            name: "scientificAddressPostcode",
+            autocomplete: "postal-code",
+            value: data["scientificAddressPostcode"]
+          }) }}
+
+        {% endcall %}
+
+
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Save as draft",
+            classes: "govuk-button--secondary",
+            href: "/project/start"
+          }) }}
+        </div>
 
       </form>
 

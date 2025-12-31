@@ -22,15 +22,43 @@
 
       <form class="form" action="/path/of/next/page" method="post">
 
-        <p>
-          [Insert question content here - see the
-          <a href="https://design-system.service.gov.uk">GOV.UK Design System</a>
-          for examples]
-        </p>
-
-        {{ govukButton({
-          text: "Continue"
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "isDataOnly",
+          value: data['isDataOnly'],
+          fieldset: {
+            legend: {
+              text: "TIs this study limited to working with data only?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: ""
+          },
+          items: [
+            {
+              value: "Yes",
+              text: "Yes"
+            },
+            {
+              value: "No",
+              text: "No"
+            }
+          ]
         }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Finish"
+          }) }}
+
+          {{ govukButton({
+            text: "Save as draft",
+            classes: "govuk-button--secondary",
+            href: "/project/start"
+          }) }}
+        </div>
 
       </form>
 

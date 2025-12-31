@@ -93,3 +93,8 @@
       border-top: 2px solid #C3C3C3;
       border-bottom: 2px solid #C3C3C3;
     }
+    .govuk-uneditable{
+      background: #e3e3e3;
+      padding: 20px;
+      margin-bottom: 15px;
+    }

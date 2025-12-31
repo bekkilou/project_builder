@@ -22,15 +22,425 @@
 
       <form class="form" action="/path/of/next/page" method="post">
 
-        <p>
-          [Insert question content here - see the
-          <a href="https://design-system.service.gov.uk">GOV.UK Design System</a>
-          for examples]
-        </p>
-
-        {{ govukButton({
-          text: "Continue"
+        <!-- Always show -->
+        {{ govukRadios({
+          classes: "govuk-radios",
+          name: "UKOrMultiNation",
+          value: data['UKOrMultiNation'],
+          fieldset: {
+            legend: {
+              text: "Is this project taking place in any countries other than the UK?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: ""
+          },
+          items: [
+            {
+              value: "UK Only",
+              text: "UK Only"
+            },
+            {
+              value: "Multi-national",
+              text: "Multi-national"
+            }
+          ]
         }) }}
+
+
+        <!-- if UKOrMultiNation == Multi-nation -->
+        {{ govukCheckboxes({
+          name: "outsideUKCountries",
+          idPrefix: "outsideUKCountries",
+          classes: "govuk-checkboxes--small govuk-scrollable",
+          fieldset: {
+            legend: {
+              text: "Select countries outside the UK participating in this project.",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "Select all that apply."
+          },
+          items: [
+          { value: "Need country list", text: "Need country list" }
+        ]
+      }) }}
+
+
+      <div class="govuk-uneditable">
+        <!-- section not editable here -->
+        {{ govukInput({
+          label: {
+            text: "Which organisation is the primary sponsor for this project?",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: ""
+          },
+          id: "primary-sponsor",
+          name: "primarySponsor",
+          value: data["primarySponsor"] or "Sponsor not added",
+          disabled: true
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Which organisations are funding the project?",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: ""
+          },
+          id: "funding-orgs",
+          name: "fundingOrgs",
+          value: data["fundingOrgs"] or "Funding orgs not added",
+          disabled: true
+        }) }}
+      </div>
+
+
+      <!-- Always show -->
+      {{ govukRadios({
+        classes: "govuk-radios--inline",
+        name: "suppliesNotFunder",
+        value: data['suppliesNotFunder'],
+        fieldset: {
+          legend: {
+            text: "Are any materials being supplied from an organisation not providing funding?",
+            isPageHeading: false,
+            classes: "govuk-fieldset__legend--m"
+          }
+        },
+        hint: {
+          text: ""
+        },
+        items: [
+          {
+            value: "Yes",
+            text: "Yes"
+          },
+          {
+            value: "No",
+            text: "No"
+          }
+        ]
+      }) }}
+
+      <!-- if suppliesNotFunder == Yes -->
+      {{ govukInput({
+        label: {
+          text: "Give details of the source of materials supplied. ",
+          classes: "govuk-label--m"
+        },
+        hint: {
+          text: ""
+        },
+        id: "materials-supplied",
+        name: "materialsSupplied",
+        value: data["materialsSupplied"]
+      }) }}
+
+      <!-- Always show -->
+      {{ govukCharacterCount({
+        name: "legalRisks",
+        id: "legal-risks",
+        value: data['legalRisks'],
+        maxlength: 5000,
+        label: {
+          text: "Describe any logistical, legal, or management risks relating to your project.",
+          classes: "govuk-label--m",
+          isPageHeading: false
+        },
+        hint: {
+          text: "State how you are addressing them. Projects that present a minimal risk to participants may still raise complex organisational or legal issues. "
+        }
+      }) }}
+
+      <!-- if CTIMP == Yes -->
+      {{ govukCheckboxes({
+        classes: "govuk-checkboxes",
+        name: "monitoringAuditing",
+        value: data['monitoringAuditing'],
+        fieldset: {
+          legend: {
+            text: "What arrangements will be put in place for the monitoring and auditing of the conduct of the project?",
+            isPageHeading: false,
+            classes: "govuk-fieldset__legend--m"
+          }
+        },
+        hint: {
+          text: "Select all that apply"
+        },
+        items: [
+          {
+            value: "Remote monitoring by sponsor or delegate",
+            text: "Remote monitoring by sponsor or delegate"
+          },
+          {
+            value: "Self-monitoring by site",
+            text: "Self-monitoring by site"
+          },
+          {
+            value: "On-site monitoring by sponsor or delegate",
+            text: "On-site monitoring by sponsor or delegate"
+          }
+          ]
+        }) }}
+
+
+        <!-- if researchActivities includes Treatment -->
+        {{ govukCharacterCount({
+          name: "dataEfficacy",
+          id: "data-efficacy",
+          value: data['dataEfficacy'],
+          maxlength: 5000,
+          label: {
+            text: "What arrangements will be made to review interim safety and efficacy data from the project?",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: "Describe how any formal Data Monitoring Committee or equivalent bodyies set up to review this data will contribute to this."
+          }
+        }) }}
+
+
+
+        <!-- Always display -->
+        {{ govukCharacterCount({
+          name: "insuranceIndemnity",
+          id: "insurance-indemnity",
+          value: data['insuranceIndemnity'],
+          maxlength: 2000,
+          label: {
+            text: "What arrangements will be made for insurance or indemnity to meet the potential legal liability of the sponsors for harm to participants arising from the management of the project?",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: "Upload all applicable insurance certificates as part of your project submission."
+          }
+        }) }}
+
+        {{ govukFileUpload({
+          id: "insurance-indemnity-upload",
+          name: "insuranceIndemnityUpload",
+          value: data['insuranceIndemnityUpload'],
+          label: {
+            text: "Upload a file"
+          }
+        }) }}
+
+
+
+        <!-- Always display -->
+        {{ govukCharacterCount({
+          name: "insuranceIndemnityCollab",
+          id: "insurance-indemnity-collab",
+          value: data['insuranceIndemnityCollab'],
+          maxlength: 2000,
+          label: {
+            text: "What arrangements will be made for insurance or indemnity to meet the potential legal liability of investigators or collaborators arising from harm to participants in the conduct of the project?",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            html: "
+              <ul>
+                <li>Provide details of any time limits to the cover.</li>
+                <li>Explain the arrangements that would apply if the insurance ceases.</li>
+                <li>Upload all applicable insurance certificates as part of your project submission.</li>
+              </ul>
+            "
+          }
+        }) }}
+        {{ govukFileUpload({
+          id: "insurance-indemnity-collab-upload",
+          name: "insuranceIndemnityCollabUpload",
+          value: data['insuranceIndemnityCollabUpload'],
+          label: {
+            text: "Upload a file"
+          }
+        }) }}
+
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Guidance here?
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p>
+              add guidance to what would lead to cease of insurance (company collapse)
+            </p>
+          </div>
+        </details>
+
+        <!-- Always show -->
+        {{ govukCharacterCount({
+          name: "justifyExcluded",
+          id: "justify-excluded",
+          value: data['justifyExcluded'],
+          maxlength: 2000,
+          label: {
+            text: "Describe and justify which participant groups are excluded from cover under the insurance.",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: "Upload all applicable insurance certificates as part of your project submission."
+          }
+        }) }}
+
+
+        <!-- Always show (is there a condition where this is no??)-->
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "sponsorCompensation",
+          value: data['sponsorCompensation'],
+          fieldset: {
+            legend: {
+              text: "Have sponsors made arrangements for payment of compensation in the event of harm to the participants where no legal liability arises?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: ""
+          },
+          items: [
+            {
+              value: "Yes",
+              text: "Yes"
+            },
+            {
+              value: "No",
+              text: "No"
+            }
+          ]
+        }) }}
+
+        <!-- If sponsorCompensation == Yes -->
+        {{ govukCharacterCount({
+          name: "compensationArrangements",
+          id: "compensation-arrangements",
+          value: data['compensationArrangements'],
+          maxlength: 2000,
+          label: {
+            text: "Give details of the arrangements for compensation.",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+
+
+        <!-- If CTIMP == Yes -->
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "contractOrgResponsibility",
+          value: data['contractOrgResponsibility'],
+          fieldset: {
+            legend: {
+              text: "Have sponsors delegated any site management responsibilities to a Contract Research Organisation or a Clinical Trials Unit?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: ""
+          },
+          items: [
+            {
+              value: "Yes",
+              text: "Yes"
+            },
+            {
+              value: "No",
+              text: "No"
+            }
+          ]
+        }) }}
+
+        <!-- If contractOrgResponsibility == Yes -->
+        {{ govukCharacterCount({
+          name: "compensationArrangements",
+          id: "compensation-arrangements",
+          value: data['compensationArrangements'],
+          maxlength: 2000,
+          label: {
+            text: "Give the name of the Contract Research Organisation or Clinical Trials Unit with site management responsibilities.",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+
+
+        <!-- If CTIMP == Yes -->
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "delegatedActivities",
+          value: data['delegatedActivities'],
+          fieldset: {
+            legend: {
+              text: "Has responsibility for any specific research activities or procedures been delegated to a subcontractor?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: ""
+          },
+          items: [
+            {
+              value: "Yes",
+              text: "Yes"
+            },
+            {
+              value: "No",
+              text: "No"
+            }
+          ]
+        }) }}
+
+        <!-- If delegatedActivities == Yes -->
+        {{ govukCharacterCount({
+          name: "delegateOrgs",
+          id: "delegate-orgs",
+          value: data['delegateOrgs'],
+          maxlength: 2000,
+          label: {
+            text: "Give the names of subcontracted organisations and the proposed oversight arrangements.",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Save as draft",
+            classes: "govuk-button--secondary",
+            href: "/project/start"
+          }) }}
+        </div>
 
       </form>
 
