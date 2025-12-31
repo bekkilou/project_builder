@@ -22,15 +22,270 @@
 
       <form class="form" action="/path/of/next/page" method="post">
 
-        <p>
-          [Insert question content here - see the
-          <a href="https://design-system.service.gov.uk">GOV.UK Design System</a>
-          for examples]
-        </p>
-
-        {{ govukButton({
-          text: "Continue"
+        <!-- Always show -->
+        {{ govukCharacterCount({
+          name: "riskToTeam",
+          id: "risk-to-team",
+          value: data['riskToTeam'],
+          maxlength: 2000,
+          label: {
+            text: "Describe potential risks to the research team in conducting the project and state how these will be managed",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
         }) }}
+
+        <!-- Always show -->
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "CIConflict",
+          value: data['CIConflict'],
+          fieldset: {
+            legend: {
+              text: "Does the Chief Investigator or any other investigator or collaborator have any direct personal involvement (for example, financial, share-holding, personal relationship) in the organisations sponsoring or funding the project that may give rise to a possible conflict of interest?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: ""
+          },
+          items: [
+            {
+              value: "Yes",
+              text: "Yes"
+            },
+            {
+              value: "No",
+              text: "No"
+            }
+          ]
+        }) }}
+
+        <!-- if CIConflict == Yes -->
+        {{ govukCharacterCount({
+          name: "CIConflictDetails",
+          id: "ci-conflict-details",
+          value: data['CIConflictDetails'],
+          maxlength: 2000,
+          label: {
+            text: "Give details of any potential relevant conflict of interest.",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Guidance here?
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p>
+              include details of the individuals and the potential conflict of interest
+            </p>
+            <p>
+              if application is also for MoD, details of who these people are need to be included
+            </p>
+          </div>
+        </details>
+
+
+        <!-- Always show -->
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "CIEthicsCommittee",
+          value: data['CIEthicsCommittee'],
+          fieldset: {
+            legend: {
+              text: "Is the Chief Investigator a member of any NHS Research Ethics Committee?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: ""
+          },
+          items: [
+            {
+              value: "Yes",
+              text: "Yes"
+            },
+            {
+              value: "No",
+              text: "No"
+            }
+          ]
+        }) }}
+
+          <!-- if CIEthicsCommittee == yes -->
+        {{ govukCheckboxes({
+          name: "ethicsCommittees",
+          idPrefix: "ethicsCommittees",
+          classes: "govuk-checkboxes--small govuk-scrollable",
+          fieldset: {
+            legend: {
+              text: "Select one or more Research Ethics Committees",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "Select all that apply."
+          },
+          items: [
+            { value: "East Midlands – Derby", text: "East Midlands – Derby" },
+            { value: "East Midlands – Leicester Central", text: "East Midlands – Leicester Central" },
+            { value: "East Midlands – Leicester South", text: "East Midlands – Leicester South" },
+            { value: "East Midlands – Nottingham 1", text: "East Midlands – Nottingham 1" },
+            { value: "East Midlands – Nottingham 2", text: "East Midlands – Nottingham 2" },
+            { value: "East of England – Cambridgeshire and Hertfordshire", text: "East of England – Cambridgeshire and Hertfordshire" },
+            { value: "East of England – Essex", text: "East of England – Essex" },
+            { value: "East of England – Cambridge Central", text: "East of England – Cambridge Central" },
+            { value: "East of England – Cambridge East", text: "East of England – Cambridge East" },
+            { value: "East of England – Cambridge South", text: "East of England – Cambridge South" },
+            { value: "East of Scotland Research Ethics Service REC 1", text: "East of Scotland Research Ethics Service REC 1" },
+            { value: "East of Scotland Research Ethics Service REC 2", text: "East of Scotland Research Ethics Service REC 2" },
+            { value: "Health and Social Care Research Ethics Committee A (HSC REC A)", text: "Health and Social Care Research Ethics Committee A (HSC REC A)" },
+            { value: "Health and Social Care Research Ethics Committee B (HSC REC B)", text: "Health and Social Care Research Ethics Committee B (HSC REC B)" },
+            { value: "London – Bloomsbury", text: "London – Bloomsbury" },
+            { value: "London – Camden and Kings Cross", text: "London – Camden and Kings Cross" },
+            { value: "London – Central", text: "London – Central" },
+            { value: "London – Brent", text: "London – Brent" },
+            { value: "London – Brighton and Sussex", text: "London – Brighton and Sussex" },
+            { value: "London – Bromley", text: "London – Bromley" },
+            { value: "London – Camberwell St Giles", text: "London – Camberwell St Giles" },
+            { value: "London – Chelsea", text: "London – Chelsea" },
+            { value: "London – City and East", text: "London – City and East" },
+            { value: "London – Dulwich", text: "London – Dulwich" },
+            { value: "London – Fulham", text: "London – Fulham" },
+            { value: "London – Hampstead", text: "London – Hampstead" },
+            { value: "London – Harrow", text: "London – Harrow" },
+            { value: "London – London Bridge", text: "London – London Bridge" },
+            { value: "London – Queen Square", text: "London – Queen Square" },
+            { value: "London – Riverside", text: "London – Riverside" },
+            { value: "London – South East", text: "London – South East" },
+            { value: "London – Stanmore", text: "London – Stanmore" },
+            { value: "London – Surrey", text: "London – Surrey" },
+            { value: "London – Surrey Borders", text: "London – Surrey Borders" },
+            { value: "London – West London & GTAC", text: "London – West London & GTAC" },
+            { value: "London – Westminster", text: "London – Westminster" },
+            { value: "Social Care Research Ethics Committee", text: "Social Care Research Ethics Committee" },
+            { value: "North East – Newcastle and North Tyneside 1", text: "North East – Newcastle and North Tyneside 1" },
+            { value: "North East – Newcastle and North Tyneside 2", text: "North East – Newcastle and North Tyneside 2" },
+            { value: "North East – Tyne & Wear South", text: "North East – Tyne & Wear South" },
+            { value: "North East – York", text: "North East – York" },
+            { value: "North of Scotland Research Ethics Committee 1", text: "North of Scotland Research Ethics Committee 1" },
+            { value: "North of Scotland Research Ethics Committee 2", text: "North of Scotland Research Ethics Committee 2" },
+            { value: "North West – Greater Manchester (GM) Central", text: "North West – Greater Manchester (GM) Central" },
+            { value: "North West – Greater Manchester (GM) East", text: "North West – Greater Manchester (GM) East" },
+            { value: "North West – Greater Manchester (GM) South", text: "North West – Greater Manchester (GM) South" },
+            { value: "North West – Greater Manchester (GM) West", text: "North West – Greater Manchester (GM) West" },
+            { value: "North West – Haydock", text: "North West – Haydock" },
+            { value: "North West – Liverpool Central", text: "North West – Liverpool Central" },
+            { value: "North West – Liverpool East", text: "North West – Liverpool East" },
+            { value: "North West – Preston", text: "North West – Preston" },
+            { value: "Scotland A Research Ethics Committee", text: "Scotland A Research Ethics Committee" },
+            { value: "South Central – Berkshire B", text: "South Central – Berkshire B" },
+            { value: "South Central – Hampshire A", text: "South Central – Hampshire A" },
+            { value: "South Central – Hampshire B", text: "South Central – Hampshire B" },
+            { value: "South Central – Berkshire", text: "South Central – Berkshire" },
+            { value: "South Central – Oxford A", text: "South Central – Oxford A" },
+            { value: "South Central – Oxford B", text: "South Central – Oxford B" },
+            { value: "South Central – Oxford C", text: "South Central – Oxford C" },
+            { value: "South East Scotland Research Ethics Committee 1", text: "South East Scotland Research Ethics Committee 1" },
+            { value: "South East Scotland Research Ethics Committee 2", text: "South East Scotland Research Ethics Committee 2" },
+            { value: "South West – Central Bristol", text: "South West – Central Bristol" },
+            { value: "South West – Cornwall and Plymouth", text: "South West – Cornwall and Plymouth" },
+            { value: "South West – Exeter", text: "South West – Exeter" },
+            { value: "South West – Frenchay", text: "South West – Frenchay" },
+            { value: "Wales REC 1", text: "Wales REC 1" },
+            { value: "Wales REC 2", text: "Wales REC 2" },
+            { value: "Wales REC 3", text: "Wales REC 3" },
+            { value: "Wales REC 4", text: "Wales REC 4" },
+            { value: "Wales REC 5", text: "Wales REC 5" },
+            { value: "Wales REC 6", text: "Wales REC 6" },
+            { value: "Wales REC 7", text: "Wales REC 7" },
+            { value: "West Midlands – Edgbaston", text: "West Midlands – Edgbaston" },
+            { value: "West Midlands – Coventry and Warwickshire", text: "West Midlands – Coventry and Warwickshire" },
+            { value: "West Midlands – Solihull", text: "West Midlands – Solihull" },
+            { value: "West Midlands – South Birmingham", text: "West Midlands – South Birmingham" },
+            { value: "West Midlands – The Black Country", text: "West Midlands – The Black Country" },
+            { value: "West of Scotland REC 1", text: "West of Scotland REC 1" },
+            { value: "West of Scotland REC 3", text: "West of Scotland REC 3" },
+            { value: "West of Scotland REC 4", text: "West of Scotland REC 4" },
+            { value: "West of Scotland REC 5", text: "West of Scotland REC 5" },
+            { value: "Yorkshire and the Humber – Bradford Leeds", text: "Yorkshire and the Humber – Bradford Leeds" },
+            { value: "Yorkshire and the Humber – Leeds East", text: "Yorkshire and the Humber – Leeds East" },
+            { value: "Yorkshire and the Humber – Leeds West", text: "Yorkshire and the Humber – Leeds West" },
+            { value: "Yorkshire and the Humber – Sheffield", text: "Yorkshire and the Humber – Sheffield" },
+            { value: "Yorkshire and the Humber – South Yorkshire", text: "Yorkshire and the Humber – South Yorkshire" }
+          ]
+        }) }}
+
+        <!-- Always show -->
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "personalPayment",
+          value: data['personalPayment'],
+          fieldset: {
+            legend: {
+              text: "Will the Chief Investigator or any other investigator receive any personal payment over and above normal salary, or any other benefits or incentives, for taking part in this project?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: ""
+          },
+          items: [
+            {
+              value: "Yes",
+              text: "Yes"
+            },
+            {
+              value: "No",
+              text: "No"
+            }
+          ]
+        }) }}
+
+
+
+        <!-- if personalPayment == Yes -->
+        {{ govukCharacterCount({
+          name: "personalPaymentYes",
+          id: "personal-payment-yet",
+          value: data['personalPaymentYes'],
+          maxlength: 2000,
+          label: {
+            text: "Give details of payments, benefits or any other incentives.",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Save as draft",
+            classes: "govuk-button--secondary",
+            href: "/project/start"
+          }) }}
+        </div>
 
       </form>
 

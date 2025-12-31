@@ -85,3 +85,11 @@
         margin-bottom: 0
       }
     }
+
+    .govuk-scrollable {
+      max-height: 250px;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      border-top: 2px solid #C3C3C3;
+      border-bottom: 2px solid #C3C3C3;
+    }

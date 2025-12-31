@@ -1,7 +1,7 @@
 {% extends "layouts/main.html" %}
 
 {% block pageTitle %}
-  Project details – {{ serviceName }} – GOV.UK Prototype Kit
+  {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – HRA Prototype
 {% endblock %}
 
 {% block beforeContent %}
@@ -17,7 +17,7 @@
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">
-        Route screening questions
+        {{ data['projectTitle'] or "Project title"}} pre-configuration
       </h1>
 
       <form class="form" action="/my-research/create-project-check" method="post">

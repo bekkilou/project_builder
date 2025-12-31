@@ -22,15 +22,337 @@
 
       <form class="form" action="/path/of/next/page" method="post">
 
-        <p>
-          [Insert question content here - see the
-          <a href="https://design-system.service.gov.uk">GOV.UK Design System</a>
-          for examples]
-        </p>
-
-        {{ govukButton({
-          text: "Continue"
+        {{ govukCheckboxes({
+          classes: "govuk-checkboxes",
+          name: "qualityAssessed",
+          value: data['qualityAssessed'],
+          fieldset: {
+            legend: {
+              text: "How has the quality of the research been assessed?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "Select all that apply"
+          },
+          items: [
+            {
+              value: "Independent external review",
+              text: "Independent external review"
+            },
+            {
+              value: "Review within a company",
+              text: "Review within a company"
+            },
+            {
+              value: "Review within a multi−centre research group",
+              text: "Review within a multi−centre research group"
+            },
+            {
+              value: "Review within the Chief Investigator's institution or host organisation",
+              text: "Review within the Chief Investigator's institution or host organisation"
+            },
+            {
+              value: "Review within the research team",
+              text: "Review within the research team"
+            },
+            {
+              value: "Review by academic colleague or educational supervisor",
+              text: "Review by academic colleague or educational supervisor"
+            },
+            {
+              value: "Other",
+              text: "Other"
+            }
+          ]
         }) }}
+
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Guidance here?
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p>
+              * guidance : geared towards commercial and how it relates to them (not interested in other regulatory reviews - this Q is more about pre-reg review)
+            </p>
+          </div>
+        </details>
+
+        <!-- if qualityAssessed == Other -->
+        {{ govukInput({
+          label: {
+            text: "Give details of how the quality of the research has been assessed",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: "Max 200 character"
+          },
+          id: "quality-assessed-other",
+          name: "qualityAssessedOthe",
+          value: data["qualityAssessedOthe"]
+        }) }}
+
+
+        <!-- Always show -->
+        {{ govukCharacterCount({
+          name: "reviewProcess",
+          id: "review-process",
+          value: data['reviewProcess'],
+          maxlength: 2000,
+          label: {
+            text: "Explain why this review process is appropriate to the nature of the project and if any issues raised by the review have not been addressed.  Give details if the review only relates to part of the project.",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            html: ""
+          }
+        }) }}
+
+
+        <!-- Always show -->
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "primaryAnalysis",
+          value: data['primaryAnalysis'],
+          fieldset: {
+            legend: {
+              text: "What will the primary form of analysis be?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "If both are being used, which is primary?"
+          },
+          items: [
+            {
+              value: "Qualititative",
+              text: "Qualititative"
+            },
+            {
+              value: "Quantitative",
+              text: "Quantitative"
+            }
+          ]
+        }) }}
+
+        <!-- Always show -->
+        {{ govukCharacterCount({
+          name: "methodAnalysis",
+          id: "method-analysis",
+          value: data['methodAnalysis'],
+          maxlength: 2000,
+          label: {
+            text: "Give details of the methods for analysing the data.",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            html: ""
+          }
+        }) }}
+
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Guidance here?
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p>
+              If the research is qualitative we want to know how it will be decided that there is sufficient data
+            </p>
+          </div>
+        </details>
+
+        <!-- if primaryAnalysis == Quant -->
+        {{ govukCheckboxes({
+          classes: "govuk-checkboxes",
+          name: "statAspects",
+          value: data['statAspects'],
+          fieldset: {
+            legend: {
+              text: "How have the statistical aspects of the project been reviewed?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "Select all that apply"
+          },
+          items: [
+            {
+              value: "Review by independent statistician commissioned by funder or sponsor",
+              text: "Review by independent statistician commissioned by funder or sponsor"
+            },
+            {
+              value: "Other review by independent statistician",
+              text: "Other review by independent statistician"
+            },
+            {
+              value: "Review by company statistician",
+              text: "Review by company statistician"
+            },
+            {
+              value: "Review by a statistician within the Chief Investigator’s institution",
+              text: "Review by a statistician within the Chief Investigator’s institution"
+            },
+            {
+              value: "Review by a statistician within the research team or multi−centre group",
+              text: "Review by a statistician within the research team or multi−centre group"
+            },
+            {
+              value: "Review by academic colleague or educational supervisor",
+              text: "Review by academic colleague or educational supervisor"
+            },
+            {
+              value: "Other review by individual with relevant statistical expertise",
+              text: "Other review by individual with relevant statistical expertise"
+            },
+            {
+              value: "No review necessary as only frequencies and associations will be assessed",
+              text: "No review necessary as only frequencies and associations will be assessed"
+            }
+          ]
+        }) }}
+
+
+        <!-- If statAspects != No review necessary -->
+        {{ govukCharacterCount({
+          name: "whoReviewStat",
+          id: "who-review-stat",
+          value: data['whoReviewStat'],
+          maxlength: 2000,
+          label: {
+            text: "Give details of the person or organisation who undertook the statistical review, and how you have addressed their recommendations.",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            html: ""
+          }
+        }) }}
+
+        <!-- if primaryAnalysis == Quant -->
+        <div data-module="moj-add-another">
+          {% call govukFieldset({
+            classes: "moj-add-another__item",
+            legend: {
+              text: "Outcome measure(s)",
+              classes: "moj-add-another__title govuk-fieldset__legend--m",
+              isPageHeading: false
+            }
+          }) %}
+            {{ govukCharacterCount({
+              name: "outcomeMeasure",
+              id: "outcome-measure",
+              value: data['outcomeMeasure'],
+              maxlength: 5000,
+              label: {
+                text: "What is the outcome measure(s) for this project?",
+                classes: "govuk-label--m",
+                isPageHeading: false
+              },
+              hint: {
+                html: "
+                <p>
+                  Include:
+                </p>
+                <ul>
+                    <li>
+                      The name of the outcome (do not use abbreviations)
+                    </li>
+                    <li>
+                      The metric or method of measurement used (be as specific as possible)
+                    </li>
+                    <li>
+                      The timepoint(s) of interest
+                    </li>
+                  </ul>
+                "
+              }
+            }) }}
+          {% endcall %}
+          <div class="moj-button-action">
+            {{ govukButton({
+              text: "Add another measure",
+              classes: "govuk-button--secondary moj-add-another__add-button govuk-!-margin-bottom-4"
+            }) }}
+          </div>
+        </div>
+
+
+        <!-- if primaryAnalysis == Quant -->
+
+        {{ govukCharacterCount({
+          name: "recordNumbers",
+          id: "record-numbers",
+          value: data['recordNumbers'],
+          maxlength: 2000,
+          label: {
+            text: "How many participants, samples, or data records do you plan to study in total?",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: "If there is more than one group, give further details."
+          }
+        }) }}
+
+
+
+        <!-- if primaryAnalysis == Quant -->
+
+        {{ govukCharacterCount({
+          name: "sampleSize",
+          id: "sample-size",
+          value: data['sampleSize'],
+          maxlength: 2000,
+          label: {
+            text: "How was the sample size decided upon? If a formal sample size calculation was used, indicate how this was done, giving sufficient information to justify and reproduce the calculation.",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+
+        <!-- Always display -->
+
+        {{ govukCharacterCount({
+          name: "stopEarlyCriteria",
+          id: "stop-early-critera",
+          value: data['stopEarlyCriteria'],
+          maxlength: 2000,
+          label: {
+            text: "What are the criteria for electively stopping the project early?",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Save as draft",
+            classes: "govuk-button--secondary",
+            href: "/project/start"
+          }) }}
+        </div>
+
 
       </form>
 
