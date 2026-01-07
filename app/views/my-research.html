@@ -42,6 +42,71 @@
         <a class="govuk-link card__link govuk-link--no-visited-state" href="/my-research/project-scope-participants" onclick="showAlert()">{{ data['projectTitle'] }}</a>
     </h2>
     <p class="govuk-body card__description">{{ data['fullProjectTitle'] }}</p>
+  {{ govukTaskList({
+  idPrefix: "project-tasks",
+  items: [
+    {
+      title: {
+        text: "Basic details"
+      },
+      href: "#",
+      status: {
+        text: "Completed"
+      }
+    },
+    {
+      title: {
+        text: "Project sponsor"
+      },
+      href: "#",
+      status: {
+        tag: {
+          text: "Incomplete",
+          classes: "govuk-tag--blue"
+        }
+      }
+    },
+    {
+      title: {
+        text: "Project team"
+      },
+      hint: {
+        text: ""
+      },
+      href: "#",
+      status: {
+        tag: {
+          text: "Incomplete",
+          classes: "govuk-tag--blue"
+        }
+      }
+    },
+    {
+      title: {
+        text: "Project scope"
+      },
+      href: "#",
+      status: {
+        tag: {
+          text: "Incomplete",
+          classes: "govuk-tag--blue"
+        }
+      }
+    },
+    {
+      title: {
+        text: "Approvals pathways"
+      },
+      href: "#",
+      status: {
+        tag: {
+          text: "Incomplete",
+          classes: "govuk-tag--blue"
+        }
+      }
+    }
+  ]
+}) }}
 </div>
 
 {% else %}
