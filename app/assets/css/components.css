@@ -117,6 +117,7 @@
 }
 .govuk-tabs__list-item--selected{
     margin-top: 0 !important;
+    border: 0 !important;
     border-bottom: 2px solid #1d70b8 !important;
 }
 .govuk-tabs__list-item--selected .govuk-tabs__tab{
