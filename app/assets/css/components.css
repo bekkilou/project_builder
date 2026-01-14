@@ -113,10 +113,13 @@
     color: #1d70b8 !important;
     text-decoration: none !important;
     margin: 0 10px !important;
+    padding-bottom: 13px !important;
 }
 .govuk-tabs__list-item--selected{
     margin-top: 0 !important;
-    color: #0b0c0c !important;
     border-bottom: 2px solid #1d70b8 !important;
+}
+.govuk-tabs__list-item--selected .govuk-tabs__tab{
+    color: #0b0c0c !important;
     margin-left: 0 !important;
 }
