@@ -225,26 +225,26 @@
             rows: [
               {
                 key: {
-                  text: "Dummy content"
+                  text: "Sponsor reference (optional)"
                 },
                 value: {
-                  text: "Dummy content"
+                  text: "Reference value"
                 }
               },
               {
                 key: {
-                  text: "Dummy content"
+                  text: "Date (optional)"
                 },
                 value: {
-                  text: 'Dummy content'
+                  text: '29/09/2025'
                 }
               },
               {
                 key: {
-                  text: "Dummy content"
+                  text: "Brief summary of changes"
                 },
                 value: {
-                  text: 'Dummy content'
+                  text: 'Change of proposed end date and project titles'
                 }
               }
             ]
@@ -254,69 +254,121 @@
           {{ govukSummaryList({
             card: {
               title: {
-                text: "Sponsor details"
-              }
+                text: "Change 1 - {Insert answer from ‘Select area of change'}"
+              },
+              actions: {
+                items: [
+                {
+                  href: "#",
+                  text: "View details"
+                }
+              ]
+            }
             },
             rows: [
               {
                 key: {
-                  text: "Dummy content"
+                  text: "Specific change"
                 },
                 value: {
-                  text: "Dummy content"
+                  text: "{Insert answer from ‘Select specific change’}"
                 }
               },
               {
                 key: {
-                  text: "Dummy content"
+                  text: "Modification type"
                 },
                 value: {
-                  text: 'Dummy content'
+                  text: '{Substantial/Modification of an important detail/Minor modification}'
                 }
               },
               {
                 key: {
-                  text: "Dummy content"
+                  text: "Category"
                 },
                 value: {
-                  text: 'Dummy content'
+                  text: '{A > B/C > B > C > New site > N/A}'
+                }
+              },
+              {
+                key: {
+                  text: "Review type"
+                },
+                value: {
+                  text: '{No review required/Review Required}'
                 }
               }
             ]
           }) }}
         </div>
         <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="doccies">
-          {{ govukSummaryList({
-            card: {
-              title: {
-                text: "Sponsor details"
-              }
+          {{ govukTable({
+            attributes: {
+              "data-module": "moj-sortable-table"
             },
-            rows: [
+            caption: "",
+            head: [
               {
-                key: {
-                  text: "Dummy content"
-                },
-                value: {
-                  text: "Dummy content"
+                text: "Document type",
+                attributes: {
+                  "aria-sort": "ascending"
                 }
               },
               {
-                key: {
-                  text: "Dummy content"
-                },
-                value: {
-                  text: 'Dummy content'
+                text: "Document name",
+                attributes: {
+                  "aria-sort": "none"
                 }
               },
               {
-                key: {
-                  text: "Dummy content"
-                },
-                value: {
-                  text: 'Dummy content'
+                text: "File name",
+                attributes: {
+                  "aria-sort": "none"
                 }
+              },
+              {
+                text: "Document version",
+                attributes: {
+                  "aria-sort": "none"
+                },
+                format: "numeric"
+              },
+              {
+                text: "Document date",
+                attributes: {
+                  "aria-sort": "none"
+                },
+                format: "numeric"
+              },
+              {
+                text: "Actionn",
+                attributes: {
+                  "aria-sort": "none"
+                },
+                format: "numeric"
               }
+            ],
+            rows: [
+              [
+                {
+                  text: "Protocol"
+                },
+                {
+                  text: "ASSESS-meso Protocol"
+                },
+                {
+                  text: "ASSESS-meso-Protocol02.doc"
+                },
+                {
+                  text: "AM1234567"
+                },
+                {
+                  text: "4 June 2025"
+                },
+                {
+                  text: "View details"
+                }
+              ]
             ]
           }) }}
         </div>
@@ -324,7 +376,7 @@
           {{ govukSummaryList({
             card: {
               title: {
-                text: "Sponsor details"
+                text: "History"
               }
             },
             rows: [
