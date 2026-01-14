@@ -98,3 +98,6 @@
       padding: 20px;
       margin-bottom: 15px;
     }
+    .govuk-accordion__show-all{
+      display: none;
+    }

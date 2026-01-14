@@ -5,17 +5,24 @@
 {% block content %}
 
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
+  <div class="govuk-grid-column-one-third">
 
 <!--    {% include "govuk-prototype-kit/includes/homepage-top.njk" %}
 -->
     <h1 class="govuk-heading-xl">
       {{ serviceName }}
     </h1>
-    <h2 class="govuk-heading-m"><a href="/my-account">Create initial project</a></h2>
-    <h2 class="govuk-heading-m"><a href="/my-research/project-scope-participants">Configure pathway</a></h2>
-    <h2 class="govuk-heading-m"><a href="/project/start">Project task list & question sets</a></h2>
+    <h2>Plan & Prepare prototypes</h2>
+    <h3 class="govuk-heading-m"><a href="/my-account">Create initial project</a></h3>
+    <h3 class="govuk-heading-m"><a href="/my-research/project-scope-participants">Configure pathway</a></h3>
+    <h3 class="govuk-heading-m"><a href="/project/start">Project task list & question sets</a></h3>
   <!--  {% include "govuk-prototype-kit/includes/homepage-bottom.njk" %} -->
+  </div>
+  <div class="govuk-grid-column-one-third">
+      <h2>RFI Loop component examples</h2>
+      <h3 class="govuk-heading-m"><a href="/rfi-loop/na">RFI No additional interaction</a></h3>
+      <h3 class="govuk-heading-m"><a href="/rfi-loop/accordion">RFI accordion</a></h3>
+      <h3 class="govuk-heading-m"><a href="/rfi-loop/tabs">RFI tabs</a></h3>
   </div>
 </div>
 

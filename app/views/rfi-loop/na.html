@@ -1,0 +1,359 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  RFI Loop No Additional Interaction – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+{{ govukBreadcrumbs({
+  items: [
+    {
+      text: "My account",
+      href: "#"
+    },
+    {
+      text: "Approvals",
+      href: "#"
+    },
+    {
+      text: "My changes to review",
+      href: "#"
+    }
+  ]
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <p>
+        UK study-wide governance review
+        </p>
+      <h1 class="govuk-heading-l">
+        ASESS-dir
+      </h1>
+
+      {{ govukSummaryList({
+        rows: [
+          {
+            key: {
+              text: "Short project title"
+            },
+            value: {
+              html: '<a href="#">ASSESS-dir</a>'
+            }
+          },
+          {
+            key: {
+              text: "Modification ID"
+            },
+            value: {
+              text: "220360/3"
+            }
+          },
+          {
+            key: {
+              text: "Audit"
+            },
+            value: {
+              html: '<a href="#">View modification history</a>'
+            }
+          },
+          {
+            key: {
+              text: "Study-wide reviewer"
+            },
+            value: {
+              text: "Brenda Yilmaz"
+            }
+          },
+          {
+            key: {
+              text: "Status"
+            },
+            value: {
+              html: '<strong class="govuk-tag">
+                With review body
+              </strong>'
+            }
+          }
+        ]
+      }) }}
+
+      <h2 class="govuk-heading-m">Summary details</h2>
+      {{ govukSummaryList({
+        card: {
+          title: {
+            text: "Ranking"
+          }
+        },
+        rows: [
+          {
+            key: {
+              text: "Modification type"
+            },
+            value: {
+              text: "{Substantial/Modification of an important detail/Minor modification}"
+            }
+          },
+          {
+            key: {
+              text: "Category"
+            },
+            value: {
+              text: '{A > B/C > B > C > New site > N/A }'
+            }
+          },
+          {
+            key: {
+              text: "Review type"
+            },
+            value: {
+              text: '{No review required/Review required}'
+            }
+          }
+        ]
+      }) }}
+    </div>
+    <div class="govuk-grid-column-full">
+      <h2 class="govuk-heading-m">Request for further information</h2>
+      {{ govukSummaryList({
+        card: {
+          title: {
+            text: "Request for more information and response"
+          }
+        },
+        rows: [
+          {
+            key: {
+              text: "Reason 1"
+            },
+            value: {
+              html: '<p>
+                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate.
+                </p>'
+            }
+          },
+          {
+            key: {
+              text: "Response 1"
+            },
+            value: {
+              html: '<p>
+                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate.
+                </p>'
+            }
+          }
+        ]
+      }) }}
+      {{ govukSummaryList({
+        card: {
+          title: {
+            text: "Request for more information and response"
+          }
+        },
+        rows: [
+          {
+            key: {
+              text: "Reason 2"
+            },
+            value: {
+              html: '<p>
+                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate.
+                </p>'
+            }
+          },
+          {
+            key: {
+              text: "Response 2"
+            },
+            value: {
+              html: '<p>
+                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate.
+                </p>'
+            }
+          }
+        ]
+      }) }}
+
+      <div class="govuk-tabs" data-module="govuk-tabs">
+        <h2 class="govuk-tabs__title">
+          Contents
+        </h2>
+        <ul class="govuk-tabs__list">
+          <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab" href="#sponsor-deets">
+              Sponsor details
+            </a>
+          </li>
+          <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+            <a class="govuk-tabs__tab" href="#mod-deets">
+              Modification details
+            </a>
+          </li>
+          <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab" href="#doccies">
+              Documents
+            </a>
+          </li>
+          <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab" href="#herstory">
+              History
+            </a>
+          </li>
+        </ul>
+        <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="sponsor-deets">
+          {{ govukSummaryList({
+            card: {
+              title: {
+                text: "Sponsor details"
+              }
+            },
+            rows: [
+              {
+                key: {
+                  text: "Dummy content"
+                },
+                value: {
+                  text: "Dummy content"
+                }
+              },
+              {
+                key: {
+                  text: "Dummy content"
+                },
+                value: {
+                  text: 'Dummy content'
+                }
+              },
+              {
+                key: {
+                  text: "Dummy content"
+                },
+                value: {
+                  text: 'Dummy content'
+                }
+              }
+            ]
+          }) }}
+        </div>
+        <div class="govuk-tabs__panel" id="mod-deets">
+          {{ govukSummaryList({
+            card: {
+              title: {
+                text: "Sponsor details"
+              }
+            },
+            rows: [
+              {
+                key: {
+                  text: "Dummy content"
+                },
+                value: {
+                  text: "Dummy content"
+                }
+              },
+              {
+                key: {
+                  text: "Dummy content"
+                },
+                value: {
+                  text: 'Dummy content'
+                }
+              },
+              {
+                key: {
+                  text: "Dummy content"
+                },
+                value: {
+                  text: 'Dummy content'
+                }
+              }
+            ]
+          }) }}
+        </div>
+        <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="doccies">
+          {{ govukSummaryList({
+            card: {
+              title: {
+                text: "Sponsor details"
+              }
+            },
+            rows: [
+              {
+                key: {
+                  text: "Dummy content"
+                },
+                value: {
+                  text: "Dummy content"
+                }
+              },
+              {
+                key: {
+                  text: "Dummy content"
+                },
+                value: {
+                  text: 'Dummy content'
+                }
+              },
+              {
+                key: {
+                  text: "Dummy content"
+                },
+                value: {
+                  text: 'Dummy content'
+                }
+              }
+            ]
+          }) }}
+        </div>
+        <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="herstory">
+          {{ govukSummaryList({
+            card: {
+              title: {
+                text: "Sponsor details"
+              }
+            },
+            rows: [
+              {
+                key: {
+                  text: "Dummy content"
+                },
+                value: {
+                  text: "Dummy content"
+                }
+              },
+              {
+                key: {
+                  text: "Dummy content"
+                },
+                value: {
+                  text: 'Dummy content'
+                }
+              },
+              {
+                key: {
+                  text: "Dummy content"
+                },
+                value: {
+                  text: 'Dummy content'
+                }
+              }
+            ]
+          }) }}
+        </div>
+      </div>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-m">Next steps</h2>
+      <p>
+          When you've completed your review of all the information on this page, continue to the next step where you'll enter the review outcome.
+      </p>
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+    </div>
+  </div>
+
+{% endblock %}
