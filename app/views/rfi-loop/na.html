@@ -213,26 +213,26 @@
             rows: [
               {
                 key: {
-                  text: "Dummy content"
+                  text: "Sponsor reference (optional)"
                 },
                 value: {
-                  text: "Dummy content"
+                  text: "Reference value"
                 }
               },
               {
                 key: {
-                  text: "Dummy content"
+                  text: "Date (optional)"
                 },
                 value: {
-                  text: 'Dummy content'
+                  text: '29/09/2025'
                 }
               },
               {
                 key: {
-                  text: "Dummy content"
+                  text: "Brief summary of changes"
                 },
                 value: {
-                  text: 'Dummy content'
+                  text: 'Change of proposed end date and project titles'
                 }
               }
             ]
@@ -242,32 +242,48 @@
           {{ govukSummaryList({
             card: {
               title: {
-                text: "Sponsor details"
-              }
+                text: "Change 1 - {Insert answer from ‘Select area of change'}"
+              },
+              actions: {
+                items: [
+                {
+                  href: "#",
+                  text: "View details"
+                }
+              ]
+            }
             },
             rows: [
               {
                 key: {
-                  text: "Dummy content"
+                  text: "Specific change"
                 },
                 value: {
-                  text: "Dummy content"
+                  text: "{Insert answer from ‘Select specific change’}"
                 }
               },
               {
                 key: {
-                  text: "Dummy content"
+                  text: "Modification type"
                 },
                 value: {
-                  text: 'Dummy content'
+                  text: '{Substantial/Modification of an important detail/Minor modification}'
                 }
               },
               {
                 key: {
-                  text: "Dummy content"
+                  text: "Category"
                 },
                 value: {
-                  text: 'Dummy content'
+                  text: '{A > B/C > B > C > New site > N/A}'
+                }
+              },
+              {
+                key: {
+                  text: "Review type"
+                },
+                value: {
+                  text: '{No review required/Review Required}'
                 }
               }
             ]
