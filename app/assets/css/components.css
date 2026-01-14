@@ -106,10 +106,10 @@
     border: none;
 }
 .govuk-tabs__list-item{
-    padding: 0;
-    background: none;
+    padding: 0 !important;
+    background: none !important;
 }
 .govuk-tabs__tab{
-    color: #1d70b8;
-    text-decoration: none;
+    color: #1d70b8 !important;
+    text-decoration: none !important;
 }
