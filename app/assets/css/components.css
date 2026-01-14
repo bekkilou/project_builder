@@ -101,3 +101,7 @@
     .govuk-accordion__show-all{
       display: none;
     }
+.govuk-frontend-supported .govuk-tabs__panel{
+    padding: 20px 0 20px 0;
+    border: none;
+}
