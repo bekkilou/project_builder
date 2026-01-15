@@ -9,167 +9,363 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-xl">
-        {{ data['project-title'] or "Project" }} application
+        {{ data['project-title'] or "Project" }} overview
       </h1>
 
-      <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Application not started</h2>
+      <!-- <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Application not started</h2>-->
+      {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
-      <h2 class="govuk-heading-m">Add sponsor organisation</h2>
-
-      <h2 class="govuk-heading-m">Set up team</h2>
-
-    <!--  <p class="govuk-body govuk-!-margin-bottom-7">You have completed 3 of 8 sections.</p> -->
-      <h2 class="govuk-heading-m">Fill in application</h2>
-      <ul class="govuk-task-list">
-        <li class="govuk-task-list__item govuk-task-list__item--with-link">
-          <div class="govuk-task-list__name-and-hint">
-            <a class="govuk-link govuk-task-list__link" href="/project/project-information" aria-describedby="project-informatoin-status">
-              Project information
-            </a>
-          </div>
-          <div class="govuk-task-list__status" id="project-information-status">
-            <strong class="govuk-tag govuk-tag--grey">
-              Not started
-            </strong>
-          </div>
-        </li>
-        <li class="govuk-task-list__item govuk-task-list__item--with-link">
-          <div class="govuk-task-list__name-and-hint">
-            <a class="govuk-link govuk-task-list__link" href="/project/public-involvement" aria-describedby="public-involvement-status">
-              Public involvement
-            </a>
-          </div>
-          <div class="govuk-task-list__status" id="public-involvement-status">
-            <strong class="govuk-tag govuk-tag--grey">
-              Not started
-            </strong>
-          </div>
-        </li>
-        <li class="govuk-task-list__item govuk-task-list__item--with-link">
-          <div class="govuk-task-list__name-and-hint">
-            <a class="govuk-link govuk-task-list__link" href="/project/research-design" aria-describedby="research-design-hint research-design-status">
-              Research design and methodology
-            </a>
-            <div id="research-design-hint" class="govuk-task-list__hint">
-              Some description of the section
-            </div>
-          </div>
-          <div class="govuk-task-list__status" id="research-design-status">
-            <strong class="govuk-tag govuk-tag--grey">
-              Not started
-            </strong>
-          </div>
-        </li>
-        <li class="govuk-task-list__item govuk-task-list__item--with-link">
-          <div class="govuk-task-list__name-and-hint">
-            <a class="govuk-link govuk-task-list__link" href="/project/participants" aria-describedby="participants-status">
-              Participants
-            </a>
-          </div>
-          <div class="govuk-task-list__status" id="participants-status">
-            <strong class="govuk-tag govuk-tag--grey">
-              Not started
-            </strong>
-          </div>
-        </li>
-        <li class="govuk-task-list__item govuk-task-list__item--with-link">
-          <div class="govuk-task-list__name-and-hint">
-            <a class="govuk-link govuk-task-list__link" href="/project/research-activities" aria-describedby="research-activities-status">
-              Research activities
-            </a>
-          </div>
-          <div class="govuk-task-list__status" id="research-activities-status">
-            <strong class="govuk-tag govuk-tag--grey">
-              Not started
-            </strong>
-          </div>
-        </li>
-        <li class="govuk-task-list__item govuk-task-list__item--with-link">
-          <div class="govuk-task-list__name-and-hint">
-            <a class="govuk-link govuk-task-list__link" href="/project/consent" aria-describedby="consent-status">
-              Consent
-            </a>
-          </div>
-          <div class="govuk-task-list__status" id="consent-status">
-            <strong class="govuk-tag govuk-tag--grey">
-              Not started
-            </strong>
-          </div>
-        </li>
-        <li class="govuk-task-list__item govuk-task-list__item--with-link">
-          <div class="govuk-task-list__name-and-hint">
-            <a class="govuk-link govuk-task-list__link" href="/project/risks-and-conflicts" aria-describedby="risks-status">
-              Risks and conflicts of interest
-            </a>
-          </div>
-          <div class="govuk-task-list__status" id="risks-status">
-            <strong class="govuk-tag govuk-tag--grey">
-              Not started
-            </strong>
-          </div>
-        </li>
-        <li class="govuk-task-list__item govuk-task-list__item--with-link">
-          <div class="govuk-task-list__name-and-hint">
-            <a class="govuk-link govuk-task-list__link" href="/project/ethical-issues" aria-describedby="ethics-status">
-              Summary of ethics
-            </a>
-          </div>
-          <div class="govuk-task-list__status" id="ethics-status">
-            <strong class="govuk-tag govuk-tag--grey">
-              Not started
-            </strong>
-          </div>
-        </li>
-        <li class="govuk-task-list__item govuk-task-list__item--with-link">
-          <div class="govuk-task-list__name-and-hint">
-            <a class="govuk-link govuk-task-list__link" href="/project/research-analysis" aria-describedby="research-analysis-status">
-              Research analysis
-            </a>
-          </div>
-          <div class="govuk-task-list__status" id="research-analysis-status">
-            <strong class="govuk-tag govuk-tag--grey">
-              Not started
-            </strong>
-          </div>
-        </li>
-        <li class="govuk-task-list__item govuk-task-list__item--with-link">
-          <div class="govuk-task-list__name-and-hint">
-            <a class="govuk-link govuk-task-list__link" href="/project/governance" aria-describedby="governance-status">
-              Governance and management
-            </a>
-          </div>
-          <div class="govuk-task-list__status" id="governance-status">
-            <strong class="govuk-tag govuk-tag--grey">
-              Not started
-            </strong>
-          </div>
-        </li>
-        <li class="govuk-task-list__item govuk-task-list__item--with-link">
-          <div class="govuk-task-list__name-and-hint">
-            <a class="govuk-link govuk-task-list__link" href="/project/transparency" aria-describedby="transparency-status">
-              Transparency
-            </a>
-          </div>
-          <div class="govuk-task-list__status" id="transparency-status">
-            <strong class="govuk-tag govuk-tag--grey">
-              Not started
-            </strong>
-          </div>
-        </li>
-        <li class="govuk-task-list__item govuk-task-list__item--with-link">
-          <div class="govuk-task-list__name-and-hint">
-            <a class="govuk-link govuk-task-list__link" href="/project/confidentiality" aria-describedby="confidentiality-status">
-              Confidentiality and information governance
-            </a>
-          </div>
-          <div class="govuk-task-list__status" id="confidentiality-status">
-            <strong class="govuk-tag govuk-tag--grey">
-              Not started
-            </strong>
-          </div>
-        </li>
-      </ul>
+      {{ govukInsetText({
+        html: '<strong>IRAS ID:</strong> {generated ID} <br />
+        <strong>Short project title</strong> ASSESS-meso'
+      }) }}
     </div>
+    <div class="govuk-grid-column-one-third" style="text-align: right;">
+      <strong class="govuk-tag">
+        Status
+      </strong>
+    </div>
+    <div class="govuk-grid-column-full">
+      <div class="govuk-tabs" data-module="govuk-tabs">
+        <h2 class="govuk-tabs__title">
+          Contents
+        </h2>
+        <ul class="govuk-tabs__list">
+          <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab" href="#project-details">
+              Project details
+            </a>
+          </li>
+          <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+            <a class="govuk-tabs__tab" href="#project-team">
+              Project team
+            </a>
+          </li>
+          <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab" href="#project-sponsor">
+              Project-sponsor
+            </a>
+          </li>
+          <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab" href="#research-location">
+              Research location(s)
+            </a>
+          </li>
+          <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab" href="#project-documents">
+              Project documents
+            </a>
+          </li>
+          <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab" href="#project-history">
+              Project history
+            </a>
+          </li>
+        </ul>
+        <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="project-details">
+          {{ govukSummaryList({
+            rows: [
+              {
+                key: {
+                  text: "IRAS ID"
+                },
+                value: {
+                  text: "{generated IRAS ID}"
+                }
+              },
+              {
+                key: {
+                  text: "Short project title"
+                },
+                value: {
+                  text: "ASSESS-meso"
+                }
+              },
+              {
+                key: {
+                  text: "Full project title"
+                },
+                value: {
+                  html: "A prospective observational cohort study collecting data on demographics, symptoms and biomarkers in people with mesothelioma that wil provide a resource for future trials"
+                }
+              }
+            ]
+          }) }}
+          <ul class="govuk-task-list">
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                <a class="govuk-link govuk-task-list__link" href="/project/project-information" aria-describedby="project-informatoin-status">
+                  Project information
+                </a>
+              </div>
+              <div class="govuk-task-list__status" id="project-information-status">
+                <strong class="govuk-tag govuk-tag--grey">
+                  Not started
+                </strong>
+              </div>
+            </li>
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                <a class="govuk-link govuk-task-list__link" href="/project/public-involvement" aria-describedby="public-involvement-status">
+                  Public involvement
+                </a>
+              </div>
+              <div class="govuk-task-list__status" id="public-involvement-status">
+                <strong class="govuk-tag govuk-tag--grey">
+                  Not started
+                </strong>
+              </div>
+            </li>
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                <a class="govuk-link govuk-task-list__link" href="/project/research-design" aria-describedby="research-design-hint research-design-status">
+                  Research design and methodology
+                </a>
+                <div id="research-design-hint" class="govuk-task-list__hint">
+                  Some description of the section
+                </div>
+              </div>
+              <div class="govuk-task-list__status" id="research-design-status">
+                <strong class="govuk-tag govuk-tag--grey">
+                  Not started
+                </strong>
+              </div>
+            </li>
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                <a class="govuk-link govuk-task-list__link" href="/project/participants" aria-describedby="participants-status">
+                  Participants
+                </a>
+              </div>
+              <div class="govuk-task-list__status" id="participants-status">
+                <strong class="govuk-tag govuk-tag--grey">
+                  Not started
+                </strong>
+              </div>
+            </li>
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                <a class="govuk-link govuk-task-list__link" href="/project/research-activities" aria-describedby="research-activities-status">
+                  Research activities
+                </a>
+              </div>
+              <div class="govuk-task-list__status" id="research-activities-status">
+                <strong class="govuk-tag govuk-tag--grey">
+                  Not started
+                </strong>
+              </div>
+            </li>
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                <a class="govuk-link govuk-task-list__link" href="/project/consent" aria-describedby="consent-status">
+                  Consent
+                </a>
+              </div>
+              <div class="govuk-task-list__status" id="consent-status">
+                <strong class="govuk-tag govuk-tag--grey">
+                  Not started
+                </strong>
+              </div>
+            </li>
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                <a class="govuk-link govuk-task-list__link" href="/project/risks-and-conflicts" aria-describedby="risks-status">
+                  Risks and conflicts of interest
+                </a>
+              </div>
+              <div class="govuk-task-list__status" id="risks-status">
+                <strong class="govuk-tag govuk-tag--grey">
+                  Not started
+                </strong>
+              </div>
+            </li>
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                <a class="govuk-link govuk-task-list__link" href="/project/ethical-issues" aria-describedby="ethics-status">
+                  Summary of ethics
+                </a>
+              </div>
+              <div class="govuk-task-list__status" id="ethics-status">
+                <strong class="govuk-tag govuk-tag--grey">
+                  Not started
+                </strong>
+              </div>
+            </li>
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                <a class="govuk-link govuk-task-list__link" href="/project/research-analysis" aria-describedby="research-analysis-status">
+                  Research analysis
+                </a>
+              </div>
+              <div class="govuk-task-list__status" id="research-analysis-status">
+                <strong class="govuk-tag govuk-tag--grey">
+                  Not started
+                </strong>
+              </div>
+            </li>
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                <a class="govuk-link govuk-task-list__link" href="/project/governance" aria-describedby="governance-status">
+                  Governance and management
+                </a>
+              </div>
+              <div class="govuk-task-list__status" id="governance-status">
+                <strong class="govuk-tag govuk-tag--grey">
+                  Not started
+                </strong>
+              </div>
+            </li>
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                <a class="govuk-link govuk-task-list__link" href="/project/transparency" aria-describedby="transparency-status">
+                  Transparency
+                </a>
+              </div>
+              <div class="govuk-task-list__status" id="transparency-status">
+                <strong class="govuk-tag govuk-tag--grey">
+                  Not started
+                </strong>
+              </div>
+            </li>
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                <a class="govuk-link govuk-task-list__link" href="/project/confidentiality" aria-describedby="confidentiality-status">
+                  Confidentiality and information governance
+                </a>
+              </div>
+              <div class="govuk-task-list__status" id="confidentiality-status">
+                <strong class="govuk-tag govuk-tag--grey">
+                  Not started
+                </strong>
+              </div>
+            </li>
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                <a class="govuk-link govuk-task-list__link" href="/project/ionising-radiation" aria-describedby="confidentiality-status">
+                  Ionising radiation
+                </a>
+              </div>
+              <div class="govuk-task-list__status" id="confidentiality-status">
+                <strong class="govuk-tag govuk-tag--grey">
+                  Not started
+                </strong>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+        <div class="govuk-tabs__panel" id="project-team">
+        </div>
+        <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="project-documents">
+          {{ govukTable({
+            attributes: {
+              "data-module": "moj-sortable-table"
+            },
+            caption: "",
+            head: [
+              {
+                text: "Document type",
+                attributes: {
+                  "aria-sort": "ascending"
+                }
+              },
+              {
+                text: "Document name",
+                attributes: {
+                  "aria-sort": "none"
+                }
+              },
+              {
+                text: "File name",
+                attributes: {
+                  "aria-sort": "none"
+                }
+              },
+              {
+                text: "Document version",
+                attributes: {
+                  "aria-sort": "none"
+                },
+                format: "numeric"
+              },
+              {
+                text: "Document date",
+                attributes: {
+                  "aria-sort": "none"
+                },
+                format: "numeric"
+              },
+              {
+                text: "Actionn",
+                attributes: {
+                  "aria-sort": "none"
+                },
+                format: "numeric"
+              }
+            ],
+            rows: [
+              [
+                {
+                  text: "Protocol"
+                },
+                {
+                  text: "ASSESS-meso Protocol"
+                },
+                {
+                  text: "ASSESS-meso-Protocol02.doc"
+                },
+                {
+                  text: "AM1234567"
+                },
+                {
+                  text: "4 June 2025"
+                },
+                {
+                  text: "View details"
+                }
+              ]
+            ]
+          }) }}
+        </div>
+        <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="research-locations">
+          {{ govukSummaryList({
+            card: {
+              title: {
+                text: "History"
+              }
+            },
+            rows: [
+              {
+                key: {
+                  text: "Dummy content"
+                },
+                value: {
+                  text: "Dummy content"
+                }
+              },
+              {
+                key: {
+                  text: "Dummy content"
+                },
+                value: {
+                  text: 'Dummy content'
+                }
+              },
+              {
+                key: {
+                  text: "Dummy content"
+                },
+                value: {
+                  text: 'Dummy content'
+                }
+              }
+            ]
+          }) }}
+        </div>
+      </div>
+
+    </div>
+
   </div>
 
 {% endblock %}
