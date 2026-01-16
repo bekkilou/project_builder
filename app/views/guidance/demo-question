@@ -1,0 +1,108 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – HRA Prototype
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        {{ data['projectTitle'] or "Project title"}} Configuration
+      </h1>
+
+      <form class="form" action="/my-research/project-scope-participant-consent" method="post">
+
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "isClinical",
+          value: data["isClinical"],
+          fieldset: {
+            legend: {
+              text: "Is this project a clinical investigation or other study of a medical device (including digital technology)?",
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "Yes",
+              text: "Yes"
+            },
+            {
+              value: "No",
+              text: "No"
+            }
+          ]
+        }) }}
+
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "isIonising",
+          value: data["isIonising"],
+          fieldset: {
+            legend: {
+              text: "Does the project involve exposing participants to any ionising radiation?",
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "Yes",
+              text: "Yes"
+            },
+            {
+              value: "No",
+              text: "No"
+            }
+          ]
+        }) }}
+
+
+            {{ govukRadios({
+              classes: "govuk-radios--inline",
+              name: "isBioSample",
+              value: data["isBioSample"],
+              fieldset: {
+                legend: {
+                  text: "Will you be taking or using any human biological samples?",
+                  classes: "govuk-fieldset__legend--m"
+                }
+              },
+              items: [
+                {
+                  value: "Yes",
+                  text: "Yes"
+                },
+                {
+                  value: "No",
+                  text: "No"
+                }
+              ]
+            }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Save as draft",
+            classes: "govuk-button--secondary",
+            href: "/my-research"
+          }) }}
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}
