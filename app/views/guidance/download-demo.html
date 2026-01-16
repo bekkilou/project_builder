@@ -1,0 +1,72 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Content page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-xl">Guidance</span>
+      <h1 class="govuk-heading-l">
+        Involving patients in your research
+      </h1>
+
+      <p>
+        Guidance on involving patients in your research
+      </p>
+      <div class="gem-c-metadata">
+        <dl class="gem-c-metadata__list">
+            <dt class="gem-c-metadata__term">From:</dt>
+            <dd class="gem-c-metadata__definition" data-module="gem-toggle" data-gem-toggle-module-started="true">
+              <a href="/government/organisations/ministry-of-defence">Ministry of Defence</a>, <a href="/government/organisations/cabinet-office">Cabinet Office</a>, <a href="/government/organisations/department-for-business-energy-and-industrial-strategy">Department for Business, Energy &amp; Industrial Strategy</a>, <a href="/government/organisations/foreign-commonwealth-office">Foreign &amp; Commonwealth Office</a> and <a href="/government/people/william-hague">The Rt Hon William Hague</a>
+        <div class="gem-c-metadata__toggle-wrap govuk-!-display-none-print">
+          <a href="#" class="gem-c-metadata__definition-link govuk-!-display-none-print" data-controls="toggle-from-3caf28b9" data-expanded="false" data-toggled-text="Show fewer" role="button" aria-controls="toggle-from-3caf28b9" aria-expanded="false">
+              Show 3 more
+          </a>
+        </div>
+        <span id="toggle-from-3caf28b9" class="gem-c-metadata__toggle-items js-hidden" aria-live="polite" role="region"><a href="/government/organisations/department-for-environment-food-rural-affairs">Department for Environment, Food &amp; Rural Affairs</a>, <a href="/government/organisations/department-for-work-pensions">Department for work and pensions</a>, and <a href="/government/organisations/foreign-commonwealth-office">Foreign and Commonwealth Office</a></span>
+
+            </dd>
+            <dt class="gem-c-metadata__term">Part of:</dt>
+            <dd class="gem-c-metadata__definition" data-module="gem-toggle" data-gem-toggle-module-started="true">
+              <a href="/government/topics/energy">Energy</a> and <a href="/government/topics/environment">Environment</a>
+
+            </dd>
+            <dt class="gem-c-metadata__term">History:</dt>
+            <dd class="gem-c-metadata__definition">Updated 2 weeks ago</dd>
+                <dt class="gem-c-metadata__term">Related topics:</dt>
+                <dd class="gem-c-metadata__definition" data-module="gem-toggle ga4-link-tracker" data-ga4-track-links-only="" data-ga4-link="{&quot;event_name&quot;:&quot;navigation&quot;,&quot;type&quot;:&quot;content history&quot;,&quot;section&quot;:&quot;Top&quot;}" data-gem-toggle-module-started="true">
+                  <a href="/government/topics/topic-1">Topic 1</a>, <a href="/government/topics/topic-2">Topic 2</a>, <a href="/government/topics/topic-3">Topic 3</a>, <a href="/government/topics/topic-4">Topic 4</a> and <a href="/government/topics/topic-5">Topic 5</a>
+        <div class="gem-c-metadata__toggle-wrap govuk-!-display-none-print">
+          <a href="#" class="gem-c-metadata__definition-link govuk-!-display-none-print" data-controls="toggle-0-ba3b38aa" data-expanded="false" data-toggled-text="Show fewer" role="button" aria-controls="toggle-0-ba3b38aa" aria-expanded="false">
+              Show 4 more
+          </a>
+        </div>
+        <span id="toggle-0-ba3b38aa" class="gem-c-metadata__toggle-items js-hidden" aria-live="polite" role="region"><a href="/government/topics/topic-6">Topic 6</a>, <a href="/government/topics/topic-7">Topic 7</a>, <a href="/government/topics/topic-8">Topic 8</a>, and <a href="/government/topics/topic-9">Topic 9</a></span>
+
+                </dd>
+                <dt class="gem-c-metadata__term">Applies to:</dt>
+                <dd class="gem-c-metadata__definition" data-module="gem-toggle ga4-link-tracker" data-ga4-track-links-only="" data-ga4-link="{&quot;event_name&quot;:&quot;navigation&quot;,&quot;type&quot;:&quot;content history&quot;,&quot;section&quot;:&quot;Top&quot;}" data-gem-toggle-module-started="true">
+                  England
+
+                </dd>
+        </dl>
+      </div>
+
+      <p>
+        Read more <a href="/path/of/page">about this topic on the NIHR website</a>.
+      </p>
+
+    </div>
+  </div>
+
+{% endblock %}
