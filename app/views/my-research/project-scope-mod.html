@@ -13,6 +13,13 @@
 
 {% block content %}
 
+{% if errors and errors.length %}
+  {{ govukErrorSummary({
+    titleText: "There is a problem",
+    errorList: errors
+  }) }}
+{% endif %}
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
@@ -20,33 +27,24 @@
         {{ data['projectTitle'] or "Project title"}} Configuration
       </h1>
 
-      <form class="form" action="/my-research/project-scope-hfea" method="post">
-
-        {{ govukRadios({
-          classes: "govuk-radios--inline",
-          name: "isMOD",
-          value: data["isMOD"],
-          fieldset: {
-            legend: {
-              text: "Will this project involve any activity under the responsibility of the Ministry of Defence (MOD)?",
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          items: [
-            {
-              value: "yes",
-              text: "Yes"
-            },
-            {
-              value: "no",
-              text: "No"
-            }
-          ]
-        }) }}
+      <form method="post" novalidate>
+      {{ govukRadios({
+        idPrefix: "isMOD",
+        classes: "govuk-radios--inline",
+        name: "isMOD",
+        value: data["isMOD"],
+        fieldset: {
+          legend: { text: "Will this project involve any activity under the responsibility of the Ministry of Defence (MOD)?" }
+        },
+        errorMessage: errorMap and errorMap["isMOD"],
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
         <div class="govuk-button-group">
           {{ govukButton({
-            text: "Continue"
+            text: "Save and continue"
           }) }}
 
           {{ govukButton({

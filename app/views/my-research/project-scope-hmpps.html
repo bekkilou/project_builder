@@ -12,6 +12,21 @@
 {% endblock %}
 
 {% block content %}
+{% block content %}
+
+{% if errors and errors.length %}
+  {{ govukErrorSummary({
+    titleText: "There is a problem",
+    errorList: errors
+  }) }}
+{% endif %}
+
+{% set hmppsNationItems = [
+  { value: "England", text: "England" },
+  { value: "Northern Ireland", text: "Northern Ireland" },
+  { value: "Scotland", text: "Scotland" },
+  { value: "Wales", text: "Wales" }
+] %}
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -20,67 +35,40 @@
         {{ data['projectTitle'] or "Project title"}} Configuration
       </h1>
 
-      <form class="form" action="/my-research/project-scope-mod" method="post">
+      <form method="post" novalidate>
 
-        {{ govukRadios({
-          classes: "govuk-radios--inline",
-          name: "isHMPPS",
-          value: data["isHMPPS"],
-          fieldset: {
-            legend: {
-              text: "Is your research studying the health and care of prisoners or young offenders in the custody of a government prison service or of people who are offenders supervised by a probation service? OR
-Will you include any participants who are prisoners or young offenders in custody or who are offenders supervised by a probation service?",
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          items: [
-            {
-              value: "yes",
-              text: "Yes"
-            },
-            {
-              value: "no",
-              text: "No"
-            }
-          ]
-        }) }}
+      {{ govukRadios({
+        idPrefix: "isHMPPS",
+        classes: "govuk-radios--inline",
+        name: "isHMPPS",
+        value: data["isHMPPS"],
+        fieldset: {
+          legend: {
+            text: "Will you include participants who are prisoners or young offenders in custody, or offenders supervised by probation services?"
+          }
+        },
+        errorMessage: errorMap and errorMap["isHMPPS"],
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
 
-        {{ govukCheckboxes({
-          name: "hmppsNations",
-          values: data['hmppsNations'],
-          fieldset: {
-            legend: {
-              text: "In which UK nations will you include participants who are prisoners or young offenders in custody or who are offenders supervised by a probation service?",
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          hint: {
-            text: "Select all that apply"
-          },
-          items: [
-            {
-              value: "England",
-              text: "England"
-            },
-            {
-              value: "Northern Ireland",
-              text: "Northern Ireland"
-            },
-            {
-              value: "Scotland",
-              text: "Scotland"
-            },
-            {
-              value: "Wales",
-              text: "Wales"
-            }
-          ]
-        }) }}
+      {{ govukCheckboxes({
+        idPrefix: "hmppsNations",
+        name: "hmppsNations",
+        values: data["hmppsNations"],
+        fieldset: {
+          legend: { text: "In which UK nations will you include those participants?" }
+        },
+        hint: { text: "Select all that apply" },
+        errorMessage: errorMap and errorMap["hmppsNations"],
+        items: hmppsNationItems
+      }) }}
 
         <div class="govuk-button-group">
           {{ govukButton({
-            text: "Continue"
+            text: "Save and continue"
           }) }}
 
           {{ govukButton({

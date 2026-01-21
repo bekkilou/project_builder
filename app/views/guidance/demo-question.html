@@ -15,82 +15,57 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
+      <span class="govuk-caption-xl">Ionising radiation</span>
       <h1 class="govuk-heading-l">
-        {{ data['projectTitle'] or "Project title"}} Configuration
+        {{ data['projectTitle'] or "Project title"}} Study rationale and procedures
       </h1>
 
-      <form class="form" action="/my-research/project-scope-participant-consent" method="post">
-
-        {{ govukRadios({
-          classes: "govuk-radios--inline",
-          name: "isClinical",
-          value: data["isClinical"],
-          fieldset: {
-            legend: {
-              text: "Is this project a clinical investigation or other study of a medical device (including digital technology)?",
-              classes: "govuk-fieldset__legend--m"
-            }
+      <form class="form" action="#" method="post">
+        {{ govukCharacterCount({
+          name: "input01",
+          id: "input01",
+          maxlength: 2000,
+          label: {
+            text: "Lay summary of the study",
+            classes: "govuk-label--m",
+            isPageHeading: false
           },
-          items: [
-            {
-              value: "Yes",
-              text: "Yes"
-            },
-            {
-              value: "No",
-              text: "No"
-            }
-          ]
+          hint: {
+            text: ""
+          }
         }) }}
 
-        {{ govukRadios({
-          classes: "govuk-radios--inline",
-          name: "isIonising",
-          value: data["isIonising"],
-          fieldset: {
-            legend: {
-              text: "Does the project involve exposing participants to any ionising radiation?",
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          items: [
-            {
-              value: "Yes",
-              text: "Yes"
-            },
-            {
-              value: "No",
-              text: "No"
-            }
-          ]
+        {{ govukDetails({
+          summaryText: "Help with ionising radiation",
+          html: '<p>If you need additional explanations for ionising radiation and the required documentation and assurances, see our <a href="/guidance/on-page-demo">guidance</a> </p>'
         }) }}
 
-{{ govukDetails({
-  summaryText: "Help with ionising radiation",
-  html: '<p>If you need additional explanations for ionising radiation and the required documentation and assurances, see our <a href="/guidance/on-page-demo">guidance</a> </p>'
-}) }}
-            {{ govukRadios({
-              classes: "govuk-radios--inline",
-              name: "isBioSample",
-              value: data["isBioSample"],
-              fieldset: {
-                legend: {
-                  text: "Will you be taking or using any human biological samples?",
-                  classes: "govuk-fieldset__legend--m"
-                }
-              },
-              items: [
-                {
-                  value: "Yes",
-                  text: "Yes"
-                },
-                {
-                  value: "No",
-                  text: "No"
-                }
-              ]
-            }) }}
+        {{ govukCharacterCount({
+          name: "input02",
+          id: "input02",
+          maxlength: 2000,
+          label: {
+            text: "Main objective of the trial",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+        {{ govukCharacterCount({
+          name: "input03",
+          id: "input03",
+          maxlength: 2000,
+          label: {
+            text: "Secondary objectives of the trial",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
 
         <div class="govuk-button-group">
           {{ govukButton({

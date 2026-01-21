@@ -12,6 +12,22 @@
 {% endblock %}
 
 {% block content %}
+{% if errors and errors.length %}
+  {{ govukErrorSummary({
+    titleText: "There is a problem",
+    errorList: errors
+  }) }}
+{% endif %}
+
+{% set noConsentItems = [
+  { value: "for the use of non-identifiable patient or care data by the research team", text: "For the use of non-identifiable patient or care data by the research team" },
+  { value: "for access to identifiable patient or care data by the usual care team (including identification of potential participants)", text: "For access to identifiable patient or care data by the usual care team (including identification of potential participants)" },
+  { value: "for access to identifiable patient or care data by people without an existing legal basis (including identification of potential participants)", text: "For access to identifiable patient or care data by people without an existing legal basis (including identification of potential participants)" },
+  { value: "for the use of previously collected non-identifiable human biological samples", text: "For the use of previously collected non-identifiable human biological samples" },
+  { value: "for the use of previously collected identifiable human biological samples without relevant consent for their use in this project", text: "For the use of previously collected identifiable human biological samples without relevant consent for their use in this project" },
+  { value: "when adults do not have capacity to consent to their participation", text: "When adults do not have capacity to consent to their participation" },
+  { value: "Other", text: "Other" }
+] %}
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -19,40 +35,52 @@
       <h1 class="govuk-heading-l">
         {{ data['projectTitle'] or "Project title"}} Configuration
       </h1>
+      <form method="post" novalidate>
 
-      <form class="form" action="/my-research/project-scope-participant-consent-01" method="post">
+            {{ govukRadios({
+              idPrefix: "participantConsent",
+              name: "participantConsent",
+              value: data["participantConsent"],
+              fieldset: {
+                legend: { text: "Will you seek consent from or on behalf of participants?" }
+              },
+              errorMessage: errorMap and errorMap["participantConsent"],
+              items: [
+                { value: "all", text: "Consent will be obtained from or on behalf of all participants" },
+                { value: "none", text: "Consent will not be obtained from or on behalf of any participants" },
+                { value: "some", text: "Consent will be obtained from or on behalf of participants in some situations" },
+                { value: "already", text: "Consent has already been obtained from or on behalf of participants for use of their previously-collected data or human biological samples" }
+              ]
+            }) }}
 
-        {% from "govuk/components/radios/macro.njk" import govukRadios %}
+            {# Follow-up questions (routes enforce when required) #}
+            {{ govukCheckboxes({
+              idPrefix: "noConsent",
+              name: "noConsent",
+              values: data["noConsent"],
+              fieldset: {
+                legend: { text: "Select all the situations when consent or assent will not be obtained." }
+              },
+              hint: { text: "Select all that apply" },
+              errorMessage: errorMap and errorMap["noConsent"],
+              items: noConsentItems
+            }) }}
 
-        {{ govukRadios({
-          name: "participantConsent",
-          value: data["participantConsent"],
-          fieldset: {
-            legend: {
-              text: "Will you seek consent from or on behalf of participants?",
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          items: [
-            {
-              value: "Consent will be obtained from or on behalf of all participants",
-              text: "Consent will be obtained from or on behalf of all participants"
-            },
-            {
-              value: "Consent will not be obtained from or on behalf of any participants",
-              text: "Consent will not be obtained from or on behalf of any participants"
-            },
-            {
-              value: "Consent will be obtained from or on behalf of participants in some situations",
-              text: "Consent will be obtained from or on behalf of participants in some situations"
-            },
-            {
-              value: "Consent has already been obtained from or on behalf of participants for use of their previously-collected data or human biological samples",
-              text: "Consent has already been obtained from or on behalf of participants for use of their previously-collected data or human biological samples"
-            }
-          ]
-        }) }}
-
+            {{ govukRadios({
+              idPrefix: "isCapable",
+              classes: "govuk-radios",
+              name: "isCapable",
+              value: data["isCapable"],
+              fieldset: {
+                legend: { text: "When recruiting adult participants, what capacity will they have to consent to their participation?" }
+              },
+              errorMessage: errorMap and errorMap["isCapable"],
+              items: [
+                { value: "all", text: "All adults will have capacity to consent for themselves as participants" },
+                { value: "none", text: "No adults will have capacity to consent for themselves as participants" },
+                { value: "some", text: "Some adults may lack capacity to consent for themselves as participants" }
+              ]
+            }) }}
         <div class="govuk-button-group">
           {{ govukButton({
             text: "Continue"

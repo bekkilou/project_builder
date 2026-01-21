@@ -12,263 +12,313 @@
 {% endblock %}
 
 {% block content %}
+
+  {# ----------------------------
+     Value -> label lookups
+     (so summary shows readable text, not internal values)
+  ----------------------------- #}
+
+  {% set yesNoMap = {
+    "yes": "Yes",
+    "no": "No",
+    "Yes": "Yes",
+    "No": "No"
+  } %}
+
+  {% set ctimpCombinedMap = {
+    "ctimp": "Clinical trial of an investigational medicinal product",
+    "ctimp-and-device": "Combined trial of an investigational medicinal product and an investigational medical device",
+    "clinical trial of an investigational medicinal product": "Clinical trial of an investigational medicinal product",
+    "combined trial of an investigational medicinal product and an investigational medical device": "Combined trial of an investigational medicinal product and an investigational medical device"
+  } %}
+
+  {% set participantConsentMap = {
+    "all": "Consent will be obtained from or on behalf of all participants",
+    "none": "Consent will not be obtained from or on behalf of any participants",
+    "some": "Consent will be obtained from or on behalf of participants in some situations",
+    "already": "Consent has already been obtained from or on behalf of participants for use of their previously-collected data or human biological samples",
+    "Consent will be obtained from or on behalf of all participants": "Consent will be obtained from or on behalf of all participants",
+    "Consent will not be obtained from or on behalf of any participants": "Consent will not be obtained from or on behalf of any participants",
+    "Consent will be obtained from or on behalf of participants in some situations": "Consent will be obtained from or on behalf of participants in some situations",
+    "Consent has already been obtained from or on behalf of participants for use of their previously-collected data or human biological samples": "Consent has already been obtained from or on behalf of participants for use of their previously-collected data or human biological samples"
+  } %}
+
+  {% set isCapableMap = {
+    "all": "All adults will have capacity to consent for themselves as participants",
+    "none": "No adults will have capacity to consent for themselves as participants",
+    "some": "Some adults may lack capacity to consent for themselves as participants",
+    "all adults will have capacity to consent for themselves as participants": "All adults will have capacity to consent for themselves as participants",
+    "no adults will have capacity to consent for themselves as participants": "No adults will have capacity to consent for themselves as participants",
+    "some adults may lack capacity to consent for themselves as participants": "Some adults may lack capacity to consent for themselves as participants"
+  } %}
+
+  {% set isHFEAMap = {
+    "regulated-activities": "Yes, activities regulated by HFEA",
+    "register-data": "Yes, accessing data from the HFEA register",
+    "no": "No",
+    "yes, activities regulated by HFEA": "Yes, activities regulated by HFEA",
+    "yes, accessing data from the HFEA register": "Yes, accessing data from the HFEA register"
+  } %}
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds-from-desktop">
 
       <h1 class="govuk-heading-xl">
         Check your answers before your pathway is configured
       </h1>
-        <h2 class="govuk-heading-m">Section title</h2>
-          <dl class="govuk-summary-list govuk-!-margin-bottom-9">
 
-            {% if (data['participantGroups'])|length %}
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Participant groups
-              </dt>
-              <dd class="govuk-summary-list__value">
-                {% for participants in data['participantGroups'] %}
-                <p>{{ participants }}</p>
-                {% endfor %}
-              </dd>
-              <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="/my-research/project-scope-participants">Change<span class="govuk-visually-hidden"> name</span></a>
-              </dd>
-            </div>
-            {% endif %}
+      <h2 class="govuk-heading-m">Section title</h2>
 
-            {% if (data['researchActivities'])|length %}
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Research activities
-              </dt>
-              <dd class="govuk-summary-list__value">
-                {% for activity in data['researchActivities'] %}
-                <p>{{ activity }}</p>
-                {% endfor %}
-              </dd>
-              <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="/my-research/project-scope-activities">Change<span class="govuk-visually-hidden"> name</span></a>
-              </dd>
-            </div>
-            {% endif %}
+      <dl class="govuk-summary-list govuk-!-margin-bottom-9">
 
-            {% if (data['isCTIMP'])|length %}
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Clinical trial
-              </dt>
-              <dd class="govuk-summary-list__value">
-                {{ data['isCTIMP'] }}
-              </dd>
-              <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="/my-research/project-scope-ctimp">Change<span class="govuk-visually-hidden"> name</span></a>
-              </dd>
-            </div>
-              {% if (data['isCTIMP'])== "Yes" %}
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
+        {% if (data['participantGroups'])|length %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Participant groups
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {% for participants in data['participantGroups'] %}
+              <p>{{ participants }}</p>
+            {% endfor %}
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="/my-research/project-scope-participants">Change<span class="govuk-visually-hidden"> participant groups</span></a>
+          </dd>
+        </div>
+        {% endif %}
 
-                </dt>
-                <dd class="govuk-summary-list__value">
-              {{ data['CTIMPCombined'] }}
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                  <a class="govuk-link" href="/my-research/project-scope-ctimp">Change<span class="govuk-visually-hidden"> name</span></a>
-                </dd>
-              </div>
-              {% endif %}
-            {% endif %}
+        {% if (data['researchActivities'])|length %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Research activities
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {% for activity in data['researchActivities'] %}
+              <p>{{ activity }}</p>
+            {% endfor %}
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="/my-research/project-scope-activities">Change<span class="govuk-visually-hidden"> research activities</span></a>
+          </dd>
+        </div>
+        {% endif %}
 
-            {% if (data['adultsAndChildren'])|length %}
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Are you involving adults or children in your project?
-              </dt>
-              <dd class="govuk-summary-list__value">
-                {% for groups in data['adultsAndChildren'] %}
-                <p>{{ groups }}</p>
-                {% endfor %}
-              </dd>
-              <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="/my-research/project-scope-participant-age">Change<span class="govuk-visually-hidden"> name</span></a>
-              </dd>
-            </div>
-              {% if (data['childAge'])|length %}
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  What ages are your child participants?
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  {% for childAges in data['childAge'] %}
-                  <p>{{ childAges }}</p>
-                  {% endfor %}
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                  <a class="govuk-link" href="/my-research/project-scope-participant-age-range">Change<span class="govuk-visually-hidden"> name</span></a>
-                </dd>
-              </div>
-              {% endif %}
-              {% if (data['adultAge'])|length %}
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  What ages are your adult participants?
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  {% for adultAges in data['adultAge'] %}
-                  <p>{{ adultAges }}</p>
-                  {% endfor %}
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                  <a class="govuk-link" href="/my-research/project-scope-participant-age-range">Change<span class="govuk-visually-hidden"> name</span></a>
-                </dd>
-              </div>
-              {% endif %}
-            {% endif %}
+        {% if data['isCTIMP'] %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Clinical trial
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{ yesNoMap[data['isCTIMP']] or data['isCTIMP'] }}
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="/my-research/project-scope-ctimp">Change<span class="govuk-visually-hidden"> clinical trial</span></a>
+          </dd>
+        </div>
 
-            {% if (data['isClinical'])|length %}
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Is this project a clinical investigation or other study of a medical device (including digital technology)?
-              </dt>
-              <dd class="govuk-summary-list__value">
-                {{ data['isClinical'] }}
-              </dd>
-              <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="/my-research/project-scope-additional">Change<span class="govuk-visually-hidden"> name</span></a>
-              </dd>
-            </div>
-            {% endif %}
+          {# If CTIMP is yes, show the combined CTIMP/device question if present #}
+          {% if (data['isCTIMP'] == "yes" or data['isCTIMP'] == "Yes") and (data['ctimpCombined'] or data['CTIMPCombined'] or data['CTIMPcombined']) %}
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              CTIMP type
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {{ ctimpCombinedMap[data['ctimpCombined'] or data['CTIMPCombined'] or data['CTIMPcombined']] or (data['ctimpCombined'] or data['CTIMPCombined'] or data['CTIMPcombined']) }}
+            </dd>
+            <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" href="/my-research/project-scope-ctimp">Change<span class="govuk-visually-hidden"> CTIMP type</span></a>
+            </dd>
+          </div>
+          {% endif %}
+        {% endif %}
 
-            {% if (data['isIonising'])|length %}
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Does the project involve exposing participants to any ionising radiation?
-              </dt>
-              <dd class="govuk-summary-list__value">
-                {{ data['isIonising'] }}
-              </dd>
-              <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="/my-research/project-scope-additional">Change<span class="govuk-visually-hidden"> name</span></a>
-              </dd>
-            </div>
-            {% endif %}
+        {% if (data['adultsAndChildren'])|length %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Are you involving adults or children in your project?
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {% for groups in data['adultsAndChildren'] %}
+              <p>{{ groups }}</p>
+            {% endfor %}
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="/my-research/project-scope-participant-age">Change<span class="govuk-visually-hidden"> adults or children</span></a>
+          </dd>
+        </div>
 
-            {% if (data['isBioSample'])|length %}
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Will you be taking or using any human biological samples?
-              </dt>
-              <dd class="govuk-summary-list__value">
-                {{ data['isBioSample'] }}
-              </dd>
-              <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="/my-research/project-scope-additional">Change<span class="govuk-visually-hidden"> name</span></a>
-              </dd>
-            </div>
-            {% endif %}
+          {% if (data['childAge'])|length %}
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              What ages are your child participants?
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {% for childAges in data['childAge'] %}
+                <p>{{ childAges }}</p>
+              {% endfor %}
+            </dd>
+            <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" href="/my-research/project-scope-participant-age-range">Change<span class="govuk-visually-hidden"> child age ranges</span></a>
+            </dd>
+          </div>
+          {% endif %}
 
+          {% if (data['adultAge'])|length %}
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              What ages are your adult participants?
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {% for adultAges in data['adultAge'] %}
+                <p>{{ adultAges }}</p>
+              {% endfor %}
+            </dd>
+            <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" href="/my-research/project-scope-participant-age-range">Change<span class="govuk-visually-hidden"> adult age ranges</span></a>
+            </dd>
+          </div>
+          {% endif %}
+        {% endif %}
 
+        {% if data['isClinical'] %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Is this project a clinical investigation or other study of a medical device (including digital technology)?
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{ yesNoMap[data['isClinical']] or data['isClinical'] }}
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="/my-research/project-scope-additional">Change<span class="govuk-visually-hidden"> medical device study</span></a>
+          </dd>
+        </div>
+        {% endif %}
 
-            {% if (data['participantConsent'])|length %}
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Will you seek consent from or on behalf of participants?
-              </dt>
-              <dd class="govuk-summary-list__value">
-                {{ data['participantConsent'] }}
-              </dd>
-              <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="/my-research/project-scope-participant-consent">Change<span class="govuk-visually-hidden"> name</span></a>
-              </dd>
-            </div>
-            {% endif %}
+        {% if data['isIonising'] %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Does the project involve exposing participants to any ionising radiation?
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{ yesNoMap[data['isIonising']] or data['isIonising'] }}
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="/my-research/project-scope-additional">Change<span class="govuk-visually-hidden"> ionising radiation</span></a>
+          </dd>
+        </div>
+        {% endif %}
 
-            {% if (data['noConsent'])|length %}
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Select all the situations when consent or assent will not be obtained
-              </dt>
-              <dd class="govuk-summary-list__value">
-                {% for consentOption in data['noConsent'] %}
-                <p>{{ consentOption }}</p>
-                {% endfor %}
-              </dd>
-              <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="/my-research/project-scope-participant-consent">Change<span class="govuk-visually-hidden"> name</span></a>
-              </dd>
-            </div>
-            {% endif %}
+        {% if data['isBioSample'] %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Will you be taking or using any human biological samples?
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{ yesNoMap[data['isBioSample']] or data['isBioSample'] }}
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="/my-research/project-scope-additional">Change<span class="govuk-visually-hidden"> biological samples</span></a>
+          </dd>
+        </div>
+        {% endif %}
 
-            {% if (data['isCapable'])|length %}
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                When recruiting adult participants, what capacity will they have to consent to their participation?
-              </dt>
-              <dd class="govuk-summary-list__value">
-                {{ data['isCapable'] }}
-              </dd>
-              <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="/my-research/project-scope-participant-consent">Change<span class="govuk-visually-hidden"> name</span></a>
-              </dd>
-            </div>
-            {% endif %}
+        {% if data['participantConsent'] %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Will you seek consent from or on behalf of participants?
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{ participantConsentMap[data['participantConsent']] or data['participantConsent'] }}
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="/my-research/project-scope-participant-consent">Change<span class="govuk-visually-hidden"> participant consent</span></a>
+          </dd>
+        </div>
+        {% endif %}
 
+        {% if (data['noConsent'])|length %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Select all the situations when consent or assent will not be obtained
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {% for consentOption in data['noConsent'] %}
+              <p>{{ consentOption }}</p>
+            {% endfor %}
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="/my-research/project-scope-participant-consent">Change<span class="govuk-visually-hidden"> situations where consent is not obtained</span></a>
+          </dd>
+        </div>
+        {% endif %}
 
+        {% if data['isCapable'] %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            When recruiting adult participants, what capacity will they have to consent to their participation?
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{ isCapableMap[data['isCapable']] or data['isCapable'] }}
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="/my-research/project-scope-participant-consent">Change<span class="govuk-visually-hidden"> capacity to consent</span></a>
+          </dd>
+        </div>
+        {% endif %}
 
-            {% if (data['isHMPPS'])|length %}
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Is your research studying the health and care of prisoners or young offenders in the custody of a government prison service or of people who are offenders supervised by a probation service? OR
-  Will you include any participants who are prisoners or young offenders in custody or who are offenders supervised by a probation service?
-              </dt>
-              <dd class="govuk-summary-list__value">
-                {{ data['isHMPPS'] }}
-              </dd>
-              <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="/my-research/project-scope-hmpps">Change<span class="govuk-visually-hidden"> name</span></a>
-              </dd>
-            </div>
-            {% endif %}
+        {% if data['isHMPPS'] %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Is your research studying the health and care of prisoners or young offenders in custody, or offenders supervised by probation services?
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{ yesNoMap[data['isHMPPS']] or data['isHMPPS'] }}
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="/my-research/project-scope-hmpps">Change<span class="govuk-visually-hidden"> HMPPS involvement</span></a>
+          </dd>
+        </div>
+        {% endif %}
 
-            {% if (data['isMOD'])|length %}
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Will this project involve any activity under the responsibility of the Ministry of Defence (MOD)?
-              </dt>
-              <dd class="govuk-summary-list__value">
-                {{ data['isMOD'] }}
-              </dd>
-              <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="/my-research/project-scope-mod">Change<span class="govuk-visually-hidden"> name</span></a>
-              </dd>
-            </div>
-            {% endif %}
+        {% if data['isMOD'] %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Will this project involve any activity under the responsibility of the Ministry of Defence (MOD)?
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{ yesNoMap[data['isMOD']] or data['isMOD'] }}
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="/my-research/project-scope-mod">Change<span class="govuk-visually-hidden"> MOD involvement</span></a>
+          </dd>
+        </div>
+        {% endif %}
 
-            {% if (data['isHFEA'])|length %}
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Will this project involve activities or data regulated by the Human Fertilisation and Embryology Authority (HFEA)?
-              </dt>
-              <dd class="govuk-summary-list__value">
-                {{ data['isHFEA'] }}
-              </dd>
-              <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="/my-research/project-scope-hfea">Change<span class="govuk-visually-hidden"> name</span></a>
-              </dd>
-            </div>
-            {% endif %}
+        {% if data['isHFEA'] %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Will this project involve activities or data regulated by the Human Fertilisation and Embryology Authority (HFEA)?
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{ isHFEAMap[data['isHFEA']] or data['isHFEA'] }}
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="/my-research/project-scope-hfea">Change<span class="govuk-visually-hidden"> HFEA involvement</span></a>
+          </dd>
+        </div>
+        {% endif %}
 
+      </dl>
 
-          </dl>
-        <h2 class="govuk-heading-m">Now configure your pathway</h2>
-        <p class="govuk-body">Submitting these configuration criteria, you will be generating a task list to develop and complete your approvals application process.</p>
-        <form action="/my-research/project-success" method="post" novalidate>
-          <input type="hidden" name="answers-checked" value="true">
-          <button type="submit" class="govuk-button" data-module="govuk-button">
-            Build configuration
-          </button>
-        </form>
+      <h2 class="govuk-heading-m">Now configure your pathway</h2>
+      <p class="govuk-body">Submitting these configuration criteria, you will be generating a task list to develop and complete your approvals application process.</p>
+
+      <form action="/my-research/project-success" method="post" novalidate>
+        <input type="hidden" name="answers-checked" value="true">
+        {{ govukButton({ text: "Build configuration" }) }}
+      </form>
+
     </div>
   </div>
+
 {% endblock %}

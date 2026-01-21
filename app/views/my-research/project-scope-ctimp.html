@@ -12,6 +12,12 @@
 {% endblock %}
 
 {% block content %}
+{% if errors and errors.length %}
+  {{ govukErrorSummary({
+    titleText: "There is a problem",
+    errorList: errors
+  }) }}
+{% endif %}
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
@@ -20,38 +26,47 @@
       {{ data['projectTitle'] or "Project title"}} Configuration
     </h1>
 
-    <form class="form" action="/my-research/project-scope-ctimp-01" method="post">
+    <form method="post" novalidate>
 
-      {% set activity = data['researchActivities'] | list %}
+      {{ govukRadios({
+        idPrefix: "isCTIMP",
+        classes: "govuk-radios--inline",
+        name: "isCTIMP",
+        value: data["isCTIMP"],
+        fieldset: {
+          legend: {
+            text: "Is this project a clinical trial of an investigational medicinal product (CTIMP)?",
+            isPageHeading: false
+          }
+        },
+        errorMessage: errorMap and errorMap["isCTIMP"],
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
 
-      {% if "Treatment" in (activity | join(" ")) %}
-        {{ govukRadios({
-          classes: "govuk-radios--inline",
-          name: "isCTIMP",
-          value: (data['isCTIMP']),
-          fieldset: {
-            legend: {
-              text: "Is this project a clinical trial of an investigational medicinal product (CTIMP)?",
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          items: [
-            {
-              value: "Yes",
-              text: "Yes"
-            },
-            {
-              value: "No",
-              text: "No"
-            }
-          ]
-        }) }}
-      {% endif %}
-
+      {{ govukRadios({
+        idPrefix: "ctimpCombined",
+        classes: "govuk-radios",
+        name: "ctimpCombined",
+        value: data["ctimpCombined"],
+        fieldset: {
+          legend: {
+            text: "Select the option that applies to your project:",
+            isPageHeading: false
+          }
+        },
+        errorMessage: errorMap and errorMap["ctimpCombined"],
+        items: [
+          { value: "ctimp", text: "Clinical trial of an investigational medicinal product" },
+          { value: "ctimp-and-device", text: "Combined trial of an investigational medicinal product and an investigational medical device" }
+        ]
+      }) }}
 
       <div class="govuk-button-group">
         {{ govukButton({
-          text: "Continue"
+          text: "Save and continue"
         }) }}
 
         {{ govukButton({

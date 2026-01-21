@@ -12,6 +12,12 @@
 {% endblock %}
 
 {% block content %}
+{% if errors and errors.length %}
+  {{ govukErrorSummary({
+    titleText: "There is a problem",
+    errorList: errors
+  }) }}
+{% endif %}
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -20,37 +26,25 @@
         {{ data['projectTitle'] or "Project title"}} Configuration
       </h1>
 
-      <form class="form" action="/my-research/project-scope-check" method="post">
-
-        {{ govukRadios({
-          classes: "govuk-radios",
-          name: "isHFEA",
-          value: data["isHFEA"],
-          fieldset: {
-            legend: {
-              text: "Will this project involve activities or data regulated by the Human Fertilisation and Embryology Authority (HFEA)?",
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          items: [
-            {
-              value: "yes, activities regulated by HFEA",
-              text: "yes, activities regulated by HFEA"
-            },
-            {
-              value: "yes, accessing data from the HFEA register",
-              text: "yes, accessing data from the HFEA register"
-            },
-            {
-              value: "no",
-              text: "no"
-            }
-          ]
-        }) }}
+      <form method="post" novalidate>
+      {{ govukRadios({
+        idPrefix: "isHFEA",
+        classes: "govuk-radios",
+        name: "isHFEA",
+        value: data["isHFEA"],
+        fieldset: {
+          legend: { text: "Will this project involve activities or data regulated by the Human Fertilisation and Embryology Authority (HFEA)?" }
+        },
+        errorMessage: errorMap and errorMap["isHFEA"],
+        items: [
+          { value: "regulated-activities", text: "Yes, activities regulated by HFEA" },
+          { value: "register-data", text: "Yes, accessing data from the HFEA register" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
         <div class="govuk-button-group">
           {{ govukButton({
-            text: "Continue"
+            text: "Save and continue"
           }) }}
 
           {{ govukButton({
