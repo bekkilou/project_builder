@@ -1,0 +1,86 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – HRA Prototype
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-xl">Ionising radiation</span>
+      <h1 class="govuk-heading-l">
+        {{ data['projectTitle'] or "Project title"}} Study rationale and procedures
+      </h1>
+
+      <form class="form" action="#" method="post">
+        {{ govukCharacterCount({
+          name: "input01",
+          id: "input01",
+          maxlength: 2000,
+          label: {
+            text: "Lay summary of the study",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+        {{ govukDetails({
+          summaryText: "Help with ionising radiation",
+          html: '<p>If you need additional explanations for ionising radiation and the required documentation and assurances, see our <a href="https://test-healthresearchauthority.haloitsm.com/portal/kb?btn=95&id=178" target="_blank">guidance</a> </p>'
+        }) }}
+
+        {{ govukCharacterCount({
+          name: "input02",
+          id: "input02",
+          maxlength: 2000,
+          label: {
+            text: "Main objective of the trial",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+        {{ govukCharacterCount({
+          name: "input03",
+          id: "input03",
+          maxlength: 2000,
+          label: {
+            text: "Secondary objectives of the trial",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: ""
+          }
+        }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Save as draft",
+            classes: "govuk-button--secondary",
+            href: "/my-research"
+          }) }}
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}
