@@ -6,37 +6,47 @@
 
 {% block beforeContent %}
   {{ govukBackLink({
-  text: "Back",
-  href: "javascript:window.history.back()"
-}) }}
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
 {% endblock %}
 
 {% block content %}
-{% if errors and errors.length %}
-  {{ govukErrorSummary({
-    titleText: "There is a problem",
-    errorList: errors
-  }) }}
-{% endif %}
+  {% if errors and errors.length %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: errors
+    }) }}
+  {% endif %}
 
-{% set childAgeItems = [
-  { value: "In utero", text: "In utero" },
-  { value: "Preterm newborn infants (up to gestational age less than 37 weeks)", text: "Preterm newborn infants (up to gestational age less than 37 weeks)" },
-  { value: "Newborn (0 to 27 days)", text: "Newborn (0 to 27 days)" },
-  { value: "28 days to 23 months", text: "28 days to 23 months" },
-  { value: "2 to 9 years", text: "2 to 9 years" },
-  { value: "10 to 15 years", text: "10 to 15 years" },
-  { value: "16 to 17 years", text: "16 to 17 years" }
-] %}
+  {% set childAgeItems = [
+    { value: "in_utero", text: "In utero" },
+    { value: "preterm_under_37_weeks", text: "Preterm newborn infants (up to gestational age less than 37 weeks)" },
+    { value: "newborn_0_27_days", text: "Newborn (0 to 27 days)" },
+    { value: "28_days_to_23_months", text: "28 days to 23 months" },
+    { value: "2_to_9_years", text: "2 to 9 years" },
+    { value: "10_to_15_years", text: "10 to 15 years" },
+    { value: "16_to_17_years", text: "16 to 17 years" }
+  ] %}
 
-{% set adultAgeItems = [
-  { value: "16 to 17 years", text: "16 to 17 years" },
-  { value: "18 to 39 years", text: "18 to 39 years" },
-  { value: "40 to 49 years", text: "40 to 49 years" },
-  { value: "50 to 59 years", text: "50 to 59 years" },
-  { value: "60 to 69 years", text: "60 to 69 years" },
-  { value: "70+ years", text: "70+ years" }
-] %}
+  {% set adultAgeItems = [
+    { value: "16_to_17_years", text: "16 to 17 years" },
+    { value: "18_to_39_years", text: "18 to 39 years" },
+    { value: "40_to_49_years", text: "40 to 49 years" },
+    { value: "50_to_59_years", text: "50 to 59 years" },
+    { value: "60_to_69_years", text: "60 to 69 years" },
+    { value: "70_plus_years", text: "70+ years" }
+  ] %}
+
+  {# Normalise adultsAndChildren to an array #}
+  {% set adultsAndChildren = data["adultsAndChildren"] or [] %}
+  {% if adultsAndChildren is string %}
+    {% set adultsAndChildren = [adultsAndChildren] %}
+  {% endif %}
+
+  {# Work out what is involved (single-line set = Prototype Kit safe) #}
+  {% set involvesAdults = ("adult" in adultsAndChildren) or ("adult_including_16_17_scotland" in adultsAndChildren) %}
+  {% set involvesChildren = ("child_u18" in adultsAndChildren) or ("child_u16" in adultsAndChildren) %}
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -47,33 +57,36 @@
 
       <form method="post" novalidate>
 
-      {{ govukCheckboxes({
-        idPrefix: "childAge",
-        name: "childAge",
-        values: data["childAge"],
-        fieldset: {
-          legend: { text: "What ages are your child participants?" }
-        },
-        hint: { text: "Select all that apply" },
-        errorMessage: errorMap and errorMap["childAge"],
-        items: childAgeItems
-      }) }}
-
-      {{ govukCheckboxes({
-        idPrefix: "adultAge",
-        name: "adultAge",
-        values: data["adultAge"],
-        fieldset: {
-          legend: { text: "What ages are your adult participants?" }
-        },
-        hint: { text: "Select all that apply" },
-        errorMessage: errorMap and errorMap["adultAge"],
-        items: adultAgeItems
-      }) }}
-        <div class="govuk-button-group">
-          {{ govukButton({
-            text: "Continue"
+        {% if involvesChildren %}
+          {{ govukCheckboxes({
+            idPrefix: "childAge",
+            name: "childAge",
+            values: data["childAge"],
+            fieldset: {
+              legend: { text: "What ages are your child participants?" }
+            },
+            hint: { text: "Select all that apply" },
+            errorMessage: errorMap and errorMap["childAge"],
+            items: childAgeItems
           }) }}
+        {% endif %}
+
+        {% if involvesAdults %}
+          {{ govukCheckboxes({
+            idPrefix: "adultAge",
+            name: "adultAge",
+            values: data["adultAge"],
+            fieldset: {
+              legend: { text: "What ages are your adult participants?" }
+            },
+            hint: { text: "Select all that apply" },
+            errorMessage: errorMap and errorMap["adultAge"],
+            items: adultAgeItems
+          }) }}
+        {% endif %}
+
+        <div class="govuk-button-group">
+          {{ govukButton({ text: "Save and continue" }) }}
 
           {{ govukButton({
             text: "Save as draft",
@@ -81,9 +94,9 @@
             href: "/my-research"
           }) }}
         </div>
+
       </form>
 
     </div>
   </div>
-
 {% endblock %}

@@ -18,12 +18,46 @@
     errorList: errors
   }) }}
 {% endif %}
-{% set adultsAndChildrenItems = [
-  { value: "Adults", text: "Adults" },
-  { value: "Children (under 16 years of age)", text: "Children (under 16 years of age)" },
-  { value: "Adults (including children 16-17 years old in Scotland)", text: "Adults (including children 16-17 years old in Scotland)" },
-  { value: "Children (under 18 years old)", text: "Children (under 18 years old)" }
-] %}
+
+{# --- Normalise UKNations to an array --- #}
+{% set selectedNations = data["UKNations"] or [] %}
+{% if selectedNations is string %}
+  {% set selectedNations = [selectedNations] %}
+{% endif %}
+
+{# --- Work out Scotland state --- #}
+{% set includesScotland = "scotland" in selectedNations %}
+{% set onlyScotland = includesScotland and (selectedNations | length == 1) %}
+
+{# --- Build items based on the three modes --- #}
+{% if onlyScotland %}
+
+  {# Scotland only #}
+  {% set adultsAndChildrenItems = [
+    { value: "adult_including_16_17_scotland", text: "Adults (including children 16–17 years old in Scotland)" },
+    { value: "child_u16", text: "Children (under 16 years of age)" }
+  ] %}
+
+{% elseif includesScotland %}
+
+  {# Scotland + other nations #}
+  {% set adultsAndChildrenItems = [
+    { value: "adult", text: "Adults" },
+    { value: "adult_including_16_17_scotland", text: "Adults (including children 16–17 years old in Scotland)" },
+    { value: "child_u18", text: "Children (under 18 years old)" },
+    { value: "child_u16", text: "Children (under 16 years of age)" }
+  ] %}
+
+{% else %}
+
+  {# No Scotland #}
+  {% set adultsAndChildrenItems = [
+    { value: "adult", text: "Adults" },
+    { value: "child_u18", text: "Children (under 18 years old)" }
+  ] %}
+
+{% endif %}
+
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">

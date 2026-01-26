@@ -30,7 +30,7 @@
         type: "success"
       }) }}
 
-{% endif %}
+      {% endif %}
 
 
       <h1 class="govuk-heading-l">
@@ -38,75 +38,20 @@
       </h1>
 {% if (data['projectTitle']|length) %}
 <div class="card card--clickable" data-test="global-search">
+  <div class="">
     <h2 class="govuk-heading-m card__heading">
-        <a class="govuk-link card__link govuk-link--no-visited-state" href="/my-research/project-scope-participants" onclick="showAlert()">{{ data['projectTitle'] }}</a>
+        <a class="govuk-link card__link govuk-link--no-visited-state" href="/my-research/project-scope-start" onclick="showAlert()" style="display: block;float: left;">{{ data['projectTitle'] }} configuration</a>
     </h2>
-    <p class="govuk-body card__description">{{ data['fullProjectTitle'] }}</p>
-  {{ govukTaskList({
-  idPrefix: "project-tasks",
-  items: [
-    {
-      title: {
-        text: "Basic details"
-      },
-      href: "#",
-      status: {
-        text: "Completed"
-      }
-    },
-    {
-      title: {
-        text: "Project sponsor"
-      },
-      href: "#",
-      status: {
-        tag: {
-          text: "Incomplete",
-          classes: "govuk-tag--blue"
-        }
-      }
-    },
-    {
-      title: {
-        text: "Project team"
-      },
-      hint: {
-        text: ""
-      },
-      href: "#",
-      status: {
-        tag: {
-          text: "Incomplete",
-          classes: "govuk-tag--blue"
-        }
-      }
-    },
-    {
-      title: {
-        text: "Project scope"
-      },
-      href: "#",
-      status: {
-        tag: {
-          text: "Incomplete",
-          classes: "govuk-tag--blue"
-        }
-      }
-    },
-    {
-      title: {
-        text: "[Space for other approvals]"
-      },
-      href: "#",
-      status: {
-        tag: {
-          text: "Incomplete",
-          classes: "govuk-tag--blue"
-        }
-      }
-    }
-  ]
-}) }}
+    <strong class="govuk-tag" style="display: block; float: right;">
+      Status
+    </strong>
+    <p class="govuk-body card__description" style="clear: both;">{{ data['fullProjectTitle'] }}</p>
+    <p>
+      <strong>Next step:</strong> Configure your project build
+      </p>
+    </div>
+    <div>
+    </div>
 </div>
 
 {% else %}

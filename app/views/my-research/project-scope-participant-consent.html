@@ -12,22 +12,7 @@
 {% endblock %}
 
 {% block content %}
-{% if errors and errors.length %}
-  {{ govukErrorSummary({
-    titleText: "There is a problem",
-    errorList: errors
-  }) }}
-{% endif %}
 
-{% set noConsentItems = [
-  { value: "for the use of non-identifiable patient or care data by the research team", text: "For the use of non-identifiable patient or care data by the research team" },
-  { value: "for access to identifiable patient or care data by the usual care team (including identification of potential participants)", text: "For access to identifiable patient or care data by the usual care team (including identification of potential participants)" },
-  { value: "for access to identifiable patient or care data by people without an existing legal basis (including identification of potential participants)", text: "For access to identifiable patient or care data by people without an existing legal basis (including identification of potential participants)" },
-  { value: "for the use of previously collected non-identifiable human biological samples", text: "For the use of previously collected non-identifiable human biological samples" },
-  { value: "for the use of previously collected identifiable human biological samples without relevant consent for their use in this project", text: "For the use of previously collected identifiable human biological samples without relevant consent for their use in this project" },
-  { value: "when adults do not have capacity to consent to their participation", text: "When adults do not have capacity to consent to their participation" },
-  { value: "Other", text: "Other" }
-] %}
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -53,45 +38,44 @@
               ]
             }) }}
 
-            {# Follow-up questions (routes enforce when required) #}
-            {{ govukCheckboxes({
-              idPrefix: "noConsent",
-              name: "noConsent",
-              values: data["noConsent"],
-              fieldset: {
-                legend: { text: "Select all the situations when consent or assent will not be obtained." }
-              },
-              hint: { text: "Select all that apply" },
-              errorMessage: errorMap and errorMap["noConsent"],
-              items: noConsentItems
-            }) }}
+            {% set adultsAndChildren = data["adultsAndChildren"] or [] %}
+            {% if adultsAndChildren is string %}
+              {% set adultsAndChildren = [adultsAndChildren] %}
+            {% endif %}
 
-            {{ govukRadios({
-              idPrefix: "isCapable",
-              classes: "govuk-radios",
-              name: "isCapable",
-              value: data["isCapable"],
-              fieldset: {
-                legend: { text: "When recruiting adult participants, what capacity will they have to consent to their participation?" }
-              },
-              errorMessage: errorMap and errorMap["isCapable"],
-              items: [
-                { value: "all", text: "All adults will have capacity to consent for themselves as participants" },
-                { value: "none", text: "No adults will have capacity to consent for themselves as participants" },
-                { value: "some", text: "Some adults may lack capacity to consent for themselves as participants" }
-              ]
-            }) }}
-        <div class="govuk-button-group">
-          {{ govukButton({
-            text: "Continue"
-          }) }}
+            {% set involvesAdults =
+              adultsAndChildren.includes("adult")
+              or adultsAndChildren.includes("adult_including_16_17_scotland")
+            %}
+            {% if involvesAdults %}
+              {{ govukRadios({
+                idPrefix: "isCapable",
+                classes: "govuk-radios",
+                name: "isCapable",
+                value: data["isCapable"],
+                fieldset: {
+                  legend: { text: "When recruiting adult participants, what capacity will they have to consent to their participation?" }
+                },
+                errorMessage: errorMap and errorMap["isCapable"],
+                items: [
+                  { value: "all", text: "All adults will have capacity to consent for themselves as participants" },
+                  { value: "none", text: "No adults will have capacity to consent for themselves as participants" },
+                  { value: "some", text: "Some adults may lack capacity to consent for themselves as participants" }
+                ]
+              }) }}
+            {% endif %}
+            <div class="govuk-button-group">
+              {{ govukButton({
+                text: "Save and continue"
+              }) }}
 
-          {{ govukButton({
-            text: "Save as draft",
-            classes: "govuk-button--secondary",
-            href: "/my-research"
-          }) }}
-        </div>
+              {{ govukButton({
+                text: "Save as draft",
+                classes: "govuk-button--secondary",
+                href: "/my-research"
+              }) }}
+            </div>
+
       </form>
 
     </div>

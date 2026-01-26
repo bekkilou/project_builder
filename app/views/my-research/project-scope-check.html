@@ -25,12 +25,50 @@
     "No": "No"
   } %}
 
+  {% set participantGroupMap = {
+    "carer_parent_guardian": "Carers, parents or legal guardians of patients or participants",
+    "healthy_volunteers": "Healthy volunteers or controls",
+    "public": "Members of the public",
+    "nhs_patients_service_users": "Patients or service users of NHS or HSC provided or commissioned services",
+    "care_home_residents": "Patients or residents in care homes, independent health care clinics, nursing homes or residential care",
+    "deceased": "People who are known to be deceased prior to their inclusion in the project",
+    "other_social_care_service_users": "Service users in other social care settings",
+    "nhs_hsc_staff": "Staff working in NHS or HSC provided or commissioned services",
+    "other_care_staff": "Staff working in other care settings",
+    "other": "Other"
+  } %}
+  {% set researchActivityMap = {
+    "previously_collected_data": "Use of previously collected data about people",
+    "previously_collected_biosamples": "Use of previously collected human biological samples",
+    "non_clinical_staff_activities": "Non-clinical activities with staff, such as interviews, questionnaires and observations",
+    "non_clinical_people_interviews_surveys": "Non-clinical activities with people, such as interviews or surveys",
+    "non_clinical_people_procedures": "Non-clinical activities with people, such as non-clinical assessments, observations or care procedures",
+    "clinical_people_activities": "Clinical activities with people, such as collecting human biological samples, imaging investigations or diagnostics",
+    "treatment": "Treatment, such as medicines, devices, surgery, vaccines or therapies"
+  } %}
+
   {% set ctimpCombinedMap = {
     "ctimp": "Clinical trial of an investigational medicinal product",
     "ctimp-and-device": "Combined trial of an investigational medicinal product and an investigational medical device",
     "clinical trial of an investigational medicinal product": "Clinical trial of an investigational medicinal product",
     "combined trial of an investigational medicinal product and an investigational medical device": "Combined trial of an investigational medicinal product and an investigational medical device"
   } %}
+
+  {% set ageRangeMap = {
+    "in_utero": "In utero",
+    "preterm_under_37_weeks": "Preterm newborn infants (up to gestational age less than 37 weeks)",
+    "newborn_0_27_days": "Newborn (0 to 27 days)",
+    "28_days_to_23_months": "28 days to 23 months",
+    "2_to_9_years": "2 to 9 years",
+    "10_to_15_years": "10 to 15 years",
+    "16_to_17_years": "16 to 17 years",
+    "18_to_39_years": "18 to 39 years",
+    "40_to_49_years": "40 to 49 years",
+    "50_to_59_years": "50 to 59 years",
+    "60_to_69_years": "60 to 69 years",
+    "70_plus_years": "70+ years"
+  } %}
+
 
   {% set participantConsentMap = {
     "all": "Consent will be obtained from or on behalf of all participants",
@@ -42,6 +80,17 @@
     "Consent will be obtained from or on behalf of participants in some situations": "Consent will be obtained from or on behalf of participants in some situations",
     "Consent has already been obtained from or on behalf of participants for use of their previously-collected data or human biological samples": "Consent has already been obtained from or on behalf of participants for use of their previously-collected data or human biological samples"
   } %}
+
+  {% set noConsentMap = {
+    "non_identifiable_patient_data": "For the use of non-identifiable patient or care data by the research team",
+    "identifiable_data_usual_care_team": "For access to identifiable patient or care data by the usual care team (including identification of potential participants)",
+    "identifiable_data_no_legal_basis": "For access to identifiable patient or care data by people without an existing legal basis (including identification of potential participants)",
+    "previously_collected_non_identifiable_biosamples": "For the use of previously collected non-identifiable human biological samples",
+    "previously_collected_identifiable_biosamples_no_consent": "For the use of previously collected identifiable human biological samples without relevant consent for their use in this project",
+    "adult_lacks_capacity": "When adults do not have capacity to consent to their participation",
+    "other": "Other"
+  } %}
+
 
   {% set isCapableMap = {
     "all": "All adults will have capacity to consent for themselves as participants",
@@ -58,6 +107,13 @@
     "no": "No",
     "yes, activities regulated by HFEA": "Yes, activities regulated by HFEA",
     "yes, accessing data from the HFEA register": "Yes, accessing data from the HFEA register"
+  } %}
+
+  {% set adultsAndChildrenMap = {
+    "adult": "Adults",
+    "adult_including_16_17_scotland": "Adults (including children 16–17 years old in Scotland)",
+    "child_u18": "Children (under 18 years old)",
+    "child_u16": "Children (under 16 years of age)"
   } %}
 
   <div class="govuk-grid-row">
@@ -77,8 +133,8 @@
             Participant groups
           </dt>
           <dd class="govuk-summary-list__value">
-            {% for participants in data['participantGroups'] %}
-              <p>{{ participants }}</p>
+            {% for value in data["participantGroups"] %}
+              <p>{{ participantGroupMap[value] or value }}</p>
             {% endfor %}
           </dd>
           <dd class="govuk-summary-list__actions">
@@ -93,8 +149,8 @@
             Research activities
           </dt>
           <dd class="govuk-summary-list__value">
-            {% for activity in data['researchActivities'] %}
-              <p>{{ activity }}</p>
+            {% for value in data["researchActivities"] %}
+              <p>{{ researchActivityMap[value] or value }}</p>
             {% endfor %}
           </dd>
           <dd class="govuk-summary-list__actions">
@@ -138,9 +194,9 @@
             Are you involving adults or children in your project?
           </dt>
           <dd class="govuk-summary-list__value">
-            {% for groups in data['adultsAndChildren'] %}
-              <p>{{ groups }}</p>
-            {% endfor %}
+            {% for v in data["adultsAndChildren"] %}
+            <p>{{ adultsAndChildrenMap[v] or v }}</p>
+          {% endfor %}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link" href="/my-research/project-scope-participant-age">Change<span class="govuk-visually-hidden"> adults or children</span></a>
@@ -153,8 +209,8 @@
               What ages are your child participants?
             </dt>
             <dd class="govuk-summary-list__value">
-              {% for childAges in data['childAge'] %}
-                <p>{{ childAges }}</p>
+              {% for v in data["childAge"] %}
+                <p>{{ ageRangeMap[v] or v }}</p>
               {% endfor %}
             </dd>
             <dd class="govuk-summary-list__actions">
@@ -169,8 +225,8 @@
               What ages are your adult participants?
             </dt>
             <dd class="govuk-summary-list__value">
-              {% for adultAges in data['adultAge'] %}
-                <p>{{ adultAges }}</p>
+              {% for v in data["adultAge"] %}
+                <p>{{ ageRangeMap[v] or v }}</p>
               {% endfor %}
             </dd>
             <dd class="govuk-summary-list__actions">
@@ -242,8 +298,8 @@
             Select all the situations when consent or assent will not be obtained
           </dt>
           <dd class="govuk-summary-list__value">
-            {% for consentOption in data['noConsent'] %}
-              <p>{{ consentOption }}</p>
+            {% for v in data["noConsent"] %}
+              <p>{{ noConsentMap[v] or v }}</p>
             {% endfor %}
           </dd>
           <dd class="govuk-summary-list__actions">
@@ -310,12 +366,12 @@
 
       </dl>
 
-      <h2 class="govuk-heading-m">Now configure your pathway</h2>
-      <p class="govuk-body">Submitting these configuration criteria, you will be generating a task list to develop and complete your approvals application process.</p>
+      <h2 class="govuk-heading-m">Build your project</h2>
+      <p class="govuk-body">By submitting these configuration criteria, you will be generating a a project build that will guide you through approvals.</p>
 
       <form action="/my-research/project-success" method="post" novalidate>
         <input type="hidden" name="answers-checked" value="true">
-        {{ govukButton({ text: "Build configuration" }) }}
+        {{ govukButton({ text: "Build project" }) }}
       </form>
 
     </div>

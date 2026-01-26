@@ -19,15 +19,73 @@
   }) }}
 {% endif %}
 
-{% set researchActivityItems = [
-  { value: "Use of previously collected data about people", text: "Use of previously collected data about people" },
-  { value: "Use of previously collected human biological samples", text: "Use of previously collected human biological samples" },
-  { value: "Non-clinical activities with staff, such as interviews, questionnaires and observations", text: "Non-clinical activities with staff, such as interviews, questionnaires and observations" },
-  { value: "Non-clinical activities with people, such as interviews or surveys", text: "Non-clinical activities with people, such as interviews or surveys" },
-  { value: "Non-clinical activities with people, such as non-clinical assessments, observations or care procedures", text: "Non-clinical activities with people, such as non-clinical assessments, observations or care procedures" },
-  { value: "Clinical activities with people, such as collecting human biological samples, imaging investigations or diagnostics", text: "Clinical activities with people, such as collecting human biological samples, imaging investigations or diagnostics" },
-  { value: "Treatment, such as medicines, devices, surgery, vaccines or therapies", text: "Treatment, such as medicines, devices, surgery, vaccines or therapies" }
-] %}
+{# Normalise participantGroups to an array #}
+{% set participantGroups = data["participantGroups"] or [] %}
+{% if participantGroups is string %}
+  {% set participantGroups = [participantGroups] %}
+{% endif %}
+
+{# Rules #}
+{% set isDeceasedOnly = ("deceased" in participantGroups) and (participantGroups | length == 1) %}
+
+{% set isStaffOnly =
+  (participantGroups | length > 0) and
+  (
+    participantGroups | reject("equalto", "nhs_hsc_staff")
+                      | reject("equalto", "other_care_staff")
+                      | list
+                      | length == 0
+  )
+%}
+
+{% set isStaffExcluded =
+  ("nhs_hsc_staff" not in participantGroups)
+  and
+  ("other_care_staff" not in participantGroups)
+%}
+
+{# Build activities list based on rules #}
+{% if isDeceasedOnly %}
+
+  {% set researchActivityItems = [
+    { value: "previously_collected_data", text: "Use of previously collected data about people" },
+    { value: "previously_collected_biosamples", text: "Use of previously collected human biological samples" }
+  ] %}
+
+{% elseif isStaffOnly %}
+
+  {% set researchActivityItems = [
+    { value: "non_clinical_staff_activities", text: "Non-clinical activities with staff, such as interviews, questionnaires and observations" },
+    { value: "non_clinical_people_interviews_surveys", text: "Non-clinical activities with people, such as interviews or surveys" }
+  ] %}
+
+{% elseif isStaffExcluded %}
+
+  {% set researchActivityItems = [
+    { value: "previously_collected_data", text: "Use of previously collected data about people" },
+    { value: "previously_collected_biosamples", text: "Use of previously collected human biological samples" },
+    { value: "non_clinical_people_interviews_surveys", text: "Non-clinical activities with people, such as interviews or surveys" },
+    { value: "non_clinical_people_procedures", text: "Non-clinical activities with people, such as non-clinical assessments, observations or care procedures" },
+    { value: "clinical_people_activities", text: "Clinical activities with people, such as collecting human biological samples, imaging investigations or diagnostics" },
+    { value: "treatment", text: "Treatment, such as medicines, devices, surgery, vaccines or therapies" }
+  ] %}
+
+{% else %}
+
+  {# Default: full list #}
+  {% set researchActivityItems = [
+    { value: "previously_collected_data", text: "Use of previously collected data about people" },
+    { value: "previously_collected_biosamples", text: "Use of previously collected human biological samples" },
+    { value: "non_clinical_staff_activities", text: "Non-clinical activities with staff, such as interviews, questionnaires and observations" },
+    { value: "non_clinical_people_interviews_surveys", text: "Non-clinical activities with people, such as interviews or surveys" },
+    { value: "non_clinical_people_procedures", text: "Non-clinical activities with people, such as non-clinical assessments, observations or care procedures" },
+    { value: "clinical_people_activities", text: "Clinical activities with people, such as collecting human biological samples, imaging investigations or diagnostics" },
+    { value: "treatment", text: "Treatment, such as medicines, devices, surgery, vaccines or therapies" }
+  ] %}
+
+{% endif %}
+
+
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">

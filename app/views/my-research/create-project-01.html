@@ -41,39 +41,24 @@
           },
           value: data['fullProjectTitle']
         }) }}
-        
-        {{ govukCheckboxes({
-          name: "UKNations",
-          values: data['UKNations'],
-          fieldset: {
-            legend: {
-              text: "Which UK nations do you want your poject to take place in?",
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          hint: {
-            text: "Select all that apply"
-          },
-          items: [
-            {
-              value: "England",
-              text: "England"
-            },
-            {
-              value: "Northern Ireland",
-              text: "Northern Ireland"
-            },
-            {
-              value: "Scotland",
-              text: "Scotland"
-            },
-            {
-              value: "Wales",
-              text: "Wales"
-            }
-          ]
-        }) }}
 
+        {% set ukNationItems = [
+          { value: "england", text: "England" },
+          { value: "scotland", text: "Scotland" },
+          { value: "wales", text: "Wales" },
+          { value: "northern-ireland", text: "Northern Ireland" }
+        ] %}
+
+        {{ govukCheckboxes({
+          idPrefix: "UKNations",
+          name: "UKNations",
+          values: data["UKNations"],
+          fieldset: {
+            legend: { text: "Which UK nations do you want your poject to take place in?" }
+          },
+          hint: { text: "Select all that apply" },
+          items: ukNationItems
+        }) }}
         {{ govukButton({
           text: "Continue"
         }) }}
