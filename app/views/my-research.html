@@ -5,10 +5,22 @@
 {% endblock %}
 
 {% block beforeContent %}
-  {{ govukBackLink({
-    text: "Back",
-    href: "javascript:window.history.back()"
-  }) }}
+  {{ govukBreadcrumbs({
+  items: [
+    {
+      text: "Home",
+      href: "#"
+    },
+    {
+      text: "My account",
+      href: "#"
+    },
+    {
+      text: "My research",
+      href: "#"
+    }
+  ]
+}) }}
 {% endblock %}
 
 {% block content %}
