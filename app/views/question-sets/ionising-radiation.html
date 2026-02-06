@@ -1,0 +1,87 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  All questions in ionising radiation – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+{% if errors and errors.length %}
+  {{ govukErrorSummary({
+    titleText: "There is a problem",
+    errorList: errors
+  }) }}
+{% endif %}
+
+{# ----------------------------
+  Define checkbox/radio items
+  (keeps the page readable)
+----------------------------- #}
+
+{% set irInclusionItems = [
+  { value: "ir_xray_imaging", text: "X-ray imaging" },
+  { value: "ir_diagnostic", text: "Diagnostic procedures involving the administration of radioactive substances" },
+  { value: "ir_therapeutic", text: "Therapeutic procedures involving the administration of radioactive substances" },
+  { value: "ir_external_beam", text: "External beam radiotherapy" },
+  { value: "ir_non_ionising", text: "Non-ionising imaging" },
+] %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-xl">All questions in ionising radiation</h1>
+
+    <form class="form" action="#" method="post">
+
+      <h2 class="govuk-heading-m">Participant groups</h2>
+      {{ govukCheckboxes({
+        name: "irInclusion",
+        values: data["irInclusion"],
+        errorMessage: errorMap and errorMap["irInclusion"],
+        fieldset: {
+          legend: {
+            text: "Does your project involve:"
+          }
+        },
+        hint: { text: "Select all that apply" },
+        items: irInclusionItems
+      }) }}
+	  
+	  <p class="govuk-body-s">Display if irInclusion = ir_diagnostic AND/OR ir_therapeutic</p>
+	  {{ govukTextarea({
+		  name: "irScientificBackground",
+		  id: "ir-scientific-background",
+		  label: {
+			text: "Scientific background",
+			classes: "govuk-label--m",
+			isPageHeading: false
+		  },
+		  hint: {
+			text: "Lorem ipsum"
+		  }
+		}) }}
+		
+		
+	<p class="govuk-body-s">Display if irInclusion = ir_diagnostic AND/OR ir_therapeutic</p>
+	  {{ govukTextarea({
+		  name: "irScientificBackground",
+		  id: "ir-scientific-background",
+		  label: {
+			text: "What is the rationale for the administration of radioactive substances in this study? Include how these exposures will contribute to the research question or further the study objectives. ",
+			classes: "govuk-label--m",
+			isPageHeading: false
+		  },
+		  hint: {
+			text: "Lorem ipsum"
+		  }
+		}) }}	
+		
+		
+		
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+  </div>
+</div>
+
+{% endblock %}
