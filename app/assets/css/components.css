@@ -5,7 +5,10 @@
       border: 1px solid #d9dadb;
       position: relative;
       width: 100%;
-      padding: 25px
+      padding: 25px 0;
+      border-bottom: 1px solid #d9dadb !important;
+      border-left: none;
+      border-right: none;
     }
 
     .card__heading {

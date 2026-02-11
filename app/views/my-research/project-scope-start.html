@@ -1,12 +1,7 @@
 {% extends "layouts/main.html" %}
 
 {% block pageTitle %}
-  Start page template – {{ serviceName }} – GOV.UK Prototype Kit
-{% endblock %}
-
-{% block header %}
-  <!-- Blank header with no service name for the start page -->
-  {{ govukHeader() }}
+  My research – {{ serviceName }} – GOV.UK Prototype Kit
 {% endblock %}
 
 {% block beforeContent %}
@@ -14,15 +9,12 @@
   {{ govukBreadcrumbs({
     items: [
       {
-        text: "Home",
+        text: "My account",
         href: "#"
       },
       {
-        text: "Section",
+        text: "My research",
         href: "#"
-      },
-      {
-        text: "Subsection"
       }
     ]
   }) }}
@@ -34,8 +26,8 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      <h1 class="govuk-heading-xl">
-        {{ serviceName }}
+      <h1 class="govuk-heading-l">
+        Create a new project
       </h1>
 
       <p>To determine what information you need to provide and what assurances and reviews you'll require, we will ask you some questions that will determine the scope of your project.</p>
@@ -45,10 +37,13 @@
         <li>Thing two</li>
         <li>Thing three</li>
       </ul>
+      <p>
+        Youll need to provide an answer to all the questions and you can save your progress and come back later if you need to.
+        </p>
 
       {{ govukButton({
-        text: "Start now",
-        href: "/my-research/project-scope-participants",
+        text: "Start",
+        href: "/my-research/create-project-01",
         isStartButton: true
       }) }}
 

@@ -22,7 +22,7 @@
   { value: "ir_diagnostic", text: "Diagnostic procedures involving the administration of radioactive substances" },
   { value: "ir_therapeutic", text: "Therapeutic procedures involving the administration of radioactive substances" },
   { value: "ir_external_beam", text: "External beam radiotherapy" },
-  { value: "ir_non_ionising", text: "Non-ionising imaging" },
+  { value: "ir_non_ionising", text: "Non-ionising imaging" }
 ] %}
 
 <div class="govuk-grid-row">
@@ -45,7 +45,7 @@
         hint: { text: "Select all that apply" },
         items: irInclusionItems
       }) }}
-	  
+
 	  <p class="govuk-body-s">Display if irInclusion = ir_diagnostic AND/OR ir_therapeutic</p>
 	  {{ govukTextarea({
 		  name: "irScientificBackground",
@@ -59,8 +59,8 @@
 			text: "Lorem ipsum"
 		  }
 		}) }}
-		
-		
+
+
 	<p class="govuk-body-s">Display if irInclusion = ir_diagnostic AND/OR ir_therapeutic</p>
 	  {{ govukTextarea({
 		  name: "irScientificBackground",
@@ -73,10 +73,10 @@
 		  hint: {
 			text: "Lorem ipsum"
 		  }
-		}) }}	
-		
-		
-		
+		}) }}
+
+
+
 
       {{ govukButton({ text: "Continue" }) }}
 

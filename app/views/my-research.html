@@ -8,15 +8,7 @@
   {{ govukBreadcrumbs({
   items: [
     {
-      text: "Home",
-      href: "#"
-    },
-    {
       text: "My account",
-      href: "#"
-    },
-    {
-      text: "My research",
       href: "#"
     }
   ]
@@ -27,62 +19,25 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-{% if (data['projectTitle']|length) %}
-      {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
-
-      {% set html %}
-        <h3 class="govuk-notification-banner__heading">
-          Your project record has been created
-        </h3>
-        <p class="govuk-body">Now you've created your record you can start adding other details to your project.</p>
-      {% endset %}
-
-      {{ govukNotificationBanner({
-        html: html,
-        type: "success"
-      }) }}
-
-      {% endif %}
-
 
       <h1 class="govuk-heading-l">
         My research
       </h1>
-{% if (data['projectTitle']|length) %}
-<div class="card card--clickable" data-test="global-search">
-  <div class="">
-    <h2 class="govuk-heading-m card__heading">
-        <a class="govuk-link card__link govuk-link--no-visited-state" href="/my-research/project-scope-start" onclick="showAlert()" style="display: block;float: left;">{{ data['projectTitle'] }} configuration</a>
-    </h2>
-    <strong class="govuk-tag" style="display: block; float: right;">
-      Status
-    </strong>
-    <p class="govuk-body card__description" style="clear: both;">{{ data['fullProjectTitle'] }}</p>
-    <p>
-      <strong>Next step:</strong> Configure your project build
-      </p>
-    </div>
-    <div>
-    </div>
-</div>
-
-{% else %}
       <p>
-        You haven't started or added any projects yet.
+        You don't have any projects available in this service.
       </p>
       <p>
-        Add some sort of guidance as to what to expect in this and the next section of the process - filter questions & pathway
-        </P>
+        You can create a new project, or create a project record for an existing project.
+      </P>
       {{ govukButton({
         text: "Create new project",
-        href: "/my-research/create-project-01",
+        href: "/my-research/project-scope-start",
         isStartButton: false
       }) }}
         &nbsp;
       <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-        Add existing project
+        Create project record for existing project
       </button>
-{% endif %}
     </div>
   </div>
 

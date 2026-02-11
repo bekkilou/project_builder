@@ -17,9 +17,9 @@
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">
-        Basic project details
+        Project details
       </h1>
-      <form class="form" action="/my-research/create-project-check" method="post">
+      <form class="form" action="/my-research/create-project-02" method="post">
 
 
         {{ govukInput({
@@ -42,26 +42,18 @@
           value: data['fullProjectTitle']
         }) }}
 
-        {% set ukNationItems = [
-          { value: "england", text: "England" },
-          { value: "scotland", text: "Scotland" },
-          { value: "wales", text: "Wales" },
-          { value: "northern-ireland", text: "Northern Ireland" }
-        ] %}
 
-        {{ govukCheckboxes({
-          idPrefix: "UKNations",
-          name: "UKNations",
-          values: data["UKNations"],
-          fieldset: {
-            legend: { text: "Which UK nations do you want your poject to take place in?" }
-          },
-          hint: { text: "Select all that apply" },
-          items: ukNationItems
-        }) }}
-        {{ govukButton({
-          text: "Continue"
-        }) }}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Save and continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Save for later",
+            classes: "govuk-button--secondary",
+            href: "/my-research-record"
+          }) }}
+        </div>
 
       </form>
 

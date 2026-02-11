@@ -1,14 +1,7 @@
-{% extends "hmrc/layouts/account-header.html" %}
+{% extends "layouts/main.html" %}
 
 {% block pageTitle %}
   My account – {{ serviceName }} – GOV.UK Prototype Kit
-{% endblock %}
-
-{% block beforeContent %}
-  {{ govukBackLink({
-    text: "Back",
-    href: "javascript:window.history.back()"
-  }) }}
 {% endblock %}
 
 {% block content %}
@@ -25,18 +18,15 @@
     <p>
         <strong>Last logged in:</strong> 16 December 2025 at 4:40pm UK time
     </p>
-    <hr />
-    <h2 class="govuk-heading-m">My workspaces</h2>
-    <hr />
   </div>
 </div>
   <ul class="govuk-grid-row card-group">
-      <li class="govuk-grid-column-one-third card-group__item">
+      <li class="govuk-grid-column-full card-group__item">
           <div class="card card--clickable" data-test="global-search">
               <h2 class="govuk-heading-m card__heading">
                   <a class="govuk-link card__link govuk-link--no-visited-state" href="/my-research" onclick="showAlert()">My research</a>
               </h2>
-              <p class="govuk-body card__description">This is a card about research</p>
+              <p class="govuk-body card__description">Manage your research applications</p>
           </div>
       </li>
   </ul>

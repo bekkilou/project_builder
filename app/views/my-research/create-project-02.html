@@ -1,7 +1,7 @@
 {% extends "layouts/main.html" %}
 
 {% block pageTitle %}
-  {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – HRA Prototype
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
 {% endblock %}
 
 {% block beforeContent %}
@@ -17,98 +17,73 @@
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">
-        {{ data['projectTitle'] or "Project title"}} pre-configuration
+        Research locations
       </h1>
 
       <form class="form" action="/my-research/create-project-check" method="post">
+
+        {{ govukCheckboxes({
+          idPrefix: "UKNations",
+          name: "UKNations",
+          values: data["UKNations"],
+          fieldset: {
+            legend: { text: "Which UK nations do you want your poject to take place in?" }
+          },
+          hint: { text: "Select all that apply" },
+          items: [
+            {
+              value: "England",
+              text: "England"
+            },
+            {
+              value: "Northern Ireland",
+              text: "Northern Ireland"
+            },
+            {
+              value: "Scotland",
+              text: "Scotland"
+            },
+            {
+              value: "Wales",
+              text: "Wales"
+            }
+          ]
+        }) }}
+
         {{ govukRadios({
+          name: "nhs-hsc-org",
           classes: "govuk-radios--inline",
-          name: "commercialResearchBoolean",
           fieldset: {
             legend: {
-              text: "Is the project likely to be managed as commercial research?",
-              classes: "govuk-fieldset__legend--m"
+              text: "Is this project taking place at any NHS / HSC organisations?",
+              isPageHeading: false
             }
+          },
+          hint: {
           },
           items: [
             {
-              value: "yes",
+              value: "Yes",
               text: "Yes"
             },
             {
-              value: "no",
+              value: "No",
               text: "No"
             }
           ]
-          }) }}
-          {{ govukRadios({
-            classes: "govuk-radios--inline",
-            name: "NIHRfunding",
-            fieldset: {
-              legend: {
-                text: "Are you seeking NIHR funding for this project?",
-                classes: "govuk-fieldset__legend--m"
-              }
-            },
-            items: [
-              {
-                value: "yes",
-                text: "Yes"
-              },
-              {
-                value: "no",
-                text: "No"
-              }
-            ]
-            }) }}
-
-            {{ govukInsetText({
-              html: "<p>The following services to support researcher are available via the Central Portfolio Management System (CPMS)
-                <ul>
-                  <li>
-                    creation of a Schedue of Events Cost Attribution Template (SoECAT) to support non-commercial funding applications and the set-up of studies in NHS or HSC
-                    </li>
-                  <li>
-                    creation of an interactive costing tool (for commercial sponsors) for set up of studies in the NHS or HSC
-                    </li>
-                  </ul>
-                </p>"
-            }) }}
-
-            {{ govukRadios({
-              classes: "govuk-radios--inline",
-              name: "CPMSservices",
-              fieldset: {
-                legend: {
-                  text: "Do you wish to access one or more of the CPMS services? If you select 'Yes', IRAS will share information with the CPMS once the 'continue' button at the bottom of the page has been pressed. ",
-                  classes: "govuk-fieldset__legend--m"
-                }
-              },
-              items: [
-                {
-                  value: "Yes",
-                  text: "Yes"
-                },
-                {
-                  value: "No",
-                  text: "No"
-                }
-              ]
-              }) }}
-
-              {{ govukInput({
-                label: {
-                  text: "Provide the email of the person who will be the initial contact for CPMS.",
-                  classes: "govuk-label--m",
-                  isPageHeading: false
-                },
-                id: "cpms-email",
-                name: "cpmsEmail"
-              }) }}
-
-        {{ govukButton({
-          text: "Continue"
         }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Save and continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Save for later",
+            classes: "govuk-button--secondary",
+            href: "/my-research-record"
+          }) }}
+        </div>
 
       </form>
 
