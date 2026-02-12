@@ -20,7 +20,7 @@
         Research locations
       </h1>
 
-      <form class="form" action="/my-research/create-project-check" method="post">
+      <form class="form" action="/my-research/create-sponsor-org" method="post">
 
         {{ govukCheckboxes({
           idPrefix: "UKNations",
@@ -52,6 +52,7 @@
 
         {{ govukRadios({
           name: "nhs-hsc-org",
+          value: data['nhs-hsc-org'],
           classes: "govuk-radios--inline",
           fieldset: {
             legend: {

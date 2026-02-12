@@ -6,6 +6,39 @@
 const govukPrototypeKit = require('govuk-prototype-kit')
 const router = govukPrototypeKit.requests.setupRouter()
 
+
+
+// Handle submission from check answers page
+router.post('/my-research/create-project-check', function (req, res) {
+
+  // Only generate once
+  if (!req.session.data.projectReference) {
+
+    const now = new Date()
+
+    // ---- Create readable UK date ----
+    req.session.data.submissionDate =
+      String(now.getDate()).padStart(2, '0') + ' ' +
+      now.toLocaleString('en-GB', { month: 'long' }) + ' ' +
+      now.getFullYear()
+
+    // ---- Create reference number ----
+    const datePart =
+      now.getFullYear().toString().slice(-2) +
+      String(now.getMonth() + 1).padStart(2, '0') +
+      String(now.getDate()).padStart(2, '0')
+
+    const randomPart =
+      Math.random().toString(36).substring(2, 6).toUpperCase()
+
+    req.session.data.projectReference = `HRA-${datePart}-${randomPart}`
+  }
+
+  // Redirect to record page
+  res.redirect('/my-research-w-record')
+})
+
+
 // Helpers
 function asArray(value) {
   return Array.isArray(value) ? value : (value ? [value] : [])
@@ -33,7 +66,7 @@ function renderWithErrors(res, view, errors) {
 // ===============================
 
 // Participants -> Activities
-router.post('/my-research/project-scope-participants', function (req, res) {
+router.post('/project-scope/participants', function (req, res) {
   const data = req.session.data
   const errors = []
 
@@ -44,7 +77,7 @@ router.post('/my-research/project-scope-participants', function (req, res) {
   }
 
   if (errors.length) {
-    return renderWithErrors(res, 'my-research/project-scope-participants', errors)
+    return renderWithErrors(res, 'project-scope/participants', errors)
   }
 
   // ----------------------------
@@ -83,11 +116,11 @@ router.post('/my-research/project-scope-participants', function (req, res) {
     }
   }
 
-  return res.redirect('/my-research/project-scope-activities')
+  return res.redirect('/project-scope/activities')
 })
 
 // Activities -> CTIMP (if Treatment selected) else Participant age
-router.post('/my-research/project-scope-activities', function (req, res) {
+router.post('/project-scope/activities', function (req, res) {
   const data = req.session.data
   const errors = []
 
@@ -98,7 +131,7 @@ router.post('/my-research/project-scope-activities', function (req, res) {
   }
 
   if (errors.length) {
-    return renderWithErrors(res, 'my-research/project-scope-activities', errors)
+    return renderWithErrors(res, 'project-scope/activities', errors)
   }
 
   const TREATMENT = 'treatment'
@@ -107,14 +140,14 @@ router.post('/my-research/project-scope-activities', function (req, res) {
   // Clear CTIMP answers if treatment is not selected
   if (!hasTreatment) {
     clear(data, ['isCTIMP', 'ctimpCombined'])
-    return res.redirect('/my-research/project-scope-participant-age')
+    return res.redirect('/project-scope/participant-age')
   }
 
-  return res.redirect('/my-research/project-scope-ctimp')
+  return res.redirect('/project-scope/ctimp')
 })
 
 // CTIMP -> Participant age
-router.post('/my-research/project-scope-ctimp', function (req, res) {
+router.post('/project-scope/ctimp', function (req, res) {
   const data = req.session.data
   const errors = []
 
@@ -130,7 +163,7 @@ router.post('/my-research/project-scope-ctimp', function (req, res) {
   }
 
   if (errors.length) {
-    return renderWithErrors(res, 'my-research/project-scope-ctimp', errors)
+    return renderWithErrors(res, 'project-scope/ctimp', errors)
   }
 
   // Cleanup: if CTIMP is no, combined is irrelevant
@@ -138,11 +171,11 @@ router.post('/my-research/project-scope-ctimp', function (req, res) {
     clear(data, ['ctimpCombined'])
   }
 
-  return res.redirect('/my-research/project-scope-participant-age')
+  return res.redirect('/project-scope/participant-age')
 })
 
 // Participant age -> Age ranges
-router.post('/my-research/project-scope-participant-age', function (req, res) {
+router.post('/project-scope/participant-age', function (req, res) {
   const data = req.session.data
   const errors = []
 
@@ -153,7 +186,7 @@ router.post('/my-research/project-scope-participant-age', function (req, res) {
   }
 
   if (errors.length) {
-    return renderWithErrors(res, 'my-research/project-scope-participant-age', errors)
+    return renderWithErrors(res, 'project-scope/participant-age', errors)
   }
 
   const involvesAdults =
@@ -167,11 +200,11 @@ router.post('/my-research/project-scope-participant-age', function (req, res) {
   if (!involvesAdults) clear(data, ['adultAge'])
   if (!involvesChildren) clear(data, ['childAge'])
 
-  return res.redirect('/my-research/project-scope-participant-age-range')
+  return res.redirect('/project-scope/participant-age-range')
 })
 
 // Age ranges -> Additional facets
-router.post('/my-research/project-scope-participant-age-range', function (req, res) {
+router.post('/project-scope/participant-age-range', function (req, res) {
   const data = req.session.data
   const errors = []
 
@@ -197,43 +230,69 @@ router.post('/my-research/project-scope-participant-age-range', function (req, r
   }
 
   if (errors.length) {
-    return renderWithErrors(res, 'my-research/project-scope-participant-age-range', errors)
+    return renderWithErrors(res, 'project-scope/participant-age-range', errors)
   }
 
   // Cleanup (optional but consistent)
   if (!involvesAdults) clear(data, ['adultAge'])
   if (!involvesChildren) clear(data, ['childAge'])
 
-  return res.redirect('/my-research/project-scope-additional')
+  return res.redirect('/project-scope/clinical-investigation')
 })
 
 
 
 
-// Additional facets -> Consent
-router.post('/my-research/project-scope-additional', function (req, res) {
+// Clinical investigation -> Ionising radiation
+router.post('/project-scope/clinical-investigation', function (req, res) {
   const data = req.session.data
   const errors = []
 
   if (!data['isClinical']) {
     addError(errors, 'isClinical', 'Select whether this project involves a medical device investigation')
   }
+
+  if (errors.length) {
+    return renderWithErrors(res, 'project-scope/clinical-investigation', errors)
+  }
+
+  return res.redirect('/project-scope/ionising-radiation')
+})
+
+// Ionising radiation -> Biological samples
+router.post('/project-scope/ionising-radiation', function (req, res) {
+  const data = req.session.data
+  const errors = []
+
   if (!data['isIonising']) {
     addError(errors, 'isIonising', 'Select whether the project involves ionising radiation')
   }
+
+  if (errors.length) {
+    return renderWithErrors(res, 'project-scope/ionising-radiation', errors)
+  }
+
+  return res.redirect('/project-scope/biological-samples')
+})
+
+// Biological samples -> Participant consent
+router.post('/project-scope/biological-samples', function (req, res) {
+  const data = req.session.data
+  const errors = []
+
   if (!data['isBioSample']) {
     addError(errors, 'isBioSample', 'Select whether you will take or use human biological samples')
   }
 
   if (errors.length) {
-    return renderWithErrors(res, 'my-research/project-scope-additional', errors)
+    return renderWithErrors(res, 'project-scope/biological-samples', errors)
   }
 
-  return res.redirect('/my-research/project-scope-participant-consent')
+  return res.redirect('/project-scope/participant-consent')
 })
 
 // Consent -> (if some/none) Not obtained page, else branch to HMPPS/MOD
-router.post('/my-research/project-scope-participant-consent', function (req, res) {
+router.post('/project-scope/participant-consent', function (req, res) {
   const data = req.session.data
   const errors = []
 
@@ -244,12 +303,12 @@ router.post('/my-research/project-scope-participant-consent', function (req, res
   }
 
   if (errors.length) {
-    return renderWithErrors(res, 'my-research/project-scope-consent', errors)
+    return renderWithErrors(res, 'project-scope/consent', errors)
   }
 
   // If consent isn't obtained in all cases, capture situations first
   if (participantConsent === 'some' || participantConsent === 'none') {
-    return res.redirect('/my-research/project-scope-participant-consent-not-obtained')
+    return res.redirect('/project-scope/participant-consent-not-obtained')
   }
 
   // Cleanup: noConsent / isCapable not relevant if consent is all/already
@@ -261,14 +320,14 @@ router.post('/my-research/project-scope-participant-consent', function (req, res
   const PATIENTS = 'nhs_patients_service_users'
 
   if (participantGroups.includes(PATIENTS)) {
-    return res.redirect('/my-research/project-scope-hmpps')
+    return res.redirect('/project-scope/hmpps')
   }
 
-  return res.redirect('/my-research/project-scope-mod')
+  return res.redirect('/project-scope/mod')
 })
 
 // Consent not obtained -> validate noConsent (+ isCapable if adults involved) -> branch to HMPPS/MOD
-router.post('/my-research/project-scope-participant-consent-not-obtained', function (req, res) {
+router.post('/project-scope/participant-consent-not-obtained', function (req, res) {
   const data = req.session.data
   const errors = []
 
@@ -292,7 +351,7 @@ router.post('/my-research/project-scope-participant-consent-not-obtained', funct
   if (errors.length) {
     return renderWithErrors(
       res,
-      'my-research/project-scope-participant-consent-not-obtained',
+      'project-scope/participant-consent-not-obtained',
       errors
     )
   }
@@ -307,15 +366,15 @@ router.post('/my-research/project-scope-participant-consent-not-obtained', funct
   const PATIENTS = 'nhs_patients_service_users'
 
   if (participantGroups.includes(PATIENTS)) {
-    return res.redirect('/my-research/project-scope-hmpps')
+    return res.redirect('/project-scope/hmpps')
   }
 
-  return res.redirect('/my-research/project-scope-mod')
+  return res.redirect('/project-scope/mod')
 })
 
 
 // HMPPS -> MOD
-router.post('/my-research/project-scope-hmpps', function (req, res) {
+router.post('/project-scope/hmpps', function (req, res) {
   const data = req.session.data
   const errors = []
 
@@ -331,7 +390,7 @@ router.post('/my-research/project-scope-hmpps', function (req, res) {
   }
 
   if (errors.length) {
-    return renderWithErrors(res, 'my-research/project-scope-hmpps', errors)
+    return renderWithErrors(res, 'project-scope/hmpps', errors)
   }
 
   // Cleanup
@@ -339,11 +398,11 @@ router.post('/my-research/project-scope-hmpps', function (req, res) {
     clear(data, ['hmppsNations'])
   }
 
-  return res.redirect('/my-research/project-scope-mod')
+  return res.redirect('/project-scope/mod')
 })
 
 // MOD -> HFEA
-router.post('/my-research/project-scope-mod', function (req, res) {
+router.post('/project-scope/project-scope-mod', function (req, res) {
   const data = req.session.data
   const errors = []
 
@@ -352,14 +411,14 @@ router.post('/my-research/project-scope-mod', function (req, res) {
   }
 
   if (errors.length) {
-    return renderWithErrors(res, 'my-research/project-scope-mod', errors)
+    return renderWithErrors(res, 'project-scope/mod', errors)
   }
 
-  return res.redirect('/my-research/project-scope-hfea')
+  return res.redirect('/project-scope/hfea')
 })
 
 // HFEA -> Check answers
-router.post('/my-research/project-scope-hfea', function (req, res) {
+router.post('/project-scope/hfea', function (req, res) {
   const data = req.session.data
   const errors = []
 
@@ -368,8 +427,8 @@ router.post('/my-research/project-scope-hfea', function (req, res) {
   }
 
   if (errors.length) {
-    return renderWithErrors(res, 'my-research/project-scope-hfea', errors)
+    return renderWithErrors(res, 'project-scope/hfea', errors)
   }
 
-  return res.redirect('/my-research/project-scope-check')
+  return res.redirect('/project-scope/check')
 })

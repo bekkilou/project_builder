@@ -19,6 +19,25 @@
     }) }}
   {% endif %}
 
+  {# --- Normalise UKNations to an array (handles radio or checkboxes) --- #}
+  {% set selectedNations = data["UKNations"] or [] %}
+  {% if selectedNations is string %}
+    {% set selectedNations = [selectedNations] %}
+  {% endif %}
+
+  {# --- Normalise values for comparison --- #}
+  {% set selectedNationsLower = [] %}
+  {% for n in selectedNations %}
+    {% if n %}
+      {% set selectedNationsLower = selectedNationsLower.concat((n | trim | lower)) %}
+    {% endif %}
+  {% endfor %}
+
+  {% set includesScotland = "Scotland" in selectedNationsLower %}
+  {% set onlyScotland = includesScotland and (selectedNationsLower | length == 1) %}
+  {% set scotlandAndOthers = includesScotland and (selectedNationsLower | length > 1) %}
+
+  {# --- Base lists --- #}
   {% set childAgeItems = [
     { value: "in_utero", text: "In utero" },
     { value: "preterm_under_37_weeks", text: "Preterm newborn infants (up to gestational age less than 37 weeks)" },
@@ -38,24 +57,48 @@
     { value: "70_plus_years", text: "70+ years" }
   ] %}
 
+  {# --- Adjust where 16–17 appears based on nations --- #}
+  {% if onlyScotland %}
+    {# Scotland only: remove 16–17 from CHILD list #}
+    {% set childAgeItems = [
+      { value: "in_utero", text: "In utero" },
+      { value: "preterm_under_37_weeks", text: "Preterm newborn infants (up to gestational age less than 37 weeks)" },
+      { value: "newborn_0_27_days", text: "Newborn (0 to 27 days)" },
+      { value: "28_days_to_23_months", text: "28 days to 23 months" },
+      { value: "2_to_9_years", text: "2 to 9 years" },
+      { value: "10_to_15_years", text: "10 to 15 years" }
+    ] %}
+  {% elseif includesScotland %}
+    {# Scotland + other nations: show 16–17 in BOTH (no change needed) #}
+  {% else %}
+    {# No Scotland: remove 16–17 from ADULT list #}
+    {% set adultAgeItems = [
+      { value: "18_to_39_years", text: "18 to 39 years" },
+      { value: "40_to_49_years", text: "40 to 49 years" },
+      { value: "50_to_59_years", text: "50 to 59 years" },
+      { value: "60_to_69_years", text: "60 to 69 years" },
+      { value: "70_plus_years", text: "70+ years" }
+    ] %}
+  {% endif %}
+
+
   {# Normalise adultsAndChildren to an array #}
   {% set adultsAndChildren = data["adultsAndChildren"] or [] %}
   {% if adultsAndChildren is string %}
     {% set adultsAndChildren = [adultsAndChildren] %}
   {% endif %}
 
-  {# Work out what is involved (single-line set = Prototype Kit safe) #}
   {% set involvesAdults = ("adult" in adultsAndChildren) or ("adult_including_16_17_scotland" in adultsAndChildren) %}
   {% set involvesChildren = ("child_u18" in adultsAndChildren) or ("child_u16" in adultsAndChildren) %}
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l">{{ data['projectTitle'] or "Project title"}}</span>
+          <h1 class="govuk-heading-l">
+            Participant ages
+          </h1>
 
-      <h1 class="govuk-heading-l">
-        {{ data['projectTitle'] or "Project title"}} Configuration
-      </h1>
-
-      <form method="post" novalidate>
+          <form method="post" novalidate>
 
         {% if involvesChildren %}
           {{ govukCheckboxes({
@@ -91,7 +134,7 @@
           {{ govukButton({
             text: "Save for later",
             classes: "govuk-button--secondary",
-            href: "/my-research"
+            href: "/my-research-w-record"
           }) }}
         </div>
 

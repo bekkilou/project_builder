@@ -1,0 +1,90 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – HRA Prototype
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+{% if errors and errors.length %}
+  {{ govukErrorSummary({
+    titleText: "There is a problem",
+    errorList: errors
+  }) }}
+{% endif %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+<!--
+    <h1 class="govuk-heading-l">
+      {{ data['projectTitle'] or "Project title"}} Configuration
+    </h1>
+-->
+    <form method="post" novalidate>
+      <span class="govuk-caption-l">{{ data['projectTitle'] or "Project title"}}</span>
+      {% set ctimpCombinedHtml %}
+  {{ govukRadios({
+    idPrefix: "ctimpCombined",
+    name: "ctimpCombined",
+    value: data["ctimpCombined"],
+    fieldset: {
+      legend: {
+        text: "Select the option that applies to your project:",
+        classes: "govuk-fieldset__legend--m"
+      }
+    },
+    errorMessage: errorMap and errorMap["ctimpCombined"],
+    items: [
+      { value: "ctimp", text: "Clinical trial of an investigational medicinal product" },
+      { value: "ctimp-and-device", text: "Combined trial of an investigational medicinal product and an investigational medical device" }
+    ]
+  }) }}
+{% endset %}
+{{ govukRadios({
+  idPrefix: "isCTIMP",
+  classes: "govuk-radios--inline",
+  name: "isCTIMP",
+  value: data["isCTIMP"],
+  fieldset: {
+    legend: {
+      text: "Is this project a clinical trial of an investigational medicinal product (CTIMP)?",
+      isPageHeading: true,
+      classes: "govuk-fieldset__legend--l"
+    }
+  },
+  errorMessage: errorMap and errorMap["isCTIMP"],
+  items: [
+    {
+      value: "yes",
+      text: "Yes",
+      conditional: {
+        html: ctimpCombinedHtml
+      }
+    },
+    { value: "no", text: "No" }
+  ]
+}) }}
+
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Save and continue"
+        }) }}
+
+        {{ govukButton({
+          text: "Save for later",
+          classes: "govuk-button--secondary",
+          href: "/my-research"
+        }) }}
+      </div>
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

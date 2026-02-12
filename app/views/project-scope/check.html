@@ -26,17 +26,32 @@
   } %}
 
   {% set participantGroupMap = {
-    "carer_parent_guardian": "Carers, parents or legal guardians of patients or participants",
+    "carers_guardians": "Carers, parents or legal guardians of patients or participants",
     "healthy_volunteers": "Healthy volunteers or controls",
     "public": "Members of the public",
     "nhs_patients_service_users": "Patients or service users of NHS or HSC provided or commissioned services",
     "care_home_residents": "Patients or residents in care homes, independent health care clinics, nursing homes or residential care",
     "deceased": "People who are known to be deceased prior to their inclusion in the project",
-    "other_social_care_service_users": "Service users in other social care settings",
+    "other_social_care_users": "Service users in other social care settings",
     "nhs_hsc_staff": "Staff working in NHS or HSC provided or commissioned services",
     "other_care_staff": "Staff working in other care settings",
     "other": "Other"
   } %}
+
+  {# Build display list #}
+  {% set participantGroupsDisplay = [] %}
+  {% for val in (data.participantGroups or []) %}
+    {% if val == "other" %}
+      {% if data.participantGroupsOther %}
+        {% set participantGroupsDisplay = participantGroupsDisplay.concat("Other: " + (data.participantGroupsOther | escape)) %}
+      {% else %}
+        {% set participantGroupsDisplay = participantGroupsDisplay.concat("Other") %}
+      {% endif %}
+    {% else %}
+      {% set participantGroupsDisplay = participantGroupsDisplay.concat(participantGroupMap[val]) %}
+    {% endif %}
+  {% endfor %}
+
   {% set researchActivityMap = {
     "previously_collected_data": "Use of previously collected data about people",
     "previously_collected_biosamples": "Use of previously collected human biological samples",
@@ -128,20 +143,29 @@
       <dl class="govuk-summary-list govuk-!-margin-bottom-9">
 
         {% if (data['participantGroups'])|length %}
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            Participant groups
-          </dt>
-          <dd class="govuk-summary-list__value">
-            {% for value in data["participantGroups"] %}
-              <p>{{ participantGroupMap[value] or value }}</p>
-            {% endfor %}
-          </dd>
-          <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/my-research/project-scope-participants">Change<span class="govuk-visually-hidden"> participant groups</span></a>
-          </dd>
-        </div>
-        {% endif %}
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">
+        Participant groups
+      </dt>
+      <dd class="govuk-summary-list__value">
+        {% for value in data["participantGroups"] %}
+          {% if value == "other" %}
+            {% if data["participantGroupsOther"] %}
+              <p>Other: {{ data["participantGroupsOther"] | escape }}</p>
+            {% else %}
+              <p>Other</p>
+            {% endif %}
+          {% else %}
+            <p>{{ participantGroupMap[value] or value }}</p>
+          {% endif %}
+        {% endfor %}
+      </dd>
+      <dd class="govuk-summary-list__actions">
+        <a class="govuk-link" href="/project-scope/participants">Change<span class="govuk-visually-hidden"> participant groups</span></a>
+      </dd>
+    </div>
+  {% endif %}
+
 
         {% if (data['researchActivities'])|length %}
         <div class="govuk-summary-list__row">
@@ -369,7 +393,7 @@
       <h2 class="govuk-heading-m">Build your project</h2>
       <p class="govuk-body">By submitting these configuration criteria, you will be generating a a project build that will guide you through approvals.</p>
 
-      <form action="/my-research/project-success" method="post" novalidate>
+      <form action="/my-research/success" method="post" novalidate>
         <input type="hidden" name="answers-checked" value="true">
         {{ govukButton({ text: "Build project" }) }}
       </form>

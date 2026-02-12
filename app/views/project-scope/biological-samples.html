@@ -1,0 +1,63 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form method="post" novalidate>
+        <span class="govuk-caption-l">{{ data['projectTitle'] or "Project title"}}</span>
+
+        {{ govukRadios({
+          idPrefix: "isBioSample",
+          classes: "govuk-radios--inline",
+          name: "isBioSample",
+          value: data["isBioSample"],
+          fieldset: {
+            legend: {
+              text: "Will you be taking or using any human biological samples?",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l" 
+            }
+          },
+          errorMessage: errorMap and errorMap["isBioSample"],
+          items: [
+            { value: "yes", text: "Yes" },
+            { value: "no", text: "No" }
+          ]
+        }) }}
+
+        {{ govukDetails({
+          summaryText: "Unsure if your project meets this criteria?",
+          text: ""
+        }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Save and continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Save for later",
+            classes: "govuk-button--secondary",
+            href: "/my-research"
+          }) }}
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

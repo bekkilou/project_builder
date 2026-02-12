@@ -1,0 +1,99 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  My research – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBreadcrumbs({
+  items: [
+    {
+      text: "My account",
+      href: "#"
+    }
+  ]
+}) }}
+{% endblock %}
+
+{% block content %}
+
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full-width">
+
+      <h1 class="govuk-heading-l">
+        My research
+      </h1>
+
+      {{ govukTable({
+        attributes: {
+          "data-module": "moj-sortable-table"
+        },
+        caption: "",
+        head: [
+          {
+            text: "Short project title",
+            attributes: {
+              "aria-sort": "ascending"
+            }
+          },
+          {
+            text: "Reference ID",
+            attributes: {
+              "aria-sort": "none"
+            }
+          },
+          {
+            text: "Date created",
+            attributes: {
+              "aria-sort": "none"
+            }
+          },
+          {
+            text: "Status",
+            attributes: {
+              "aria-sort": "none"
+            }
+          }
+        ],
+        rows: [
+          [
+            {
+              html: "<a href='/project-scope/start'>" + data.projectTitle + "</a>"
+            },
+            {
+              text: data['projectReference']
+            },
+            {
+              text: data['submissionDate']
+            },
+            {
+              html: govukTag({
+                text: "Draft"
+              })
+            }
+          ]
+        ]
+      }) }}
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full-width">
+        <h2 class="govuk-heading-m">Add project</h2>
+        <p>
+          You can create a new project, or create a project record for an existing project.
+        </P>
+        {{ govukButton({
+          text: "Create new project",
+          href: "/my-research/create-project-details",
+          isStartButton: false
+        }) }}
+          &nbsp;
+        <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+          Create project record for existing project
+        </button>
+      </div>
+  </div>
+
+
+{% endblock %}

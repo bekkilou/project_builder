@@ -1,0 +1,92 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+{% set sponsorOrgItem = [
+  { value: "airedaleNHS", text: "Airedale NHS Foundation Trust" },
+  { value: "astraZeneca", text: "AstraZeneca UK Limited" },
+  { value: "belfastHSC", text: "Belfast Health and Social Care Trust" },
+  { value: "cambridgeUni", text: "Cambridge University Hospitals NHS Foundation Trust" },
+  { value: "cardiffLHB", text: "Cardiff & Vale University LHB" },
+  { value: "cardiffUni", text: "Cardiff University" },
+  { value: "derbyshireNHS", text: "Derbyshire Healthcare NHS Foundation Trust" },
+  { value: "eastLancsNHS", text: "East Lancashire Hospitals NHS Trust" },
+  { value: "greaterGlasgow", text: "Greater Glasgow and Clyde" },
+  { value: "guysStThomas", text: "Guy's and St Thomas' NHS Foundation Trust" },
+  { value: "imperialCollege", text: "Imperial College Healthcare NHS Trust" },
+  { value: "lifescanScot", text: "Lifescan Scotland Ltd." },
+  { value: "prifysgolAber", text: "Prifysgol Aberystwyth" },
+  { value: "queenVHos", text: "Queen Victoria Hospital NHS Foundation Trust" },
+  { value: "uniHosSouth", text: "University Hospital Southampton NHS Foundation Trust" },
+  { value: "uOfAber", text: "University of Aberdeen" },
+  { value: "uOfBir", text: "University of Birmingham" },
+  { value: "uOfBri", text: "University of Bristol" },
+  { value: "uOfEdi", text: "University of Edinburgh" },
+  { value: "uOfMan", text: "University of Manchester" }
+] %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Primary sponsor organisation
+      </h1>
+
+      <form class="form" action="/my-research/create-CI" method="post">
+        <p>
+          Start typing to see suggestions and select an organisation
+          </p>
+
+          {% from "govuk/components/select/macro.njk" import govukSelect %}
+
+          {{ govukSelect({
+            id: "primary-sponsor",
+            name: "primarySponsor",
+            value: data['primarySponsor'],
+            items: sponsorOrgItem
+          }) }}
+
+        {% from "govuk/components/details/macro.njk" import govukDetails %}
+
+        {{ govukDetails({
+          summaryText: "Can't find your sponsor organisation?",
+          html: "<p style='margin: 0;'>You can improve your search results by:</p>
+            <ul style='margin: 0;'>
+              <li>double checking your spelling</li>
+              <li>using fewer keywords</li>
+              <li>searching for something specific</li>
+            </ul>
+            <p>If you still can't find the organisation you're looking for contact the service desk with the name and address of the organisation you want to add.</p>
+            <p>Service desk email: <a href='mailto:service.desk@hra.nhs.uk'>service.desk@hra.nhs.uk</a></p>
+            <p>Phone:<br />020 7104 8260<br />Monday to Friday, 9am to 6pm</p>"
+        }) }}
+
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Save and continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Save for later",
+            classes: "govuk-button--secondary",
+            href: "/my-research-record"
+          }) }}
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

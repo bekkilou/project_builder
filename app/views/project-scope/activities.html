@@ -90,19 +90,21 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      <h1 class="govuk-heading-l">
+      <!--<h1 class="govuk-heading-l">
         {{ data['projectTitle'] or "Project title"}} Configuration
-      </h1>
+      </h1>-->
 
       <form method="post" novalidate>
+        <span class="govuk-caption-l">{{ data['projectTitle'] or "Project title"}}</span>
       {{ govukCheckboxes({
         idPrefix: "researchActivities",
         name: "researchActivities",
         values: data["researchActivities"],
         fieldset: {
           legend: {
-            text: "Select which activities will be involved in this project",
-            isPageHeading: false
+            text: "Which activities will be involved in this project",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
           }
         },
         hint: { text: "Select all that apply" },
@@ -118,7 +120,7 @@
         {{ govukButton({
           text: "Save for later",
           classes: "govuk-button--secondary",
-          href: "/my-research"
+          href: "/my-research-w-record"
         }) }}
       </div>
       </form>

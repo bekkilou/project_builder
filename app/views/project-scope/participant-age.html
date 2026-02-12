@@ -26,7 +26,7 @@
 {% endif %}
 
 {# --- Work out Scotland state --- #}
-{% set includesScotland = "scotland" in selectedNations %}
+{% set includesScotland = "Scotland" in selectedNations %}
 {% set onlyScotland = includesScotland and (selectedNations | length == 1) %}
 
 {# --- Build items based on the three modes --- #}
@@ -61,12 +61,13 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
-      <h1 class="govuk-heading-l">
-        {{ data['projectTitle'] or "Project title"}} Configuration
-      </h1>
-
-      <form method="post" novalidate>
+      <!--
+          <h1 class="govuk-heading-l">
+            {{ data['projectTitle'] or "Project title"}} Configuration
+          </h1>
+      -->
+          <form method="post" novalidate>
+            <span class="govuk-caption-l">{{ data['projectTitle'] or "Project title"}}</span>
 
         {{ govukCheckboxes({
           idPrefix: "adultsAndChildren",
@@ -75,7 +76,8 @@
           fieldset: {
             legend: {
               text: "Are you involving adults or children in your project?",
-              isPageHeading: false
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l"
             }
           },
           hint: { text: "Select all that apply" },
@@ -90,7 +92,7 @@
           {{ govukButton({
             text: "Save for later",
             classes: "govuk-button--secondary",
-            href: "/my-research"
+            href: "/my-research-w-record"
           }) }}
         </div>
 

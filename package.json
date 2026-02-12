@@ -9,6 +9,7 @@
     "@govuk-prototype-kit/step-by-step": "2.2.4",
     "@govuk-prototype-kit/task-list": "2.0.0",
     "@ministryofjustice/frontend": "^8.0.0",
+    "accessible-autocomplete": "^3.0.1",
     "govuk-frontend": "5.13.0",
     "govuk-prototype-kit": "13.18.1",
     "hmrc-frontend": "6.105.0",

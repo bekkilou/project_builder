@@ -1,0 +1,93 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form class="form" action="/my-research/create-project-check" method="post">
+
+        {% from "govuk/components/radios/macro.njk" import govukRadios %}
+        {% from "govuk/components/input/macro.njk" import govukInput %}
+
+        {% set addChiefHtml %}
+        {{ govukInput({
+          id: "add-chief-01",
+          name: "addChief01",
+          classes: "govuk-!-width-one-half",
+          label: {
+            text: "First name"
+          }
+        }) }}
+        {{ govukInput({
+          id: "add-chief-02",
+          name: "addChief02",
+          classes: "govuk-!-width-one-half",
+          label: {
+            text: "Last name"
+          }
+        }) }}
+        {{ govukInput({
+          id: "add-chief-03",
+          name: "addChief03",
+          classes: "govuk-!-width-one-half",
+          label: {
+            text: "Email"
+          }
+        }) }}
+        {% endset -%}
+
+
+        {{ govukRadios({
+          name: "contact",
+          fieldset: {
+            legend: {
+              text: "Chief Investigator",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l"
+            }
+          },
+          items: [
+            {
+              value: "itsMe",
+              text: "I am the Chief Investigator",
+              checked: true
+            },
+            {
+              value: "addCI",
+              text: "I need to add a Chief Investigator",
+              conditional: {
+                html: addChiefHtml
+              }
+            }
+          ]
+        }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Save and continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Save for later",
+            classes: "govuk-button--secondary",
+            href: "/my-research-record"
+          }) }}
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}
