@@ -89,11 +89,7 @@
     "all": "Consent will be obtained from or on behalf of all participants",
     "none": "Consent will not be obtained from or on behalf of any participants",
     "some": "Consent will be obtained from or on behalf of participants in some situations",
-    "already": "Consent has already been obtained from or on behalf of participants for use of their previously-collected data or human biological samples",
-    "Consent will be obtained from or on behalf of all participants": "Consent will be obtained from or on behalf of all participants",
-    "Consent will not be obtained from or on behalf of any participants": "Consent will not be obtained from or on behalf of any participants",
-    "Consent will be obtained from or on behalf of participants in some situations": "Consent will be obtained from or on behalf of participants in some situations",
-    "Consent has already been obtained from or on behalf of participants for use of their previously-collected data or human biological samples": "Consent has already been obtained from or on behalf of participants for use of their previously-collected data or human biological samples"
+    "already": "Consent has already been obtained from or on behalf of participants for use of their previously-collected data or human biological samples"
   } %}
 
   {% set noConsentMap = {
@@ -131,14 +127,246 @@
     "child_u16": "Children (under 16 years of age)"
   } %}
 
+  {# ----------------------------
+   Normalise arrays
+----------------------------- #}
+
+{% set participantGroups = data["participantGroups"] or [] %}
+{% if participantGroups is string %}{% set participantGroups = [participantGroups] %}{% endif %}
+
+{% set researchActivities = data["researchActivities"] or [] %}
+{% if researchActivities is string %}{% set researchActivities = [researchActivities] %}{% endif %}
+
+{% set noConsent = data["noConsent"] or [] %}
+{% if noConsent is string %}{% set noConsent = [noConsent] %}{% endif %}
+
+{% set hmppsNations = data["hmppsNations"] or [] %}
+{% if hmppsNations is string %}{% set hmppsNations = [hmppsNations] %}{% endif %}
+
+{# UKNations: array of lowercase strings #}
+{% set selectedNations = data["UKNations"] or [] %}
+{% if selectedNations is string %}{% set selectedNations = [selectedNations] %}{% endif %}
+
+{% set ukNations = [] %}
+{% for n in selectedNations %}
+  {% if n %}
+    {% set ukNations = ukNations.concat((n | trim | lower)) %}
+  {% endif %}
+{% endfor %}
+
+{% set includesEngland = "england" in ukNations %}
+{% set includesWales = "wales" in ukNations %}
+{% set includesScotland = "scotland" in ukNations %}
+{% set includesNI = ("northern ireland" in ukNations) or ("northern_ireland" in ukNations) or ("ni" in ukNations) %}
+
+{# ----------------------------
+   Core yes/no flags
+----------------------------- #}
+
+{% set isCTIMP = (data["isCTIMP"] | lower) == "yes" %}
+{% set ctimpCombined = (data["ctimpCombined"] | lower) %}
+{% set isCombinedCTIMP = ctimpCombined == "ctimp-and-device" %}
+
+{% set isDeviceStudy = (data["isClinical"] | lower) == "yes" %}
+{% set involvesIonising = (data["isIonising"] | lower) == "yes" %}
+{% set involvesBioSamples = (data["isBioSample"] | lower) == "yes" %}
+
+{% set involvesHMPPS = (data["isHMPPS"] | lower) == "yes" %}
+{% set involvesMOD = (data["isMOD"] | lower) == "yes" %}
+{% set hfeaMode = (data["isHFEA"] | lower) %}  {# regulated-activities | register-data | no #}
+
+{# NHS/HSC involvement inferred from participant groups #}
+{% set involvesNhsOrHsc =
+  ("nhs_patients_service_users" in participantGroups) or
+  ("nhs_hsc_staff" in participantGroups)
+%}
+
+{# Any signal that this looks like a research project (so we can show REC) #}
+{% set hasAnyResearchSignal =
+  (participantGroups | length > 0) or
+  (researchActivities | length > 0) or
+  isCTIMP or isCombinedCTIMP or isDeviceStudy or involvesIonising or involvesBioSamples or
+  (data["participantConsent"] and (data["participantConsent"] | length > 0)) or
+  involvesHMPPS or involvesMOD or (hfeaMode and hfeaMode != "")
+%}
+
+{# ----------------------------
+   No-consent signals (keys you are using on this page)
+----------------------------- #}
+
+{% set usesIdentifiableWithoutConsent =
+  ("identifiable_data_usual_care_team" in noConsent) or
+  ("identifiable_data_no_legal_basis" in noConsent)
+%}
+
+{# (Optional) other “no consent” situations you might later use #}
+{% set adultsLackCapacity = ("adult_lacks_capacity" in noConsent) %}
+
+{# ----------------------------
+   “Needs X” rules
+----------------------------- #}
+
+{# Pre-submission assurances #}
+{% set needsRadiationAssurance = involvesIonising %}
+{% set needsPharmacyAssurance = isCTIMP and involvesNhsOrHsc %}
+
+{# Committee reviews #}
+{% set needsUKApprovals = involvesNhsOrHsc %}
+{% set needsREC = hasAnyResearchSignal %}
+
+{# CAG / PBPP based on UKNations (as requested) #}
+{# Only show these when the user indicates identifiable data access without consent/legal basis. #}
+{% set needsCAG = usesIdentifiableWithoutConsent and (includesEngland or includesWales) %}
+{% set needsPBPP = usesIdentifiableWithoutConsent and includesScotland %}
+
+{# Authorisations and permissions #}
+{% set needsMHRA = isCTIMP or isCombinedCTIMP or isDeviceStudy %}
+{# You don’t have a separate ARSAC-scope question yet; best-effort: tie to ionising radiation. #}
+{% set needsARSAC = involvesIonising %}
+
+{# HMPPS permissions per nation (driven by hmppsNations, not UKNations) #}
+{% set hmppsNationsLower = [] %}
+{% for n in hmppsNations %}
+  {% if n %}
+    {% set hmppsNationsLower = hmppsNationsLower.concat((n | trim | lower)) %}
+  {% endif %}
+{% endfor %}
+
+{% set needsHMPPSPermission = involvesHMPPS and (("england" in hmppsNationsLower) or ("wales" in hmppsNationsLower)) %}
+{% set needsSPSPermission = involvesHMPPS and ("scotland" in hmppsNationsLower) %}
+{% set needsNIPSPermission = involvesHMPPS and (("northern ireland" in hmppsNationsLower) or ("northern_ireland" in hmppsNationsLower)) %}
+
+{% set needsHFEA = hfeaMode and hfeaMode != "no" %}
+
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds-from-desktop">
 
       <h1 class="govuk-heading-xl">
-        Check your answers before your pathway is configured
+        Review your approvals pathway and project scope
       </h1>
+      <p>
+        Based on the information you have provided, this page outlines the approvals, permissions, reviews and authorisations that are likely to be required for your project.
+      </p>
+      <p>
+        You can return to the scoping questions to change your answers and update the results at any time.
+      </p>
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-s">Pre-submission assurances</h2>
 
-      <h2 class="govuk-heading-m">Section title</h2>
+      {{ govukDetails({
+        summaryText: "Pre-submission advice (optional)",
+        text: "If you would like to, you can submit your proposed activities and protocol for pre-application advice before you formally submit your application to the review bodies for the study."
+      }) }}
+
+      {% if needsRadiationAssurance %}
+        {{ govukDetails({
+          summaryText: "Radiation assurance",
+          text: "Apply for radiation assurance and make any changes needed to the proposed activities and the protocol that arise from that review."
+        }) }}
+      {% endif %}
+
+      {% if needsPharmacyAssurance %}
+        {{ govukDetails({
+          summaryText: "Pharmacy assurance",
+          text: "Pharmacy assurance is required for CTIMPs taking place in the NHS. This review takes place before formal submission to the other review bodies. Submit your application for pharmacy assurance and make any changes needed to the proposed activities and protocol that arise from that review."
+        }) }}
+      {% endif %}
+    </div>
+
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-s">Committee reviews and approvals</h2>
+
+      {% if needsUKApprovals %}
+        {{ govukDetails({
+          summaryText: "UK Approvals",
+          text: "A UK-wide review is needed to provide assurances to NHS organisations undertaking research activities in the UK."
+        }) }}
+      {% endif %}
+
+      {% if needsREC %}
+        {{ govukDetails({
+          summaryText: "Research Ethics Committee (REC) review",
+          text: "A favourable opinion from an NHS REC is needed before one or more study activities can take place. A single NHS REC opinion can cover activities across the UK."
+        }) }}
+      {% endif %}
+
+      {% if needsCAG %}
+        {{ govukDetails({
+          summaryText: "Confidentiality Advisory Group (CAG) review",
+          text: "CAG review may be required if you need access to identifiable patient or care data without consent or another legal basis in England or Wales."
+        }) }}
+      {% endif %}
+
+      {% if needsPBPP %}
+        {{ govukDetails({
+          summaryText: "PBPP review",
+          text: "PBPP review may be required if you need access to identifiable patient or care data without consent or another legal basis in Scotland."
+        }) }}
+      {% endif %}
+    </div>
+
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-s">Authorisations and permissions</h2>
+
+      {% if needsARSAC %}
+        {{ govukDetails({
+          summaryText: "Administration of Radioactive Substances Advisory Committee (ARSAC) authorisation",
+          text: "ARSAC authorisation may be required for some research involving ionising radiation."
+        }) }}
+      {% endif %}
+
+      {% if needsMHRA %}
+        {{ govukDetails({
+          summaryText: "Medicines and Healthcare products Regulatory Agency (MHRA) authorisation",
+          text: "MHRA authorisation may be required for CTIMPs and some medical device investigations."
+        }) }}
+      {% endif %}
+
+      {% if involvesMOD %}
+        {{ govukDetails({
+          summaryText: "Ministry of Defence (MOD) permission",
+          text: "MOD permission may be required for activities under the responsibility of the Ministry of Defence."
+        }) }}
+      {% endif %}
+
+      {% if needsHMPPSPermission %}
+        {{ govukDetails({
+          summaryText: "His Majesty's Prison and Probation Service (HMPPS) permission",
+          text: "Permission from HMPPS is needed before activities involving prisoners, young offenders in custody, or people supervised by probation services can take place in England or Wales."
+        }) }}
+      {% endif %}
+
+      {% if needsSPSPermission %}
+        {{ govukDetails({
+          summaryText: "Scottish Prison Service permission",
+          text: "Permission from the Scottish Prison Service is needed before activities involving people in custody can take place in Scotland."
+        }) }}
+      {% endif %}
+
+      {% if needsNIPSPermission %}
+        {{ govukDetails({
+          summaryText: "Northern Ireland Prison Service permission",
+          text: "Permission from the Northern Ireland Prison Service is needed before activities involving people in custody can take place in Northern Ireland."
+        }) }}
+      {% endif %}
+
+      {% if needsHFEA %}
+        {{ govukDetails({
+          summaryText: "HFEA approval or permission",
+          text: "HFEA approval or permission may be required for activities regulated by the Human Fertilisation and Embryology Authority, or for access to data from the HFEA register."
+        }) }}
+      {% endif %}
+    </div>
+  </div>
+  <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full-width">
+
+      <h2 class="govuk-heading-m">Check the answers to your scoping questions</h2>
 
       <dl class="govuk-summary-list govuk-!-margin-bottom-9">
 
@@ -391,7 +619,7 @@
       </dl>
 
       <h2 class="govuk-heading-m">Build your project</h2>
-      <p class="govuk-body">By submitting these configuration criteria, you will be generating a a project build that will guide you through approvals.</p>
+      <p class="govuk-body">By submitting these configuration criteria, you will be generating a project build that will guide you through approvals.</p>
 
       <form action="/my-research/success" method="post" novalidate>
         <input type="hidden" name="answers-checked" value="true">
