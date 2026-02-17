@@ -8,6 +8,13 @@ https://prototype-kit.service.gov.uk/docs/how-to-use-layouts
 {% block stylesheets %}
   {{ super() }}
   <link href="/public/css/components.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="/public/css/accessible-autocomplete.min.css">
+
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script src="/public/javascripts/accessible-autocomplete.min.js"></script>
 {% endblock %}
 {% block header %}
 

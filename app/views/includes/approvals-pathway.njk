@@ -1,0 +1,18 @@
+{% set pathway = data.approvalsPathway %}
+
+{% if pathway and pathway.sections and pathway.sections.length %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% for section in pathway.sections %}
+        <h2 class="govuk-heading-s">{{ section.heading }}</h2>
+
+        {% for item in section.items %}
+          {{ govukDetails({
+            summaryText: item.summaryText,
+            text: item.text
+          }) }}
+        {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}

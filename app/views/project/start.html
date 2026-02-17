@@ -60,10 +60,10 @@
             rows: [
               {
                 key: {
-                  text: "IRAS ID"
+                  text: "Project reference"
                 },
                 value: {
-                  text: "{generated IRAS ID}"
+                  text: data['projectReference']
                 }
               },
               {
@@ -71,7 +71,7 @@
                   text: "Short project title"
                 },
                 value: {
-                  text: "ASSESS-meso"
+                  text: data['projectTitle']
                 }
               },
               {
@@ -79,7 +79,7 @@
                   text: "Full project title"
                 },
                 value: {
-                  html: "A prospective observational cohort study collecting data on demographics, symptoms and biomarkers in people with mesothelioma that wil provide a resource for future trials"
+                  text: data['fullProjectTitle']
                 }
               }
             ]
@@ -87,6 +87,8 @@
 
           <div class="">
             <h2 class="govuk-heading-m">Approval pathways</h2>
+            {% include "includes/approvals-pathway.njk" %}
+
           </div>
 
           <div class="">

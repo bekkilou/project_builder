@@ -43,19 +43,13 @@
         Primary sponsor organisation
       </h1>
 
-      <form class="form" action="/my-research/create-CI" method="post">
+      <form class="form" action="/my-research/create-CI" method="post" autocomplete="off">
         <p>
           Start typing to see suggestions and select an organisation
           </p>
+          <div id="autocomplete-container" style="padding-bottom: 15px;"></div>
 
-          {% from "govuk/components/select/macro.njk" import govukSelect %}
 
-          {{ govukSelect({
-            id: "primary-sponsor",
-            name: "primarySponsor",
-            value: data['primarySponsor'],
-            items: sponsorOrgItem
-          }) }}
 
         {% from "govuk/components/details/macro.njk" import govukDetails %}
 
@@ -85,7 +79,6 @@
           }) }}
         </div>
       </form>
-
     </div>
   </div>
 

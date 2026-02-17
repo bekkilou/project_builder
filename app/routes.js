@@ -402,7 +402,7 @@ router.post('/project-scope/hmpps', function (req, res) {
 })
 
 // MOD -> HFEA
-router.post('/project-scope/project-scope-mod', function (req, res) {
+router.post('/project-scope/mod', function (req, res) {
   const data = req.session.data
   const errors = []
 
@@ -431,4 +431,12 @@ router.post('/project-scope/hfea', function (req, res) {
   }
 
   return res.redirect('/project-scope/check')
+})
+
+// routes.js
+const { buildApprovalsPathway } = require('./helpers/approvals-pathway')
+
+router.get('/project-scope/check', (req, res) => {
+  req.session.data.approvalsPathway = buildApprovalsPathway(req.session.data)
+  res.render('project-scope/check') // your template filename
 })

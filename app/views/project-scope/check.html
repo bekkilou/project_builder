@@ -127,7 +127,7 @@
     "child_u16": "Children (under 16 years of age)"
   } %}
 
-  {# ----------------------------
+{# ----------------------------
    Normalise arrays
 ----------------------------- #}
 
@@ -194,13 +194,15 @@
    No-consent signals (keys you are using on this page)
 ----------------------------- #}
 
-{% set usesIdentifiableWithoutConsent =
-  ("identifiable_data_usual_care_team" in noConsent) or
-  ("identifiable_data_no_legal_basis" in noConsent)
-%}
+{% set noConsent = data["noConsent"] or [] %}
+{% if noConsent is string %}{% set noConsent = [noConsent] %}{% endif %}
 
-{# (Optional) other “no consent” situations you might later use #}
-{% set adultsLackCapacity = ("adult_lacks_capacity" in noConsent) %}
+{% set noConsentIdentifiableUsualCare = "identifiable_data_usual_care_team" in noConsent %}
+{% set noConsentIdentifiableNoLegalBasis = "identifiable_data_no_legal_basis" in noConsent %}
+
+{% set usesIdentifiableWithoutConsent =
+  noConsentIdentifiableUsualCare or noConsentIdentifiableNoLegalBasis
+%}
 
 {# ----------------------------
    “Needs X” rules
@@ -254,6 +256,9 @@
     </div>
   </div>
   <div class="govuk-grid-row">
+
+  {# ------------------ Pre-submission assurances ------------------ #}
+  {% if needsRadiationAssurance or needsPharmacyAssurance %}
     <div class="govuk-grid-column-two-thirds">
       <h2 class="govuk-heading-s">Pre-submission assurances</h2>
 
@@ -276,7 +281,11 @@
         }) }}
       {% endif %}
     </div>
+  {% endif %}
 
+
+  {# ------------------ Committee reviews and approvals ------------------ #}
+  {% if needsUKApprovals or needsREC or needsCAG or needsPBPP %}
     <div class="govuk-grid-column-two-thirds">
       <h2 class="govuk-heading-s">Committee reviews and approvals</h2>
 
@@ -308,7 +317,11 @@
         }) }}
       {% endif %}
     </div>
+  {% endif %}
 
+
+  {# ------------------ Authorisations and permissions ------------------ #}
+  {% if needsARSAC or needsMHRA or involvesMOD or needsHMPPSPermission or needsSPSPermission or needsNIPSPermission or needsHFEA %}
     <div class="govuk-grid-column-two-thirds">
       <h2 class="govuk-heading-s">Authorisations and permissions</h2>
 
@@ -361,7 +374,10 @@
         }) }}
       {% endif %}
     </div>
-  </div>
+  {% endif %}
+
+</div>
+
   <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full-width">
@@ -406,7 +422,7 @@
             {% endfor %}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/my-research/project-scope-activities">Change<span class="govuk-visually-hidden"> research activities</span></a>
+            <a class="govuk-link" href="/project-scope/activities">Change<span class="govuk-visually-hidden"> research activities</span></a>
           </dd>
         </div>
         {% endif %}
@@ -420,7 +436,7 @@
             {{ yesNoMap[data['isCTIMP']] or data['isCTIMP'] }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/my-research/project-scope-ctimp">Change<span class="govuk-visually-hidden"> clinical trial</span></a>
+            <a class="govuk-link" href="/project-scope/ctimp">Change<span class="govuk-visually-hidden"> clinical trial</span></a>
           </dd>
         </div>
 
@@ -434,7 +450,7 @@
               {{ ctimpCombinedMap[data['ctimpCombined'] or data['CTIMPCombined'] or data['CTIMPcombined']] or (data['ctimpCombined'] or data['CTIMPCombined'] or data['CTIMPcombined']) }}
             </dd>
             <dd class="govuk-summary-list__actions">
-              <a class="govuk-link" href="/my-research/project-scope-ctimp">Change<span class="govuk-visually-hidden"> CTIMP type</span></a>
+              <a class="govuk-link" href="/project-scope/ctimp">Change<span class="govuk-visually-hidden"> CTIMP type</span></a>
             </dd>
           </div>
           {% endif %}
@@ -451,7 +467,7 @@
           {% endfor %}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/my-research/project-scope-participant-age">Change<span class="govuk-visually-hidden"> adults or children</span></a>
+            <a class="govuk-link" href="/project-scope/participant-age">Change<span class="govuk-visually-hidden"> adults or children</span></a>
           </dd>
         </div>
 
@@ -466,7 +482,7 @@
               {% endfor %}
             </dd>
             <dd class="govuk-summary-list__actions">
-              <a class="govuk-link" href="/my-research/project-scope-participant-age-range">Change<span class="govuk-visually-hidden"> child age ranges</span></a>
+              <a class="govuk-link" href="/project-scope/participant-age-range">Change<span class="govuk-visually-hidden"> child age ranges</span></a>
             </dd>
           </div>
           {% endif %}
@@ -482,7 +498,7 @@
               {% endfor %}
             </dd>
             <dd class="govuk-summary-list__actions">
-              <a class="govuk-link" href="/my-research/project-scope-participant-age-range">Change<span class="govuk-visually-hidden"> adult age ranges</span></a>
+              <a class="govuk-link" href="/project-scope/participant-age-range">Change<span class="govuk-visually-hidden"> adult age ranges</span></a>
             </dd>
           </div>
           {% endif %}
@@ -497,7 +513,7 @@
             {{ yesNoMap[data['isClinical']] or data['isClinical'] }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/my-research/project-scope-additional">Change<span class="govuk-visually-hidden"> medical device study</span></a>
+            <a class="govuk-link" href="/project-scope/clinical-investigation">Change<span class="govuk-visually-hidden"> medical device study</span></a>
           </dd>
         </div>
         {% endif %}
@@ -511,7 +527,7 @@
             {{ yesNoMap[data['isIonising']] or data['isIonising'] }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/my-research/project-scope-additional">Change<span class="govuk-visually-hidden"> ionising radiation</span></a>
+            <a class="govuk-link" href="/project-scope/ionising-radiation">Change<span class="govuk-visually-hidden"> ionising radiation</span></a>
           </dd>
         </div>
         {% endif %}
@@ -525,7 +541,7 @@
             {{ yesNoMap[data['isBioSample']] or data['isBioSample'] }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/my-research/project-scope-additional">Change<span class="govuk-visually-hidden"> biological samples</span></a>
+            <a class="govuk-link" href="/project-scope/biological-samples">Change<span class="govuk-visually-hidden"> biological samples</span></a>
           </dd>
         </div>
         {% endif %}
@@ -539,7 +555,7 @@
             {{ participantConsentMap[data['participantConsent']] or data['participantConsent'] }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/my-research/project-scope-participant-consent">Change<span class="govuk-visually-hidden"> participant consent</span></a>
+            <a class="govuk-link" href="/project-scope/consent">Change<span class="govuk-visually-hidden"> participant consent</span></a>
           </dd>
         </div>
         {% endif %}
@@ -555,7 +571,7 @@
             {% endfor %}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/my-research/project-scope-participant-consent">Change<span class="govuk-visually-hidden"> situations where consent is not obtained</span></a>
+            <a class="govuk-link" href="/project-scope/participant-consent">Change<span class="govuk-visually-hidden"> situations where consent is not obtained</span></a>
           </dd>
         </div>
         {% endif %}
@@ -569,7 +585,7 @@
             {{ isCapableMap[data['isCapable']] or data['isCapable'] }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/my-research/project-scope-participant-consent">Change<span class="govuk-visually-hidden"> capacity to consent</span></a>
+            <a class="govuk-link" href="/project-scope/participant-consent">Change<span class="govuk-visually-hidden"> capacity to consent</span></a>
           </dd>
         </div>
         {% endif %}
@@ -583,7 +599,7 @@
             {{ yesNoMap[data['isHMPPS']] or data['isHMPPS'] }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/my-research/project-scope-hmpps">Change<span class="govuk-visually-hidden"> HMPPS involvement</span></a>
+            <a class="govuk-link" href="/project-scope/hmpps">Change<span class="govuk-visually-hidden"> HMPPS involvement</span></a>
           </dd>
         </div>
         {% endif %}
@@ -597,7 +613,7 @@
             {{ yesNoMap[data['isMOD']] or data['isMOD'] }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/my-research/project-scope-mod">Change<span class="govuk-visually-hidden"> MOD involvement</span></a>
+            <a class="govuk-link" href="/project-scope/mod">Change<span class="govuk-visually-hidden"> MOD involvement</span></a>
           </dd>
         </div>
         {% endif %}
@@ -611,7 +627,7 @@
             {{ isHFEAMap[data['isHFEA']] or data['isHFEA'] }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/my-research/project-scope-hfea">Change<span class="govuk-visually-hidden"> HFEA involvement</span></a>
+            <a class="govuk-link" href="/project-scope/hfea">Change<span class="govuk-visually-hidden"> HFEA involvement</span></a>
           </dd>
         </div>
         {% endif %}
@@ -621,7 +637,7 @@
       <h2 class="govuk-heading-m">Build your project</h2>
       <p class="govuk-body">By submitting these configuration criteria, you will be generating a project build that will guide you through approvals.</p>
 
-      <form action="/my-research/success" method="post" novalidate>
+      <form action="/project-scope/success" method="post" novalidate>
         <input type="hidden" name="answers-checked" value="true">
         {{ govukButton({ text: "Build project" }) }}
       </form>

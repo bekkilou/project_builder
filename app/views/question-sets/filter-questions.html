@@ -67,15 +67,14 @@
 ] %}
 
 {% set noConsentItems = [
-  { value: "for the use of non-identifiable patient or care data by the research team", text: "For the use of non-identifiable patient or care data by the research team" },
-  { value: "for access to identifiable patient or care data by the usual care team (including identification of potential participants)", text: "For access to identifiable patient or care data by the usual care team (including identification of potential participants)" },
-  { value: "for access to identifiable patient or care data by people without an existing legal basis (including identification of potential participants)", text: "For access to identifiable patient or care data by people without an existing legal basis (including identification of potential participants)" },
-  { value: "for the use of previously collected non-identifiable human biological samples", text: "For the use of previously collected non-identifiable human biological samples" },
-  { value: "for the use of previously collected identifiable human biological samples without relevant consent for their use in this project", text: "For the use of previously collected identifiable human biological samples without relevant consent for their use in this project" },
-  { value: "when adults do not have capacity to consent to their participation", text: "When adults do not have capacity to consent to their participation" },
-  { value: "Other", text: "Other" }
+  { value: "non_identifiable_patient_data", text: "For the use of non-identifiable patient or care data by the research team" },
+  { value: "identifiable_data_usual_care_team", text: "For access to identifiable patient or care data by the usual care team (including identification of potential participants)" },
+  { value: "identifiable_data_no_legal_basis", text: "For access to identifiable patient or care data by people without an existing legal basis (including identification of potential participants)" },
+  { value: "previously_collected_non_identifiable_biosamples", text: "For the use of previously collected non-identifiable human biological samples" },
+  { value: "previously_collected_identifiable_biosamples_no_consent", text: "For the use of previously collected identifiable human biological samples without relevant consent for their use in this project" },
+  { value: "adult_lacks_capacity", text: "When adults do not have capacity to consent to their participation" },
+  { value: "other", text: "Other" }
 ] %}
-
 {% set hmppsNationItems = [
   { value: "England", text: "England" },
   { value: "Northern Ireland", text: "Northern Ireland" },
@@ -83,12 +82,181 @@
   { value: "Wales", text: "Wales" }
 ] %}
 
+
+{% set sponsorOrgItem = [
+  { value: "airedaleNHS", text: "Airedale NHS Foundation Trust" },
+  { value: "astraZeneca", text: "AstraZeneca UK Limited" },
+  { value: "belfastHSC", text: "Belfast Health and Social Care Trust" },
+  { value: "cambridgeUni", text: "Cambridge University Hospitals NHS Foundation Trust" },
+  { value: "cardiffLHB", text: "Cardiff & Vale University LHB" },
+  { value: "cardiffUni", text: "Cardiff University" },
+  { value: "derbyshireNHS", text: "Derbyshire Healthcare NHS Foundation Trust" },
+  { value: "eastLancsNHS", text: "East Lancashire Hospitals NHS Trust" },
+  { value: "greaterGlasgow", text: "Greater Glasgow and Clyde" },
+  { value: "guysStThomas", text: "Guy's and St Thomas' NHS Foundation Trust" },
+  { value: "imperialCollege", text: "Imperial College Healthcare NHS Trust" },
+  { value: "lifescanScot", text: "Lifescan Scotland Ltd." },
+  { value: "prifysgolAber", text: "Prifysgol Aberystwyth" },
+  { value: "queenVHos", text: "Queen Victoria Hospital NHS Foundation Trust" },
+  { value: "uniHosSouth", text: "University Hospital Southampton NHS Foundation Trust" },
+  { value: "uOfAber", text: "University of Aberdeen" },
+  { value: "uOfBir", text: "University of Birmingham" },
+  { value: "uOfBri", text: "University of Bristol" },
+  { value: "uOfEdi", text: "University of Edinburgh" },
+  { value: "uOfMan", text: "University of Manchester" }
+] %}
+
+
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
 
     <h1 class="govuk-heading-xl">All questions in the filter</h1>
 
     <form class="form" action="#" method="post">
+
+
+
+
+              {{ govukInput({
+                label: {
+                  text: "Short project title",
+                  classes: "govuk-label--m"
+                },
+                id: "projectTitle",
+                name: "projectTitle",
+                value: data["projectTitle"]
+              }) }}
+
+              {{ govukTextarea({
+                name: "fullProjectTitle",
+                id: "fullProjectTitle",
+                label: {
+                  text: "Full project title",
+                  classes: "govuk-label--m"
+                },
+                value: data['fullProjectTitle']
+              }) }}
+
+
+
+                      {{ govukCheckboxes({
+                        idPrefix: "UKNations",
+                        name: "UKNations",
+                        values: data["UKNations"],
+                        fieldset: {
+                          legend: { text: "Which UK nations do you want your poject to take place in?" }
+                        },
+                        hint: { text: "Select all that apply" },
+                        items: [
+                          {
+                            value: "England",
+                            text: "England"
+                          },
+                          {
+                            value: "Northern Ireland",
+                            text: "Northern Ireland"
+                          },
+                          {
+                            value: "Scotland",
+                            text: "Scotland"
+                          },
+                          {
+                            value: "Wales",
+                            text: "Wales"
+                          }
+                        ]
+                      }) }}
+
+                      {{ govukRadios({
+                        name: "nhs-hsc-org",
+                        value: data['nhs-hsc-org'],
+                        classes: "govuk-radios--inline",
+                        fieldset: {
+                          legend: {
+                            text: "Is this project taking place at any NHS / HSC organisations?",
+                            isPageHeading: false
+                          }
+                        },
+                        hint: {
+                        },
+                        items: [
+                          {
+                            value: "Yes",
+                            text: "Yes"
+                          },
+                          {
+                            value: "No",
+                            text: "No"
+                          }
+                        ]
+                      }) }}
+
+                      {% from "govuk/components/select/macro.njk" import govukSelect %}
+                      <h3 class="govuk-heading-m">Sponsor organisation</h3>
+                      <p>
+                        Start typing to see suggestions and select an organisation
+                        </p>
+                        <div id="autocomplete-container" style="padding-bottom: 15px;"></div>
+
+
+
+                      {% from "govuk/components/radios/macro.njk" import govukRadios %}
+                      {% from "govuk/components/input/macro.njk" import govukInput %}
+
+                      {% set addChiefHtml %}
+                      {{ govukInput({
+                        id: "add-chief-01",
+                        name: "addChief01",
+                        classes: "govuk-!-width-one-half",
+                        label: {
+                          text: "First name"
+                        }
+                      }) }}
+                      {{ govukInput({
+                        id: "add-chief-02",
+                        name: "addChief02",
+                        classes: "govuk-!-width-one-half",
+                        label: {
+                          text: "Last name"
+                        }
+                      }) }}
+                      {{ govukInput({
+                        id: "add-chief-03",
+                        name: "addChief03",
+                        classes: "govuk-!-width-one-half",
+                        label: {
+                          text: "Email"
+                        }
+                      }) }}
+                      {% endset -%}
+
+
+                      {{ govukRadios({
+                        name: "contact",
+                        fieldset: {
+                          legend: {
+                            text: "Chief Investigator",
+                            isPageHeading: true,
+                            classes: "govuk-fieldset__legend--l"
+                          }
+                        },
+                        items: [
+                          {
+                            value: "itsMe",
+                            text: "I am the Chief Investigator",
+                            checked: true
+                          },
+                          {
+                            value: "addCI",
+                            text: "I need to add a Chief Investigator",
+                            conditional: {
+                              html: addChiefHtml
+                            }
+                          }
+                        ]
+                      }) }}
+
+
 
       <h2 class="govuk-heading-m">Participant groups</h2>
       {{ govukCheckboxes({
@@ -237,33 +405,37 @@
 
       <h2 class="govuk-heading-m">Participant consent</h2>
 
-      {{ govukRadios({
-        name: "participantConsent",
-        value: data["participantConsent"],
-        fieldset: {
-          legend: {
-            text: "Will you seek consent from or on behalf of participants?"
-          }
-        },
-        items: [
-          { value: "all", text: "Consent will be obtained from or on behalf of all participants" },
-          { value: "none", text: "Consent will not be obtained from or on behalf of any participants" },
-          { value: "some", text: "Consent will be obtained from or on behalf of participants in some situations" },
-          { value: "already", text: "Consent has already been obtained from or on behalf of participants for use of their previously-collected data or human biological samples" }
-        ]
-      }) }}
 
-      {{ govukCheckboxes({
-        name: "noConsent",
-        values: data["noConsent"],
-        fieldset: {
-          legend: {
-            text: "Select all the situations when consent or assent will not be obtained."
-          }
-        },
-        hint: { text: "Select all that apply" },
-        items: noConsentItems
-      }) }}
+                  {{ govukRadios({
+                    idPrefix: "participantConsent",
+                    name: "participantConsent",
+                    value: data["participantConsent"],
+                    fieldset: {
+                      legend: { text: "Will you seek consent from or on behalf of participants?" }
+                    },
+                    errorMessage: errorMap and errorMap["participantConsent"],
+                    items: [
+                      { value: "all", text: "Consent will be obtained from or on behalf of all participants" },
+                      { value: "none", text: "Consent will not be obtained from or on behalf of any participants" },
+                      { value: "some", text: "Consent will be obtained from or on behalf of participants in some situations" },
+                      { value: "already", text: "Consent has already been obtained from or on behalf of participants for use of their previously-collected data or human biological samples" }
+                    ]
+                  }) }}
+
+
+                  {# Follow-up questions (routes enforce when required) #}
+                  {{ govukCheckboxes({
+                    idPrefix: "noConsent",
+                    name: "noConsent",
+                    values: data["noConsent"],
+                    fieldset: {
+                      legend: { text: "Select all the situations when consent or assent will not be obtained." }
+                    },
+                    hint: { text: "Select all that apply" },
+                    errorMessage: errorMap and errorMap["noConsent"],
+                    items: noConsentItems
+                  }) }}
+
 
       {{ govukRadios({
         classes: "govuk-radios",
