@@ -16,9 +16,10 @@
       {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
       {{ govukInsetText({
-        html: '<strong>IRAS ID:</strong> {generated ID} <br />
-        <strong>Short project title:</strong> ASSESS-meso <br />
-        <strong>Project phase:</strong> Build'
+        html: '<strong>Project reference:</strong> '+ data.projectReference +' <br />
+        <strong>Short project title:</strong>'+ data.projectTitle +'<br />
+        <strong>Project phase:</strong> {Build}/{Assurances and reviews}/{Live}/{Modifications}/{Withdrawn}/{Ended}<br />
+        <strong>Status:</strong> A reusable, global status'
       }) }}
     </div>
     <div class="govuk-grid-column-one-third" style="text-align: right;">
@@ -335,6 +336,43 @@
         <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="2">
         </div>
         <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="3">
+        </div>
+        <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="4">
+          {{ govukSummaryList({
+            card: {
+              title: {
+                text: "History"
+              }
+            },
+            rows: [
+              {
+                key: {
+                  text: "Dummy content"
+                },
+                value: {
+                  text: "Dummy content"
+                }
+              },
+              {
+                key: {
+                  text: "Dummy content"
+                },
+                value: {
+                  text: 'Dummy content'
+                }
+              },
+              {
+                key: {
+                  text: "Dummy content"
+                },
+                value: {
+                  text: 'Dummy content'
+                }
+              }
+            ]
+          }) }}
+        </div>
+        <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="5">
           {{ govukTable({
             attributes: {
               "data-module": "moj-sortable-table"
@@ -405,40 +443,137 @@
             ]
           }) }}
         </div>
-        <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="4">
-          {{ govukSummaryList({
-            card: {
-              title: {
-                text: "History"
+        <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="6">
+          {%- from "moj/components/timeline/macro.njk" import mojTimeline -%}
+          {%- set confirmationHtml %}
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras non felis risus. Curabitur nec ante vitae felis ullamcorper tincidunt.</p>
+          <a class="govuk-button govuk-!-margin-bottom-0" href="#">Continue</a>
+          {% endset -%}
+
+          {%- set detailsHtml %}
+          <details class="govuk-details govuk-!-margin-bottom-0">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Application details
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            Ut quam nunc, vulputate ac metus pharetra, posuere maximus velit. <a class="govuk-link" href="#">Etiam nec interdum velit.</a> Suspendisse molestie lectus in eros ornare
+          </div>
+          </details>
+          {% endset -%}
+
+          {%- set listHtml %}
+          <ul class="govuk-list govuk-list--bullet">
+            <li><a class="govuk-link" href="#">Item 1</a></li>
+            <li><a class="govuk-link" href="#">Item 2</a></li>
+          </ul>
+          {% endset -%}
+
+          {%- set documentsHtml %}
+          <ul class="moj-timeline__documents">
+            <li class="moj-timeline__document-item">
+              <a class="govuk-link" href="#">
+                <svg class="moj-timeline__document-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 20" width="20" height="16">
+                  <path d="M9 7V1.5L14.5 7H9zM2 0C.9 0 0 .9 0 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6l-6-6H2z"/>
+                </svg>
+                Document 1
+              </a>
+            </li>
+            <li class="moj-timeline__document-item">
+              <a class="govuk-link" href="#">
+                <svg class="moj-timeline__document-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 20" width="20" height="16">
+                  <path d="M9 7V1.5L14.5 7H9zM2 0C.9 0 0 .9 0 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6l-6-6H2z"/>
+                </svg>
+                Document 2
+              </a>
+            </li>
+          </ul>
+          {% endset -%}
+
+          {{ mojTimeline({
+          items: [
+            {
+              label: {
+                text: "Application requires confirmation"
+              },
+              html: confirmationHtml,
+              datetime: {
+                timestamp: "2019-06-14T14:01:00.000Z",
+                type: "datetime"
+              },
+              byline: {
+                text: "Joe Bloggs"
               }
             },
-            rows: [
-              {
-                key: {
-                  text: "Dummy content"
-                },
-                value: {
-                  text: "Dummy content"
-                }
+            {
+              label: {
+                text:  "Application review in progress"
               },
-              {
-                key: {
-                  text: "Dummy content"
-                },
-                value: {
-                  text: 'Dummy content'
-                }
+              text: "Your application is being reviewed by one of our case workers.",
+              datetime: {
+                timestamp: "2019-06-07T12:32:00.000Z",
+                type: "datetime"
               },
-              {
-                key: {
-                  text: "Dummy content"
-                },
-                value: {
-                  text: 'Dummy content'
-                }
+              byline: {
+                text: "Caseworker 1"
               }
-            ]
+            },
+            {
+              label: {
+                text:  "Application received"
+              },
+              text: "Your application has been received – reference MOJ-1234-5678",
+              datetime: {
+                timestamp: "2019-06-06T09:12:00.000Z",
+                type: "datetime"
+              },
+              byline: {
+                text: "Caseworker 1"
+              }
+            },
+            {
+              label: {
+                text:  "Application submitted"
+              },
+              html: detailsHtml,
+              datetime: {
+                timestamp: "2019-05-28T10:45:00.000Z",
+                type: "datetime"
+              },
+              byline: {
+                text: "Joe Bloggs"
+              }
+            },
+            {
+              label: {
+                text:  "Documents uploaded"
+              },
+              html: documentsHtml,
+              datetime: {
+                timestamp: "2019-05-28T10:15:00.000Z",
+                type: "datetime"
+              },
+              byline: {
+                text: "Joe Bloggs"
+              }
+            },
+            {
+              label: {
+                text:  "Application started"
+              },
+              html: listHtml,
+              datetime: {
+                timestamp: "2019-05-21T13:15:00.000Z",
+                type: "datetime"
+              },
+              byline: {
+                text: "Joe Bloggs"
+              }
+            }
+          ]
           }) }}
+
         </div>
       </div>
 
