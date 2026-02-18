@@ -405,7 +405,7 @@
         {% endfor %}
       </dd>
       <dd class="govuk-summary-list__actions">
-        <a class="govuk-link" href="/project-scope/participants">Change<span class="govuk-visually-hidden"> participant groups</span></a>
+        <a class="govuk-link" href="/project-scope/participants?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> participant groups</span></a>
       </dd>
     </div>
   {% endif %}
@@ -422,7 +422,7 @@
             {% endfor %}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/project-scope/activities">Change<span class="govuk-visually-hidden"> research activities</span></a>
+            <a class="govuk-link" href="/project-scope/activities?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> research activities</span></a>
           </dd>
         </div>
         {% endif %}
@@ -436,7 +436,7 @@
             {{ yesNoMap[data['isCTIMP']] or data['isCTIMP'] }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/project-scope/ctimp">Change<span class="govuk-visually-hidden"> clinical trial</span></a>
+            <a class="govuk-link" href="/project-scope/ctimp?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> clinical trial</span></a>
           </dd>
         </div>
 
@@ -450,7 +450,7 @@
               {{ ctimpCombinedMap[data['ctimpCombined'] or data['CTIMPCombined'] or data['CTIMPcombined']] or (data['ctimpCombined'] or data['CTIMPCombined'] or data['CTIMPcombined']) }}
             </dd>
             <dd class="govuk-summary-list__actions">
-              <a class="govuk-link" href="/project-scope/ctimp">Change<span class="govuk-visually-hidden"> CTIMP type</span></a>
+              <a class="govuk-link" href="/project-scope/ctimp?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> CTIMP type</span></a>
             </dd>
           </div>
           {% endif %}
@@ -467,7 +467,7 @@
           {% endfor %}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/project-scope/participant-age">Change<span class="govuk-visually-hidden"> adults or children</span></a>
+            <a class="govuk-link" href="/project-scope/participant-age?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> adults or children</span></a>
           </dd>
         </div>
 
@@ -482,7 +482,7 @@
               {% endfor %}
             </dd>
             <dd class="govuk-summary-list__actions">
-              <a class="govuk-link" href="/project-scope/participant-age-range">Change<span class="govuk-visually-hidden"> child age ranges</span></a>
+              <a class="govuk-link" href="/project-scope/participant-age-range?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> child age ranges</span></a>
             </dd>
           </div>
           {% endif %}
@@ -498,7 +498,7 @@
               {% endfor %}
             </dd>
             <dd class="govuk-summary-list__actions">
-              <a class="govuk-link" href="/project-scope/participant-age-range">Change<span class="govuk-visually-hidden"> adult age ranges</span></a>
+              <a class="govuk-link" href="/project-scope/participant-age-range?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> adult age ranges</span></a>
             </dd>
           </div>
           {% endif %}
@@ -513,7 +513,7 @@
             {{ yesNoMap[data['isClinical']] or data['isClinical'] }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/project-scope/clinical-investigation">Change<span class="govuk-visually-hidden"> medical device study</span></a>
+            <a class="govuk-link" href="/project-scope/clinical-investigation?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> medical device study</span></a>
           </dd>
         </div>
         {% endif %}
@@ -527,7 +527,7 @@
             {{ yesNoMap[data['isIonising']] or data['isIonising'] }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/project-scope/ionising-radiation">Change<span class="govuk-visually-hidden"> ionising radiation</span></a>
+            <a class="govuk-link" href="/project-scope/ionising-radiation?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> ionising radiation</span></a>
           </dd>
         </div>
         {% endif %}
@@ -541,7 +541,7 @@
             {{ yesNoMap[data['isBioSample']] or data['isBioSample'] }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/project-scope/biological-samples">Change<span class="govuk-visually-hidden"> biological samples</span></a>
+            <a class="govuk-link" href="/project-scope/biological-samples?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> biological samples</span></a>
           </dd>
         </div>
         {% endif %}
@@ -555,7 +555,7 @@
             {{ participantConsentMap[data['participantConsent']] or data['participantConsent'] }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/project-scope/consent">Change<span class="govuk-visually-hidden"> participant consent</span></a>
+            <a class="govuk-link" href="/project-scope/consent?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> participant consent</span></a>
           </dd>
         </div>
         {% endif %}
@@ -571,7 +571,7 @@
             {% endfor %}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/project-scope/participant-consent">Change<span class="govuk-visually-hidden"> situations where consent is not obtained</span></a>
+            <a class="govuk-link" href="/project-scope/participant-consent?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> situations where consent is not obtained</span></a>
           </dd>
         </div>
         {% endif %}
@@ -585,7 +585,7 @@
             {{ isCapableMap[data['isCapable']] or data['isCapable'] }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/project-scope/participant-consent">Change<span class="govuk-visually-hidden"> capacity to consent</span></a>
+            <a class="govuk-link" href="/project-scope/participant-consent?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> capacity to consent</span></a>
           </dd>
         </div>
         {% endif %}
@@ -599,7 +599,7 @@
             {{ yesNoMap[data['isHMPPS']] or data['isHMPPS'] }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/project-scope/hmpps">Change<span class="govuk-visually-hidden"> HMPPS involvement</span></a>
+            <a class="govuk-link" href="/project-scope/hmpps?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> HMPPS involvement</span></a>
           </dd>
         </div>
         {% endif %}
@@ -613,7 +613,7 @@
             {{ yesNoMap[data['isMOD']] or data['isMOD'] }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/project-scope/mod">Change<span class="govuk-visually-hidden"> MOD involvement</span></a>
+            <a class="govuk-link" href="/project-scope/mod?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> MOD involvement</span></a>
           </dd>
         </div>
         {% endif %}
@@ -627,7 +627,7 @@
             {{ isHFEAMap[data['isHFEA']] or data['isHFEA'] }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="/project-scope/hfea">Change<span class="govuk-visually-hidden"> HFEA involvement</span></a>
+            <a class="govuk-link" href="/project-scope/hfea?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> HFEA involvement</span></a>
           </dd>
         </div>
         {% endif %}

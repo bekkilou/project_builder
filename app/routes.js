@@ -84,42 +84,67 @@ router.post('/project-scope/participants', function (req, res) {
   // Cleanup: restrict researchActivities based on participantGroups
   // ----------------------------
 
-  const isDeceasedOnly =
-    participantGroups.includes('deceased') && participantGroups.length === 1
+  // ----------------------------
+// Cleanup: restrict researchActivities based on participantGroups
+// ----------------------------
 
-  const isStaffOnly =
-    participantGroups.length > 0 &&
-    participantGroups.every(v => v === 'nhs_hsc_staff' || v === 'other_care_staff')
+const isDeceasedOnly =
+  participantGroups.includes('deceased') && participantGroups.length === 1
 
-  let allowedActivities = null
+const isStaffOnly =
+  participantGroups.length > 0 &&
+  participantGroups.every(v => v === 'nhs_hsc_staff' || v === 'other_care_staff')
 
-  if (isDeceasedOnly) {
-    allowedActivities = new Set([
-      'previously_collected_data',
-      'previously_collected_biosamples'
-    ])
-  } else if (isStaffOnly) {
-    allowedActivities = new Set([
-      'non_clinical_staff_activities',
-      'non_clinical_people_interviews_surveys'
-    ])
+// NEW: staff + deceased (and no other participant groups)
+const isStaffAndDeceasedOnly =
+  participantGroups.includes('deceased') &&
+  participantGroups.some(v => v === 'nhs_hsc_staff' || v === 'other_care_staff') &&
+  participantGroups.every(v =>
+    v === 'deceased' || v === 'nhs_hsc_staff' || v === 'other_care_staff'
+  )
+
+let allowedActivities = null
+
+if (isStaffAndDeceasedOnly) {
+  // Only show: non-clinical staff + previously collected (deceased) options
+  allowedActivities = new Set([
+    'non_clinical_staff_activities',
+    'non_clinical_people_interviews_surveys',
+    'previously_collected_data',
+    'previously_collected_biosamples'
+  ])
+} else if (isDeceasedOnly) {
+  allowedActivities = new Set([
+    'previously_collected_data',
+    'previously_collected_biosamples'
+  ])
+} else if (isStaffOnly) {
+  allowedActivities = new Set([
+    'non_clinical_staff_activities',
+    'non_clinical_people_interviews_surveys'
+  ])
+}
+
+if (allowedActivities) {
+  const currentActivities = asArray(data['researchActivities'])
+  data['researchActivities'] = currentActivities.filter(v => allowedActivities.has(v))
+
+  // Also clear CTIMP answers if "treatment" is now impossible (or cleared)
+  if (!data['researchActivities'].includes('treatment')) {
+    delete data['isCTIMP']
+    delete data['ctimpCombined']
   }
+}
 
-  if (allowedActivities) {
-    const currentActivities = asArray(data['researchActivities'])
-    data['researchActivities'] = currentActivities.filter(v => allowedActivities.has(v))
+const returnTo = req.query.returnTo
+if (returnTo) {
+  return res.redirect(returnTo)
+}
+return res.redirect('/project-scope/activities')
 
-    // Also clear CTIMP answers if "treatment" is now impossible (or cleared)
-    if (!data['researchActivities'].includes('treatment')) {
-      delete data['isCTIMP']
-      delete data['ctimpCombined']
-    }
-  }
-
-  return res.redirect('/project-scope/activities')
 })
 
-// Activities -> CTIMP (if Treatment selected) else Participant age
+// Activities -> CTIMP (if Treatment selected) else Participant age (unless deceased/staff -> consent)
 router.post('/project-scope/activities', function (req, res) {
   const data = req.session.data
   const errors = []
@@ -134,17 +159,42 @@ router.post('/project-scope/activities', function (req, res) {
     return renderWithErrors(res, 'project-scope/activities', errors)
   }
 
+  const participantGroups = asArray(data['participantGroups'])
+
+  const hasDeceased = participantGroups.includes('deceased')
+  const hasStaff =
+    participantGroups.includes('nhs_hsc_staff') ||
+    participantGroups.includes('other_care_staff')
+
+  const skipParticipantAge = hasDeceased || hasStaff
+
   const TREATMENT = 'treatment'
   const hasTreatment = researchActivities.includes(TREATMENT)
 
-  // Clear CTIMP answers if treatment is not selected
+  // If no treatment, CTIMP is irrelevant
   if (!hasTreatment) {
     clear(data, ['isCTIMP', 'ctimpCombined'])
+
+    // Skip participant-age for deceased and/or staff -> go straight to consent
+    if (skipParticipantAge) {
+      const returnTo = req.query.returnTo
+      if (returnTo) return res.redirect(returnTo)
+      return res.redirect('/project-scope/participant-consent')
+    }
+
+    const returnTo = req.query.returnTo
+    if (returnTo) return res.redirect(returnTo)
     return res.redirect('/project-scope/participant-age')
   }
 
+  // Treatment selected -> go to CTIMP
+  const returnTo = req.query.returnTo
+  if (returnTo) {
+    return res.redirect(returnTo)
+  }
   return res.redirect('/project-scope/ctimp')
 })
+
 
 // CTIMP -> Participant age
 router.post('/project-scope/ctimp', function (req, res) {
@@ -170,7 +220,10 @@ router.post('/project-scope/ctimp', function (req, res) {
   if (isCTIMP === 'no') {
     clear(data, ['ctimpCombined'])
   }
-
+  const returnTo = req.query.returnTo
+  if (returnTo) {
+    return res.redirect(returnTo)
+  }
   return res.redirect('/project-scope/participant-age')
 })
 
@@ -200,6 +253,10 @@ router.post('/project-scope/participant-age', function (req, res) {
   if (!involvesAdults) clear(data, ['adultAge'])
   if (!involvesChildren) clear(data, ['childAge'])
 
+  const returnTo = req.query.returnTo
+  if (returnTo) {
+    return res.redirect(returnTo)
+  }
   return res.redirect('/project-scope/participant-age-range')
 })
 
@@ -237,6 +294,11 @@ router.post('/project-scope/participant-age-range', function (req, res) {
   if (!involvesAdults) clear(data, ['adultAge'])
   if (!involvesChildren) clear(data, ['childAge'])
 
+  const returnTo = req.query.returnTo
+if (returnTo) {
+  return res.redirect(returnTo)
+}
+
   return res.redirect('/project-scope/clinical-investigation')
 })
 
@@ -256,6 +318,10 @@ router.post('/project-scope/clinical-investigation', function (req, res) {
     return renderWithErrors(res, 'project-scope/clinical-investigation', errors)
   }
 
+  const returnTo = req.query.returnTo
+if (returnTo) {
+  return res.redirect(returnTo)
+}
   return res.redirect('/project-scope/ionising-radiation')
 })
 
@@ -272,6 +338,10 @@ router.post('/project-scope/ionising-radiation', function (req, res) {
     return renderWithErrors(res, 'project-scope/ionising-radiation', errors)
   }
 
+  const returnTo = req.query.returnTo
+  if (returnTo) {
+    return res.redirect(returnTo)
+  }
   return res.redirect('/project-scope/biological-samples')
 })
 
@@ -288,6 +358,11 @@ router.post('/project-scope/biological-samples', function (req, res) {
     return renderWithErrors(res, 'project-scope/biological-samples', errors)
   }
 
+
+  const returnTo = req.query.returnTo
+  if (returnTo) {
+    return res.redirect(returnTo)
+  }
   return res.redirect('/project-scope/participant-consent')
 })
 
@@ -323,6 +398,10 @@ router.post('/project-scope/participant-consent', function (req, res) {
     return res.redirect('/project-scope/hmpps')
   }
 
+  const returnTo = req.query.returnTo
+  if (returnTo) {
+    return res.redirect(returnTo)
+  }
   return res.redirect('/project-scope/mod')
 })
 
@@ -369,6 +448,11 @@ router.post('/project-scope/participant-consent-not-obtained', function (req, re
     return res.redirect('/project-scope/hmpps')
   }
 
+
+  const returnTo = req.query.returnTo
+  if (returnTo) {
+    return res.redirect(returnTo)
+  }
   return res.redirect('/project-scope/mod')
 })
 
@@ -398,6 +482,11 @@ router.post('/project-scope/hmpps', function (req, res) {
     clear(data, ['hmppsNations'])
   }
 
+
+  const returnTo = req.query.returnTo
+  if (returnTo) {
+    return res.redirect(returnTo)
+  }
   return res.redirect('/project-scope/mod')
 })
 
@@ -414,6 +503,11 @@ router.post('/project-scope/mod', function (req, res) {
     return renderWithErrors(res, 'project-scope/mod', errors)
   }
 
+
+  const returnTo = req.query.returnTo
+  if (returnTo) {
+    return res.redirect(returnTo)
+  }
   return res.redirect('/project-scope/hfea')
 })
 

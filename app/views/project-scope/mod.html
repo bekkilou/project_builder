@@ -22,19 +22,22 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
+<!--
       <h1 class="govuk-heading-l">
         {{ data['projectTitle'] or "Project title"}} Configuration
       </h1>
-
+-->
       <form method="post" novalidate>
+        <span class="govuk-caption-l">{{ data['projectTitle'] or "Project title"}}</span>
       {{ govukRadios({
         idPrefix: "isMOD",
         classes: "govuk-radios--inline",
         name: "isMOD",
         value: data["isMOD"],
         fieldset: {
-          legend: { text: "Will this project involve any activity under the responsibility of the Ministry of Defence (MOD)?" }
+          legend: { text: "Will this project involve any activity under the responsibility of the Ministry of Defence (MOD)?",
+          isPageHeading: true,
+          classes: "govuk-fieldset__legend--l" }
         },
         errorMessage: errorMap and errorMap["isMOD"],
         items: [

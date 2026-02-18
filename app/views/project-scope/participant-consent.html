@@ -16,18 +16,23 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
+<!--
       <h1 class="govuk-heading-l">
         {{ data['projectTitle'] or "Project title"}} Configuration
       </h1>
+      -->
       <form method="post" novalidate>
-
+        <span class="govuk-caption-l">{{ data['projectTitle'] or "Project title"}}</span>
             {{ govukRadios({
               idPrefix: "participantConsent",
               name: "participantConsent",
               value: data["participantConsent"],
               fieldset: {
-                legend: { text: "Will you seek consent from or on behalf of participants?" }
+                legend: {
+                  text: "Will you seek consent from or on behalf of participants?",
+                  isPageHeading: true,
+                  classes: "govuk-fieldset__legend--l"
+                }
               },
               errorMessage: errorMap and errorMap["participantConsent"],
               items: [

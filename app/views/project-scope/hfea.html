@@ -22,18 +22,21 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      <h1 class="govuk-heading-l">
+<!--      <h1 class="govuk-heading-l">
         {{ data['projectTitle'] or "Project title"}} Configuration
       </h1>
-
+-->
       <form method="post" novalidate>
+        <span class="govuk-caption-l">{{ data['projectTitle'] or "Project title"}}</span>
       {{ govukRadios({
         idPrefix: "isHFEA",
         classes: "govuk-radios",
         name: "isHFEA",
         value: data["isHFEA"],
         fieldset: {
-          legend: { text: "Will this project involve activities or data regulated by the Human Fertilisation and Embryology Authority (HFEA)?" }
+          legend: { text: "Will this project involve activities or data regulated by the Human Fertilisation and Embryology Authority (HFEA)?",
+          isPageHeading: true,
+          classes: "govuk-fieldset__legend--l" }
         },
         errorMessage: errorMap and errorMap["isHFEA"],
         items: [
