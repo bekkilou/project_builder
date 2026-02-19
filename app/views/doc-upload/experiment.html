@@ -1,0 +1,43 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Heading or question goes here
+      </h1>
+
+      <form action="/doc-upload/extract" method="post" enctype="multipart/form-data">
+    {{ govukFileUpload({
+      id: "uploaded_doc",
+      name: "uploaded_doc",
+      label: { text: "Upload your completed Word document (.docx)" }
+    }) }}
+
+    {{ govukButton({ text: "Continue" }) }}
+  </form>
+
+  {% if data['docx-upload-error'] %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: [{ text: data['docx-upload-error'], href: "#uploaded_doc" }]
+    }) }}
+  {% endif %}
+
+    </div>
+  </div>
+
+{% endblock %}

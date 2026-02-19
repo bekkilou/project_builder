@@ -29,12 +29,27 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
+<!--
       <h1 class="govuk-heading-l">
         {{ data['projectTitle'] or "Project title"}} Configuration
       </h1>
-
+-->
       <form method="post" novalidate>
+<span class="govuk-caption-l">{{ data['projectTitle'] or "Project title"}}</span>
+
+{% set hmppsHtml %}
+      {{ govukCheckboxes({
+        idPrefix: "hmppsNations",
+        name: "hmppsNations",
+        values: data["hmppsNations"],
+        fieldset: {
+          legend: { text: "In which UK nations will you include those participants?",classes: "govuk-fieldset__legend--m" }
+        },
+        hint: { text: "Select all that apply" },
+        errorMessage: errorMap and errorMap["hmppsNations"],
+        items: hmppsNationItems
+      }) }}
+      {% endset %}
 
       {{ govukRadios({
         idPrefix: "isHMPPS",
@@ -43,27 +58,23 @@
         value: data["isHMPPS"],
         fieldset: {
           legend: {
-            text: "Will you include participants who are prisoners or young offenders in custody, or offenders supervised by probation services?"
+            text: "Will you include participants who are prisoners or young offenders in custody, or offenders supervised by probation services?",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
           }
         },
         errorMessage: errorMap and errorMap["isHMPPS"],
         items: [
-          { value: "yes", text: "Yes" },
+          {
+            value: "yes",
+            text: "Yes",
+            conditional:
+              {html: hmppsHtml}
+          },
           { value: "no", text: "No" }
         ]
       }) }}
 
-      {{ govukCheckboxes({
-        idPrefix: "hmppsNations",
-        name: "hmppsNations",
-        values: data["hmppsNations"],
-        fieldset: {
-          legend: { text: "In which UK nations will you include those participants?" }
-        },
-        hint: { text: "Select all that apply" },
-        errorMessage: errorMap and errorMap["hmppsNations"],
-        items: hmppsNationItems
-      }) }}
 
         <div class="govuk-button-group">
           {{ govukButton({

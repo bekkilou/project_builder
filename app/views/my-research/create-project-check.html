@@ -114,7 +114,7 @@
               text: "Primary Sponsor"
             },
             value: {
-              text: data['primarySponsor']
+              text: data['sponsorOrg']
             },
             actions: {
               items: [
@@ -132,7 +132,7 @@
             value: { html: ciAnswerHtml },
             actions: {
               items: [
-                { href: "/my-researc/create-CI", text: "Change", visuallyHiddenText: "Chief Investigator" }
+                { href: "/my-research/create-CI", text: "Change", visuallyHiddenText: "Chief Investigator" }
               ]
             }
           }
@@ -147,7 +147,8 @@
         Once your project has been created, you can start adding your project team, funding and site details, and determining what approvals you'll need.
       </p>
 
-      <form method="post" action="/my-research-w-record" novalidate>
+      <form method="post" action="/my-research/create-project-check" novalidate>
+
 
         {{ govukButton({
           text: "Create project"
