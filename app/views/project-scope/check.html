@@ -385,7 +385,28 @@
       <h2 class="govuk-heading-m">Check the answers to your scoping questions</h2>
 
       <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">
+        Which UK nations do you want your poject to take place in?
+      </dt>
+      <dd class="govuk-summary-list__value">
+        {{ data['UKNations'] }}
+      </dd>
+      <dd class="govuk-summary-list__actions">
+        <a class="govuk-link" href="/my-research/create-research-locations?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> UK Nations</span></a>
+      </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">
+        Is the project taking place at any NHS / HSC organisations?
+      </dt>
+      <dd class="govuk-summary-list__value">
+         {{ data['nhs-hsc-org'] }}
+      </dd>
+      <dd class="govuk-summary-list__actions">
+        <a class="govuk-link" href="/my-research/create-research-locations?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> In NHS</span></a>
+      </dd>
+    </div>
         {% if (data['participantGroups'])|length %}
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">
