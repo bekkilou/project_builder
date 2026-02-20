@@ -86,10 +86,10 @@
 
 
   {% set participantConsentMap = {
-    "all": "Consent will be obtained from or on behalf of all participants",
-    "none": "Consent will not be obtained from or on behalf of any participants",
-    "some": "Consent will be obtained from or on behalf of participants in some situations",
-    "already": "Consent has already been obtained from or on behalf of participants for use of their previously-collected data or human biological samples"
+    "all": "All adults will have capacity",
+    "none": "No adults will have capacity",
+    "some": "Some adults may lack capacity",
+    "already": "Consent has already been obtained for previously collected data or samples"
   } %}
 
   {% set noConsentMap = {
@@ -107,6 +107,7 @@
     "all": "All adults will have capacity to consent for themselves as participants",
     "none": "No adults will have capacity to consent for themselves as participants",
     "some": "Some adults may lack capacity to consent for themselves as participants",
+    "already": "Consent has already been obtained for previously collected data or samples",
     "all adults will have capacity to consent for themselves as participants": "All adults will have capacity to consent for themselves as participants",
     "no adults will have capacity to consent for themselves as participants": "No adults will have capacity to consent for themselves as participants",
     "some adults may lack capacity to consent for themselves as participants": "Some adults may lack capacity to consent for themselves as participants"
@@ -384,11 +385,11 @@
 
       <h2 class="govuk-heading-m">Changing your answers may impact the reviews and assurances you require for your study.</h2>
       <p>Review the original details:</p>
-      
+
       <dl class="govuk-summary-list govuk-!-margin-bottom-9">
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">
-        Which UK nations do you want your poject to take place in?
+        Which UK nations will this project take place in?
       </dt>
       <dd class="govuk-summary-list__value">
         {{ data['UKNations'] }}
@@ -414,7 +415,7 @@
         {% if (data['participantGroups'])|length %}
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">
-        Participant groups
+        Who will take part in this project or provide data or samples?
       </dt>
       <dd class="govuk-summary-list__value">
         {% for value in data["participantGroups"] %}
@@ -439,7 +440,7 @@
         {% if (data['researchActivities'])|length %}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
-            Research activities
+            What activities will this project involve?
           </dt>
           <dd class="govuk-summary-list__value">
             {% for value in data["researchActivities"] %}
@@ -455,7 +456,7 @@
         {% if data['isCTIMP'] %}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
-            Clinical trial
+            Is this a clinical trial of an investigational medicinal product (CTIMP)?
           </dt>
           <dd class="govuk-summary-list__value">
             {{ yesNoMap[data['isCTIMP']] or data['isCTIMP'] }}
@@ -469,7 +470,7 @@
           {% if (data['isCTIMP'] == "yes" or data['isCTIMP'] == "Yes") and (data['ctimpCombined'] or data['CTIMPCombined'] or data['CTIMPcombined']) %}
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-              CTIMP type
+              What type of CTIMP is this?
             </dt>
             <dd class="govuk-summary-list__value">
               {{ ctimpCombinedMap[data['ctimpCombined'] or data['CTIMPCombined'] or data['CTIMPcombined']] or (data['ctimpCombined'] or data['CTIMPCombined'] or data['CTIMPcombined']) }}
@@ -484,7 +485,7 @@
         {% if (data['adultsAndChildren'])|length %}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
-            Are you involving adults or children in your project?
+            Will the project involve adults, children or both?
           </dt>
           <dd class="govuk-summary-list__value">
             {% for v in data["adultsAndChildren"] %}
@@ -532,7 +533,7 @@
         {% if data['isClinical'] %}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
-            Is this project a clinical investigation or other study of a medical device (including digital technology)?
+            Does this project involve a clinical investigation or other study of a medical device (including digital technology)?
           </dt>
           <dd class="govuk-summary-list__value">
             {{ yesNoMap[data['isClinical']] or data['isClinical'] }}
@@ -546,7 +547,7 @@
         {% if data['isIonising'] %}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
-            Does the project involve exposing participants to any ionising radiation?
+            Does this project involve exposing participants to ionising radiation?
           </dt>
           <dd class="govuk-summary-list__value">
             {{ yesNoMap[data['isIonising']] or data['isIonising'] }}
@@ -560,7 +561,7 @@
         {% if data['isBioSample'] %}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
-            Will you be taking or using any human biological samples?
+            Will this project involve taking or using human biological samples?
           </dt>
           <dd class="govuk-summary-list__value">
             {{ yesNoMap[data['isBioSample']] or data['isBioSample'] }}
@@ -574,7 +575,7 @@
         {% if data['participantConsent'] %}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
-            Will you seek consent from or on behalf of participants?
+            Will consent be sought from or on behalf of participants?
           </dt>
           <dd class="govuk-summary-list__value">
             {{ participantConsentMap[data['participantConsent']] or data['participantConsent'] }}
@@ -588,7 +589,7 @@
         {% if (data['noConsent'])|length %}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
-            Select all the situations when consent or assent will not be obtained
+            In which situations will consent or assent not be obtained?
           </dt>
           <dd class="govuk-summary-list__value">
             {% for v in data["noConsent"] %}
@@ -604,7 +605,7 @@
         {% if data['isCapable'] %}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
-            When recruiting adult participants, what capacity will they have to consent to their participation?
+            Will adult participants have capacity to consent for themselves?"
           </dt>
           <dd class="govuk-summary-list__value">
             {{ isCapableMap[data['isCapable']] or data['isCapable'] }}
@@ -618,7 +619,7 @@
         {% if data['isHMPPS'] %}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
-            Is your research studying the health and care of prisoners or young offenders in custody, or offenders supervised by probation services?
+            Does this project involve people in custody or under probation supervision?
           </dt>
           <dd class="govuk-summary-list__value">
             {{ yesNoMap[data['isHMPPS']] or data['isHMPPS'] }}
@@ -632,7 +633,7 @@
         {% if data['isMOD'] %}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
-            Will this project involve any activity under the responsibility of the Ministry of Defence (MOD)?
+            Does this project involve participants, sites or activity under Ministry of Defence (MOD) responsibility?
           </dt>
           <dd class="govuk-summary-list__value">
             {{ yesNoMap[data['isMOD']] or data['isMOD'] }}
@@ -646,7 +647,7 @@
         {% if data['isHFEA'] %}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
-            Will this project involve activities or data regulated by the Human Fertilisation and Embryology Authority (HFEA)?
+            Does this project involve activities or data regulated by the Human Fertilisation and Embryology Authority (HFEA)?
           </dt>
           <dd class="govuk-summary-list__value">
             {{ isHFEAMap[data['isHFEA']] or data['isHFEA'] }}
