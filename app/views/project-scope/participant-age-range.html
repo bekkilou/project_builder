@@ -33,9 +33,9 @@
     {% endif %}
   {% endfor %}
 
-  {% set includesScotland = "Scotland" in selectedNationsLower %}
+  {% set includesScotland = "scotland" in selectedNationsLower %}
   {% set onlyScotland = includesScotland and (selectedNationsLower | length == 1) %}
-  {% set scotlandAndOthers = includesScotland and (selectedNationsLower | length > 1) %}
+
 
   {# --- Base lists --- #}
   {% set childAgeItems = [

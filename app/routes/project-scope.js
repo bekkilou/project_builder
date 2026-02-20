@@ -94,10 +94,6 @@ router.post('/project-scope/participants', function (req, res) {
   return res.redirect('/project-scope/activities')
 })
 
-// Activities -> CTIMP (if Treatment selected) else Participant age
-// Skip participant-age and go straight to consent if:
-// - participant group is deceased OR staff (either staff option), OR
-// - activities selected are ONLY "previously collected data/samples"
 router.post('/project-scope/activities', function (req, res) {
   const data = req.session.data
   const errors = []
@@ -114,13 +110,17 @@ router.post('/project-scope/activities', function (req, res) {
 
   const participantGroups = asArray(data['participantGroups'])
 
-  const hasDeceased = participantGroups.includes('deceased')
-  const hasStaff =
-    participantGroups.includes('nhs_hsc_staff') ||
-    participantGroups.includes('other_care_staff')
+  // Only skip age if the participant selection is ONLY the exclusions
+  const isDeceasedOnly =
+    participantGroups.includes('deceased') && participantGroups.length === 1
 
-  const skipAgeBecauseGroups = hasDeceased || hasStaff
+  const isStaffOnly =
+    participantGroups.length > 0 &&
+    participantGroups.every(v => v === 'nhs_hsc_staff' || v === 'other_care_staff')
 
+  const skipAgeBecauseGroups = isDeceasedOnly || isStaffOnly
+
+  const TREATMENT = 'treatment'
   const hasTreatment = researchActivities.includes(TREATMENT)
 
   // "Previously collected" activities
@@ -129,7 +129,7 @@ router.post('/project-scope/activities', function (req, res) {
     'previously_collected_biosamples'
   ])
 
-  // Only skip age for "previously collected..." if EVERYTHING selected is in that set.
+  // Only skip age if EVERYTHING selected is in that set
   const activitiesAreAllAgeSkippable =
     researchActivities.length > 0 &&
     researchActivities.every(a => ageSkippableActivities.has(a))
@@ -138,57 +138,32 @@ router.post('/project-scope/activities', function (req, res) {
 
   const returnTo = req.query.returnTo
 
-  // Treatment selected -> go to CTIMP
+  // If exclusions apply, skip straight to consent (and clear downstream answers)
+  if (shouldSkipParticipantAge) {
+    clear(data, [
+      'isCTIMP',
+      'ctimpCombined',
+      'adultsAndChildren',
+      'adultAge',
+      'childAge'
+    ])
+    if (returnTo) return res.redirect(returnTo)
+    return res.redirect('/project-scope/participant-consent')
+  }
+
+  // Not excluded: if treatment selected, ask CTIMP first, then age
   if (hasTreatment) {
     if (returnTo) return res.redirect(returnTo)
     return res.redirect('/project-scope/ctimp')
   }
 
-  // No treatment -> CTIMP is irrelevant
+  // No treatment: CTIMP irrelevant
   clear(data, ['isCTIMP', 'ctimpCombined'])
 
-  // If deceased/staff OR ONLY previously collected -> consent
-  if (shouldSkipParticipantAge) {
-    if (returnTo) return res.redirect(returnTo)
-    return res.redirect('/project-scope/participant-consent')
-  }
-
-  // Otherwise -> participant age
+  // Always ask participant age if not excluded
   if (returnTo) return res.redirect(returnTo)
   return res.redirect('/project-scope/participant-age')
 })
-
-// CTIMP -> Participant age
-router.post('/project-scope/ctimp', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  const isCTIMP = data['isCTIMP'] // yes/no
-  const ctimpCombined = data['ctimpCombined'] // only required if yes
-
-  if (!isCTIMP) {
-    addError(errors, 'isCTIMP', 'Select whether this project is a CTIMP')
-  }
-
-  if (isCTIMP === 'yes' && !ctimpCombined) {
-    addError(errors, 'ctimpCombined', 'Select the option that applies to your CTIMP project')
-  }
-
-  if (errors.length) {
-    return renderWithErrors(res, 'project-scope/ctimp', errors)
-  }
-
-  // Cleanup: if CTIMP is no, combined is irrelevant
-  if (isCTIMP === 'no') {
-    clear(data, ['ctimpCombined'])
-  }
-
-  const returnTo = req.query.returnTo
-  if (returnTo) return res.redirect(returnTo)
-
-  return res.redirect('/project-scope/participant-age')
-})
-
 // Participant age -> Age ranges
 router.post('/project-scope/participant-age', function (req, res) {
   const data = req.session.data
