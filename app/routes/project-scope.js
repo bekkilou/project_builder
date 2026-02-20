@@ -20,7 +20,7 @@ function hasClinicalOrTreatmentActivities(data) {
 
 // Decide what comes after age-range
 function nextAfterAgeRange(data) {
-  const isCTIMPYes = data['isCTIMP'] === 'yes'
+  const isCTIMPYes = String(data['isCTIMP'] || '').toLowerCase() === 'yes'
   const hasClinicalOrTreatment = hasClinicalOrTreatmentActivities(data)
 
   // Clinical investigation should only come up if CTIMP == yes
@@ -164,6 +164,39 @@ router.post('/project-scope/activities', function (req, res) {
   if (returnTo) return res.redirect(returnTo)
   return res.redirect('/project-scope/participant-age')
 })
+
+// CTIMP -> Participant age
+router.post('/project-scope/ctimp', function (req, res) {
+  const data = req.session.data
+  const errors = []
+
+  const rawIsCTIMP = data['isCTIMP'] // could be "yes", "Yes", etc.
+  const isCTIMP = String(rawIsCTIMP || '').toLowerCase()
+  const ctimpCombined = data['ctimpCombined'] // only required if yes
+
+  if (!rawIsCTIMP) {
+    addError(errors, 'isCTIMP', 'Select whether this project is a CTIMP')
+  }
+
+  if (isCTIMP === 'yes' && !ctimpCombined) {
+    addError(errors, 'ctimpCombined', 'Select the option that applies to your CTIMP project')
+  }
+
+  if (errors.length) {
+    return renderWithErrors(res, 'project-scope/ctimp', errors)
+  }
+
+  // Cleanup: if CTIMP is no, combined is irrelevant
+  if (isCTIMP === 'no') {
+    clear(data, ['ctimpCombined'])
+  }
+
+  const returnTo = req.query.returnTo
+  if (returnTo) return res.redirect(returnTo)
+
+  return res.redirect('/project-scope/participant-age')
+})
+
 // Participant age -> Age ranges
 router.post('/project-scope/participant-age', function (req, res) {
   const data = req.session.data
@@ -235,7 +268,7 @@ router.post('/project-scope/participant-age-range', function (req, res) {
 
   // Cleanup answers for pages we might skip
   // If not CTIMP=yes, clinical investigation is irrelevant
-  if (data['isCTIMP'] !== 'yes') {
+  if (String(data['isCTIMP'] || '').toLowerCase() !== 'yes') {
     delete data['isClinical']
   }
 
@@ -462,6 +495,11 @@ router.post('/project-scope/hfea', function (req, res) {
   return res.redirect('/project-scope/check')
 })
 
+const { buildApprovalsPathway } = require('../helpers/approvals-pathway')
 
+router.get('/project-scope/check', (req, res) => {
+  req.session.data.approvalsPathway = buildApprovalsPathway(req.session.data)
+  res.render('project-scope/check')
+})
 
 module.exports = router
