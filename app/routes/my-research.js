@@ -25,7 +25,7 @@ router.post('/my-research/create-project-check', function (req, res) {
       String(now.getDate()).padStart(2, '0')
 
     const randomPart =
-      Math.random().toString(6)
+      Math.random().toString().ToUpper().Substring(0, 6)
 
     req.session.data.projectReference = `${randomPart}`
   }
