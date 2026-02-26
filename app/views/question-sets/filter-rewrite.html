@@ -1,4 +1,5 @@
 {% extends "layouts/main.html" %}
+{% from "_partials/_question.html" import renderQuestion %}
 
 {% block pageTitle %}
   All questions in the filter – {{ serviceName }} – GOV.UK Prototype Kit
@@ -116,406 +117,62 @@
 
 
 
+        {{ renderQuestion(questions.projectTitle, data, errors, null, null, errorMap) }}
 
-              {{ govukInput({
-                label: {
-                  text: "Short project title",
-                  classes: "govuk-label--m"
-                },
-                id: "projectTitle",
-                name: "projectTitle",
-                value: data["projectTitle"]
-              }) }}
+        {{ renderQuestion(questions.fullProjectTitle, data, errors, null, null, errorMap) }}
 
-              {{ govukTextarea({
-                name: "fullProjectTitle",
-                id: "fullProjectTitle",
-                label: {
-                  text: "Full project title",
-                  classes: "govuk-label--m"
-                },
-                value: data['fullProjectTitle']
-              }) }}
+        {{ renderQuestion(questions.UKNations, data, errors, null, null, errorMap) }}
+
+        {{ renderQuestion(questions.nhsHscOrg, data, errors, null, null, errorMap) }}
+
+        {% from "govuk/components/select/macro.njk" import govukSelect %}
+        <h3 class="govuk-heading-m">Sponsor organisation</h3>
+        <p>Start typing to see suggestions and select an organisation</p>
+        <div id="autocomplete-container" style="padding-bottom: 15px;"></div>
+
+        {{ renderQuestion(questions.sponsorOrg, data, errors, null, null, errorMap) }}
+
+        {{ renderQuestion(questions.chiefInvestigator, data, errors, null, addChiefHtml, errorMap) }}
 
 
 
-                      {{ govukCheckboxes({
-                        idPrefix: "UKNations",
-                        name: "UKNations",
-                        values: data["UKNations"],
-                        fieldset: {
-                          legend: { text: "Which UK nations will this project take place in?" }
-                        },
-                        hint: { text: "Select all that apply" },
-                        items: [
-                          {
-                            value: "England",
-                            text: "England"
-                          },
-                          {
-                            value: "Northern Ireland",
-                            text: "Northern Ireland"
-                          },
-                          {
-                            value: "Scotland",
-                            text: "Scotland"
-                          },
-                          {
-                            value: "Wales",
-                            text: "Wales"
-                          }
-                        ]
-                      }) }}
-
-                      {{ govukRadios({
-                        name: "nhs-hsc-org",
-                        value: data['nhs-hsc-org'],
-                        classes: "govuk-radios--inline",
-                        fieldset: {
-                          legend: {
-                            text: "Is this project taking place at any NHS / HSC organisations?",
-                            isPageHeading: false
-                          }
-                        },
-                        hint: {
-                        },
-                        items: [
-                          {
-                            value: "Yes",
-                            text: "Yes"
-                          },
-                          {
-                            value: "No",
-                            text: "No"
-                          }
-                        ]
-                      }) }}
-
-                      {% from "govuk/components/select/macro.njk" import govukSelect %}
-                      <h3 class="govuk-heading-m">Sponsor organisation</h3>
-                      <p>
-                        Start typing to see suggestions and select an organisation
-                        </p>
-                        <div id="autocomplete-container" style="padding-bottom: 15px;"></div>
+      {{ renderQuestion(questions.participantGroups, data, errors, participantGroupItems, null, errorMap) }}
+      {{ renderQuestion(questions.researchActivities, data, errors, researchActivityItems, null, errorMap) }}
 
 
+      {% set ctimpCombinedHtml %}
+        {{ renderQuestion(questions.ctimpCombined, data, errors) }}
+      {% endset %}
 
-                      {% from "govuk/components/radios/macro.njk" import govukRadios %}
-                      {% from "govuk/components/input/macro.njk" import govukInput %}
+      {{ renderQuestion(questions.isCTIMP, data, errors, null, ctimpCombinedHtml, errorMap) }}
 
-                      {% set addChiefHtml %}
-                      {{ govukInput({
-                        id: "add-chief-01",
-                        name: "addChief01",
-                        classes: "govuk-!-width-one-half",
-                        label: {
-                          text: "First name"
-                        }
-                      }) }}
-                      {{ govukInput({
-                        id: "add-chief-02",
-                        name: "addChief02",
-                        classes: "govuk-!-width-one-half",
-                        label: {
-                          text: "Last name"
-                        }
-                      }) }}
-                      {{ govukInput({
-                        id: "add-chief-03",
-                        name: "addChief03",
-                        classes: "govuk-!-width-one-half",
-                        label: {
-                          text: "Email"
-                        }
-                      }) }}
-                      {% endset -%}
+      {{ renderQuestion(questions.adultsAndChildren, data, errors, adultsAndChildrenItems) }}
 
+      {{ renderQuestion(questions.childAge, data, errors, childAgeItems) }}
 
-                      {{ govukRadios({
-                        name: "contact",
-                        fieldset: {
-                          legend: {
-                            text: "Who is the Chief Investigator for this project?",
-                            isPageHeading: true,
-                            classes: "govuk-fieldset__legend--l"
-                          }
-                        },
-                        items: [
-                          {
-                            value: "itsMe",
-                            text: "I am the Chief Investigator",
-                            checked: true
-                          },
-                          {
-                            value: "addCI",
-                            text: "Someone else is the Chief Investigator",
-                            conditional: {
-                              html: addChiefHtml
-                            }
-                          }
-                        ]
-                      }) }}
+      {{ renderQuestion(questions.adultAge, data, errors, adultAgeItems) }}
 
+      {{ renderQuestion(questions.isClinical, data, errors, null, null, errorMap) }}
 
+      {{ renderQuestion(questions.isIonising, data, errors, null, null, errorMap) }}
 
-      <h2 class="govuk-heading-m">Participant groups</h2>
-      {{ govukCheckboxes({
-        name: "participantGroups",
-        values: data["participantGroups"],
-        errorMessage: errorMap and errorMap["participantGroups"],
-        fieldset: {
-          legend: {
-            text: "Who will take part in this project or provide data or samples?"
-          }
-        },
-        hint: { text: "Select all that apply" },
-        items: participantGroupItems
-      }) }}
+      {{ renderQuestion(questions.isBioSample, data, errors, null, null, errorMap) }}
 
-      <h2 class="govuk-heading-m">Research activities</h2>
-      {{ govukCheckboxes({
-        name: "researchActivities",
-        values: data["researchActivities"],
-        errorMessage: errorMap and errorMap["researchActivities"],
-        fieldset: {
-          legend: {
-            text: "What activities will this project involve?"
-          }
-        },
-        hint: { text: "Select all that apply" },
-        items: researchActivityItems
-      }) }}
+      {{ renderQuestion(questions.participantConsent, data, errors, null, null, errorMap) }}
 
-      <h2 class="govuk-heading-m">CTIMP</h2>
-      {{ govukRadios({
-        classes: "govuk-radios--inline",
-        name: "isCTIMP",
-        value: data["isCTIMP"],
-        errorMessage: errorMap and errorMap["isCTIMP"],
-        fieldset: {
-          legend: {
-            text: "Is this a clinical trial of an investigational medicinal product (CTIMP)?"
-          }
-        },
-        items: [
-          { value: "yes", text: "Yes" },
-          { value: "no", text: "No" }
-        ]
-      }) }}
+      {{ renderQuestion(questions.isCapable, data, errors, null, null, errorMap) }}
 
-      {{ govukRadios({
-        classes: "govuk-radios",
-        name: "ctimpCombined",
-        value: data["ctimpCombined"],
-        fieldset: {
-          legend: {
-            text: "What type of CTIMP is this?",
-            isPageHeading: false
-          }
-        },
-        items: [
-          { value: "ctimp", text: "A clinical trial of an investigational medicinal product" },
-          { value: "ctimp-and-device", text: "A combined trial of an investigational medicinal product and an investigational medical device" }
-        ]
-      }) }}
+      {{ renderQuestion(questions.noConsent, data, errors, null, null, errorMap) }}
 
-      <h2 class="govuk-heading-m">Participant ages</h2>
-      {{ govukCheckboxes({
-        name: "adultsAndChildren",
-        values: data["adultsAndChildren"],
-        fieldset: {
-          legend: {
-            text: "Will the project involve adults, children or both?"
-          }
-        },
-        hint: { text: "Select all that apply" },
-        items: adultsAndChildrenItems
-      }) }}
+      {% set hmppsHtml %}
+        {{ renderQuestion(questions.hmppsNations, data, errors) }}
 
-      {{ govukCheckboxes({
-        name: "childAge",
-        values: data["childAge"],
-        fieldset: {
-          legend: {
-            text: "What ages are your child participants?"
-          }
-        },
-        hint: { text: "Select all that apply" },
-        items: childAgeItems
-      }) }}
+      {% endset %}
+      {{ renderQuestion(questions.isHMPPS, data, errors, null, hmppsHtml, errorMap) }}
 
-      {{ govukCheckboxes({
-        name: "adultAge",
-        values: data["adultAge"],
-        fieldset: {
-          legend: {
-            text: "What ages are your adult participants?"
-          }
-        },
-        hint: { text: "Select all that apply" },
-        items: adultAgeItems
-      }) }}
+      {{ renderQuestion(questions.isMOD, data, errors, null, null, errorMap) }}
 
-      <h2 class="govuk-heading-m">Additional facets</h2>
-
-      {{ govukRadios({
-        classes: "govuk-radios--inline",
-        name: "isClinical",
-        value: data["isClinical"],
-        fieldset: {
-          legend: {
-            text: "Does this project involve a clinical investigation or other study of a medical device (including digital technology)?"
-          }
-        },
-        items: [
-          { value: "yes", text: "Yes" },
-          { value: "no", text: "No" }
-        ]
-      }) }}
-
-      {{ govukRadios({
-        classes: "govuk-radios--inline",
-        name: "isIonising",
-        value: data["isIonising"],
-        fieldset: {
-          legend: {
-            text: "Does this project involve exposing participants to ionising radiation?"
-          }
-        },
-        items: [
-          { value: "yes", text: "Yes" },
-          { value: "no", text: "No" }
-        ]
-      }) }}
-
-      {{ govukRadios({
-        classes: "govuk-radios--inline",
-        name: "isBioSample",
-        value: data["isBioSample"],
-        fieldset: {
-          legend: {
-            text: "Will this project involve taking or using human biological samples?"
-          }
-        },
-        items: [
-          { value: "yes", text: "Yes" },
-          { value: "no", text: "No" }
-        ]
-      }) }}
-
-      <h2 class="govuk-heading-m">Participant consent</h2>
-
-
-                  {{ govukRadios({
-                    idPrefix: "participantConsent",
-                    name: "participantConsent",
-                    value: data["participantConsent"],
-                    fieldset: {
-                      legend: { text: "Will consent be sought from or on behalf of participants?" }
-                    },
-                    errorMessage: errorMap and errorMap["participantConsent"],
-                    items: [
-                      { value: "all", text: "Consent will be obtained from or on behalf of all participants" },
-                      { value: "none", text: "Consent will not be obtained from or on behalf of any participants" },
-                      { value: "some", text: "Consent will be obtained from or on behalf of participants in some situations" },
-                      { value: "already", text: "Consent has already been obtained for previously collected data or samples" }
-                    ]
-                  }) }}
-
-
-                  {# Follow-up questions (routes enforce when required) #}
-                  {{ govukCheckboxes({
-                    idPrefix: "noConsent",
-                    name: "noConsent",
-                    values: data["noConsent"],
-                    fieldset: {
-                      legend: { text: "In which situations will consent or assent not be obtained?" }
-                    },
-                    hint: { text: "Select all that apply" },
-                    errorMessage: errorMap and errorMap["noConsent"],
-                    items: noConsentItems
-                  }) }}
-
-
-      {{ govukRadios({
-        classes: "govuk-radios",
-        name: "isCapable",
-        value: data["isCapable"],
-        fieldset: {
-          legend: {
-            text: "Will adult participants have capacity to consent for themselves?"
-          }
-        },
-        items: [
-          { value: "all", text: "All adults will have capacity" },
-          { value: "none", text: "No adults will have capacity" },
-          { value: "some", text: "Some adults may lack capacity" }
-        ]
-      }) }}
-
-      <h2 class="govuk-heading-m">HMPPS involvement</h2>
-
-      {{ govukRadios({
-        classes: "govuk-radios--inline",
-        name: "isHMPPS",
-        value: data["isHMPPS"],
-        fieldset: {
-          legend: {
-            text: "Does this project involve people in custody or under probation supervision?"
-          }
-        },
-        items: [
-          { value: "yes", text: "Yes" },
-          { value: "no", text: "No" }
-        ]
-      }) }}
-
-      {{ govukCheckboxes({
-        name: "hmppsNations",
-        values: data["hmppsNations"],
-        fieldset: {
-          legend: {
-            text: "In which UK nations will the project involve people in custody or under probation supervision?"
-          }
-        },
-        hint: { text: "Select all that apply" },
-        items: hmppsNationItems
-      }) }}
-
-      <h2 class="govuk-heading-m">MOD involvement</h2>
-
-      {{ govukRadios({
-        classes: "govuk-radios--inline",
-        name: "isMOD",
-        value: data["isMOD"],
-        fieldset: {
-          legend: {
-            text: "Does this project involve participants, sites or activity under Ministry of Defence (MOD) responsibility?"
-          }
-        },
-        items: [
-          { value: "yes", text: "Yes" },
-          { value: "no", text: "No" }
-        ]
-      }) }}
-
-      <h2 class="govuk-heading-m">HFEA involvement</h2>
-
-      {{ govukRadios({
-        classes: "govuk-radios",
-        name: "isHFEA",
-        value: data["isHFEA"],
-        fieldset: {
-          legend: {
-            text: "Does this project involve activities or data regulated by the Human Fertilisation and Embryology Authority (HFEA)?"
-          }
-        },
-        items: [
-          { value: "regulated-activities", text: "Yes, activities regulated by HFEA" },
-          { value: "register-data", text: "Yes, accessing data from the HFEA register" },
-          { value: "no", text: "No" }
-        ]
-      }) }}
+      {{ renderQuestion(questions.isHFEA, data, errors, null, null, errorMap) }}
 
       {{ govukButton({ text: "Continue" }) }}
 

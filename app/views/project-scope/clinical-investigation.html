@@ -1,4 +1,5 @@
 {% extends "layouts/main.html" %}
+{% from "_partials/_question.html" import renderQuestion %}
 
 {% block pageTitle %}
   Question page template – {{ serviceName }} – GOV.UK Prototype Kit
@@ -18,24 +19,8 @@
 
       <form method="post" novalidate>
         <span class="govuk-caption-l">{{ data['projectTitle'] or "Project title"}}</span>
-        {{ govukRadios({
-          idPrefix: "isClinical",
-          classes: "govuk-radios--inline",
-          name: "isClinical",
-          value: data["isClinical"],
-          fieldset: {
-            legend: {
-              text: "Does this project involve a clinical investigation or other study of a medical device (including digital technology)?",
-              isPageHeading: true,
-              classes: "govuk-fieldset__legend--l"
-            }
-          },
-          errorMessage: errorMap and errorMap["isClinical"],
-          items: [
-            { value: "yes", text: "Yes" },
-            { value: "no", text: "No" }
-          ]
-        }) }}
+        
+        {{ renderQuestion(questions.isClinical, data, errors, null, null, errorMap) }}
 
         {{ govukDetails({
           summaryText: "Unsure if your project meets this criteria?",

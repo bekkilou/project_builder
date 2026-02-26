@@ -1,4 +1,5 @@
 {% extends "layouts/main.html" %}
+{% from "_partials/_question.html" import renderQuestion %}
 
 {% block pageTitle %}
   {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – HRA Prototype
@@ -69,21 +70,8 @@
           <form method="post" novalidate>
             <span class="govuk-caption-l">{{ data['projectTitle'] or "Project title"}}</span>
 
-        {{ govukCheckboxes({
-          idPrefix: "adultsAndChildren",
-          name: "adultsAndChildren",
-          values: data["adultsAndChildren"],
-          fieldset: {
-            legend: {
-              text: "Will the project involve adults, children or both?",
-              isPageHeading: true,
-              classes: "govuk-fieldset__legend--l"
-            }
-          },
-          hint: { text: "Select all that apply" },
-          errorMessage: errorMap and errorMap["adultsAndChildren"],
-          items: adultsAndChildrenItems
-        }) }}
+        {{ renderQuestion(questions.adultsAndChildren, data, errors, adultsAndChildrenItems) }}
+
         <div class="govuk-button-group">
           {{ govukButton({
             text: "Save and continue"

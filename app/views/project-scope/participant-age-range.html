@@ -1,4 +1,5 @@
 {% extends "layouts/main.html" %}
+{% from "_partials/_question.html" import renderQuestion %}
 
 {% block pageTitle %}
   {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – HRA Prototype
@@ -101,31 +102,11 @@
           <form method="post" novalidate>
 
         {% if involvesChildren %}
-          {{ govukCheckboxes({
-            idPrefix: "childAge",
-            name: "childAge",
-            values: data["childAge"],
-            fieldset: {
-              legend: { text: "What ages are your child participants?" }
-            },
-            hint: { text: "Select all that apply" },
-            errorMessage: errorMap and errorMap["childAge"],
-            items: childAgeItems
-          }) }}
+        {{ renderQuestion(questions.childAge, data, errors, childAgeItems) }}
         {% endif %}
 
         {% if involvesAdults %}
-          {{ govukCheckboxes({
-            idPrefix: "adultAge",
-            name: "adultAge",
-            values: data["adultAge"],
-            fieldset: {
-              legend: { text: "What ages are your adult participants?" }
-            },
-            hint: { text: "Select all that apply" },
-            errorMessage: errorMap and errorMap["adultAge"],
-            items: adultAgeItems
-          }) }}
+        {{ renderQuestion(questions.adultAge, data, errors, adultAgeItems) }}
         {% endif %}
 
         <div class="govuk-button-group">

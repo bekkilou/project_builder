@@ -1,4 +1,5 @@
 {% extends "layouts/main.html" %}
+{% from "_partials/_question.html" import renderQuestion %}
 
 {% block pageTitle %}
   {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – HRA Prototype
@@ -39,78 +40,32 @@
 %}
 
 {% set isStaffExcluded =
-  ("nhs_hsc_staff" not in participantGroups)
-  and
+  ("nhs_hsc_staff" not in participantGroups) and
   ("other_care_staff" not in participantGroups)
 %}
 
-{# Build activities list based on rules #}
-{% if isDeceasedOnly %}
-
-  {% set researchActivityItems = [
-    { value: "previously_collected_data", text: "Use of previously collected data about people" },
-    { value: "previously_collected_biosamples", text: "Use of previously collected human biological samples" }
-  ] %}
-
-{% elseif isStaffOnly %}
-
-  {% set researchActivityItems = [
-    { value: "non_clinical_staff_activities", text: "Non-clinical activities with staff, such as interviews, questionnaires and observations" },
-    { value: "non_clinical_people_interviews_surveys", text: "Non-clinical activities with people, such as interviews or surveys" }
-  ] %}
-
-{% elseif isStaffExcluded %}
-
-  {% set researchActivityItems = [
-    { value: "previously_collected_data", text: "Use of previously collected data about people" },
-    { value: "previously_collected_biosamples", text: "Use of previously collected human biological samples" },
-    { value: "non_clinical_people_interviews_surveys", text: "Non-clinical activities with people, such as interviews or surveys" },
-    { value: "non_clinical_people_procedures", text: "Non-clinical activities with people, such as non-clinical assessments, observations or care procedures" },
-    { value: "clinical_people_activities", text: "Clinical activities with people, such as collecting human biological samples, imaging investigations or diagnostics" },
-    { value: "treatment", text: "Treatment, such as medicines, devices, surgery, vaccines or therapies" }
-  ] %}
-
-{% else %}
-
-  {# Default: full list #}
-  {% set researchActivityItems = [
-    { value: "previously_collected_data", text: "Use of previously collected data about people" },
-    { value: "previously_collected_biosamples", text: "Use of previously collected human biological samples" },
-    { value: "non_clinical_staff_activities", text: "Non-clinical activities with staff, such as interviews, questionnaires and observations" },
-    { value: "non_clinical_people_interviews_surveys", text: "Non-clinical activities with people, such as interviews or surveys" },
-    { value: "non_clinical_people_procedures", text: "Non-clinical activities with people, such as non-clinical assessments, observations or care procedures" },
-    { value: "clinical_people_activities", text: "Clinical activities with people, such as collecting human biological samples, imaging investigations or diagnostics" },
-    { value: "treatment", text: "Treatment, such as medicines, devices, surgery, vaccines or therapies" }
-  ] %}
-
-{% endif %}
+{# Filter items using flags from scoping-questions.js — no lists to maintain here #}
+{% set researchActivityItems = [] %}
+{% for item in questions.researchActivities.items %}
+  {% if isDeceasedOnly and item.showWhenDeceased %}
+    {% set researchActivityItems = researchActivityItems.concat([item]) %}
+  {% elseif isStaffOnly and item.showWhenStaffOnly %}
+    {% set researchActivityItems = researchActivityItems.concat([item]) %}
+  {% elseif isStaffExcluded and not isDeceasedOnly and not isStaffOnly and item.showWhenStaffExcluded %}
+    {% set researchActivityItems = researchActivityItems.concat([item]) %}
+  {% elseif not isDeceasedOnly and not isStaffOnly and not isStaffExcluded %}
+    {% set researchActivityItems = researchActivityItems.concat([item]) %}
+  {% endif %}
+{% endfor %}
 
 
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      <!--<h1 class="govuk-heading-l">
-        {{ data['projectTitle'] or "Project title"}} Configuration
-      </h1>-->
-
       <form method="post" novalidate>
         <span class="govuk-caption-l">{{ data['projectTitle'] or "Project title"}}</span>
-      {{ govukCheckboxes({
-        idPrefix: "researchActivities",
-        name: "researchActivities",
-        values: data["researchActivities"],
-        fieldset: {
-          legend: {
-            text: "What activities will this project involve?",
-            isPageHeading: true,
-            classes: "govuk-fieldset__legend--l"
-          }
-        },
-        hint: { text: "Select all that apply" },
-        errorMessage: errorMap and errorMap["researchActivities"],
-        items: researchActivityItems
-      }) }}
+      {{ renderQuestion(questions.researchActivities, data, errors, researchActivityItems, null, errorMap) }}
 
       <div class="govuk-button-group">
         {{ govukButton({

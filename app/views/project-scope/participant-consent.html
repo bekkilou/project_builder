@@ -1,4 +1,5 @@
 {% extends "layouts/main.html" %}
+{% from "_partials/_question.html" import renderQuestion %}
 
 {% block pageTitle %}
   {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – HRA Prototype
@@ -23,25 +24,7 @@
       -->
       <form method="post" novalidate>
         <span class="govuk-caption-l">{{ data['projectTitle'] or "Project title"}}</span>
-            {{ govukRadios({
-              idPrefix: "participantConsent",
-              name: "participantConsent",
-              value: data["participantConsent"],
-              fieldset: {
-                legend: {
-                  text: "Will consent be sought from or on behalf of participants?",
-                  isPageHeading: true,
-                  classes: "govuk-fieldset__legend--l"
-                }
-              },
-              errorMessage: errorMap and errorMap["participantConsent"],
-              items: [
-                { value: "all", text: "Consent will be obtained from or on behalf of all participants" },
-                { value: "none", text: "Consent will not be obtained from or on behalf of any participants" },
-                { value: "some", text: "Consent will be obtained from or on behalf of participants in some situations" },
-                { value: "already", text: "Consent has already been obtained for previously collected data or samples" }
-              ]
-            }) }}
+        {{ renderQuestion(questions.participantConsent, data, errors, null, null, errorMap) }}
 
             {% set adultsAndChildren = data["adultsAndChildren"] or [] %}
             {% if adultsAndChildren is string %}
@@ -53,21 +36,7 @@
               or adultsAndChildren.includes("adult_including_16_17_scotland")
             %}
             {% if involvesAdults %}
-              {{ govukRadios({
-                idPrefix: "isCapable",
-                classes: "govuk-radios",
-                name: "isCapable",
-                value: data["isCapable"],
-                fieldset: {
-                  legend: { text: "Will adult participants have capacity to consent for themselves?" }
-                },
-                errorMessage: errorMap and errorMap["isCapable"],
-                items: [
-                  { value: "all", text: "All adults will have capacity" },
-                  { value: "none", text: "No adults will have capacity" },
-                  { value: "some", text: "Some adults may lack capacity" }
-                ]
-              }) }}
+              {{ renderQuestion(questions.isCapable, data, errors, null, null, errorMap) }}
             {% endif %}
             <div class="govuk-button-group">
               {{ govukButton({

@@ -1,4 +1,5 @@
 {% extends "layouts/main.html" %}
+{% from "_partials/_question.html" import renderQuestion %}
 
 {% block pageTitle %}
   Question page template – {{ serviceName }} – GOV.UK Prototype Kit
@@ -19,24 +20,7 @@
       <form method="post" novalidate>
         <span class="govuk-caption-l">{{ data['projectTitle'] or "Project title"}}</span>
 
-        {{ govukRadios({
-          idPrefix: "isBioSample",
-          classes: "govuk-radios--inline",
-          name: "isBioSample",
-          value: data["isBioSample"],
-          fieldset: {
-            legend: {
-              text: "Will this project involve taking or using human biological samples?",
-              isPageHeading: true,
-              classes: "govuk-fieldset__legend--l"
-            }
-          },
-          errorMessage: errorMap and errorMap["isBioSample"],
-          items: [
-            { value: "yes", text: "Yes" },
-            { value: "no", text: "No" }
-          ]
-        }) }}
+        {{ renderQuestion(questions.isBioSample, data, errors, null, null, errorMap) }}
 
         {{ govukDetails({
           summaryText: "Unsure if your project meets this criteria?",

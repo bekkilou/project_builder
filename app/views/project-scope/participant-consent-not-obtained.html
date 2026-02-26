@@ -1,4 +1,5 @@
 {% extends "layouts/main.html" %}
+{% from "_partials/_question.html" import renderQuestion %}
 
 {% block pageTitle %}
   Question page template – {{ serviceName }} – GOV.UK Prototype Kit
@@ -29,15 +30,6 @@
   }) }}
 {% endset %}
 
-{% set noConsentItems = [
-  { value: "non_identifiable_patient_data", text: "For the use of non-identifiable patient or care data by the research team" },
-  { value: "identifiable_data_usual_care_team", text: "For access to identifiable patient or care data by the usual care team (including identification of potential participants)" },
-  { value: "identifiable_data_no_legal_basis", text: "For access to identifiable patient or care data by people without an existing legal basis (including identification of potential participants)" },
-  { value: "previously_collected_non_identifiable_biosamples", text: "For the use of previously collected non-identifiable human biological samples" },
-  { value: "previously_collected_identifiable_biosamples_no_consent", text: "For the use of previously collected identifiable human biological samples without relevant consent for their use in this project" },
-  { value: "adult_lacks_capacity", text: "When adults do not have capacity to consent to their participation" },
-  { value: "other", text: "Other", conditional: { html: otherParticipantGroupHtml } }
-] %}
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -48,20 +40,9 @@
 -->
       <form method="post" novalidate>
 <span class="govuk-caption-l">{{ data['projectTitle'] or "Project title"}}</span>
+
+  {{ renderQuestion(questions.noConsent, data, errors, null, null, errorMap) }}
         {# Follow-up questions (routes enforce when required) #}
-        {{ govukCheckboxes({
-          idPrefix: "noConsent",
-          name: "noConsent",
-          values: data["noConsent"],
-          fieldset: {
-            legend: { text: "Select all the situations when consent or assent will not be obtained.",
-            isPageHeading: true,
-            classes: "govuk-fieldset__legend--l" }
-          },
-          hint: { text: "Select all that apply" },
-          errorMessage: errorMap and errorMap["noConsent"],
-          items: noConsentItems
-        }) }}
 
         <div class="govuk-button-group">
           {{ govukButton({

@@ -1,0 +1,213 @@
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/radios/macro.njk"    import govukRadios %}
+{% from "govuk/components/input/macro.njk"     import govukInput %}
+{% from "govuk/components/textarea/macro.njk"  import govukTextarea %}
+{% from "govuk/components/select/macro.njk"    import govukSelect %}
+
+{#
+  _question.html  –  universal question renderer
+  ================================================
+  Drop this file in:  app/views/_partials/_question.html
+
+  Import and use in any page like this:
+
+    {% from "_partials/_question.html" import renderQuestion %}
+    {{ renderQuestion(questions.myQuestionKey, data, errors) }}
+    Pass a 4th argument to override the items list for conditional filtering:
+    {{ renderQuestion(questions.myQuestionKey, data, errors, filteredItems) }}
+
+  The macro handles all question types defined in questions.js:
+    checkboxes | radios | radios-conditional | input | textarea | select
+#}
+
+{% macro renderQuestion(q, data, errors, itemsOverride, conditionalHtml, errorMap) %}
+
+  {# ── CHECKBOXES ─────────────────────────────────────────── #}
+  {% if q.type === "checkboxes" %}
+
+    {{ govukCheckboxes({
+      idPrefix: q.name,
+      name: q.name,
+      values: data[q.name] if data[q.name] else [],
+      fieldset: {
+        legend: {
+          text: q.legend,
+          isPageHeading: q.legendSize === "l" or q.legendSize === "xl",
+          classes: "govuk-fieldset__legend--" + (q.legendSize if q.legendSize else "m")
+        }
+      },
+      hint: { text: q.hint } if q.hint else undefined,
+      errorMessage: errorMap[q.name] if errorMap and errorMap[q.name] else undefined,
+      items: itemsOverride if itemsOverride else q.items
+    }) }}
+
+
+  {# ── RADIOS (standard) ──────────────────────────────────── #}
+  {# Pass conditionalHtml as 5th arg to reveal content under a specific value. #}
+  {# Set q.conditionalValue in scoping-questions.js to control which option triggers it (default: "yes") #}
+  {% elif q.type === "radios" %}
+
+    {# If a conditionalHtml override is provided, attach it to the trigger value #}
+    {% if conditionalHtml %}
+      {% set triggerValue = q.conditionalValue if q.conditionalValue else "yes" %}
+      {% set builtItems = [] %}
+      {% for item in q.items %}
+        {% if item.value === triggerValue %}
+          {% set builtItems = builtItems.concat([{ value: item.value, text: item.text, conditional: { html: conditionalHtml } }]) %}
+        {% else %}
+          {% set builtItems = builtItems.concat([{ value: item.value, text: item.text }]) %}
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      {% set builtItems = q.items %}
+    {% endif %}
+
+    {{ govukRadios({
+      idPrefix: q.name,
+      name: q.name,
+      value: data[q.name],
+      classes: "govuk-radios--inline" if q.inline else "",
+      fieldset: {
+        legend: {
+          text: q.legend,
+          isPageHeading: q.legendSize === "l" or q.legendSize === "xl",
+          classes: "govuk-fieldset__legend--" + (q.legendSize if q.legendSize else "m")
+        }
+      },
+      hint: { text: q.hint } if q.hint else undefined,
+      errorMessage: errorMap[q.name] if errorMap and errorMap[q.name] else undefined,
+      items: builtItems
+    }) }}
+
+
+  {# ── RADIOS WITH CONDITIONAL REVEAL ─────────────────────── #}
+  {# Use when one or more options should reveal additional fields #}
+  {% elif q.type === "radios-conditional" %}
+
+    {# Build the items array, injecting conditional HTML where needed #}
+    {% set builtItems = [] %}
+    {% for item in q.items %}
+      {% if item.conditionalFields %}
+
+        {# Render the revealed sub-fields as a HTML string #}
+        {% set conditionalHtml %}
+          {% for field in item.conditionalFields %}
+            {{ govukInput({
+              id: field.name,
+              name: field.name,
+              classes: "govuk-!-width-one-half",
+              label: { text: field.label },
+              hint: { text: field.hint } if field.hint else undefined,
+              value: data[field.name]
+            }) }}
+          {% endfor %}
+        {% endset %}
+
+        {% set builtItems = builtItems.concat([{
+          value: item.value,
+          text: item.text,
+          checked: item.checked if item.checked else false,
+          conditional: { html: conditionalHtml }
+        }]) %}
+
+      {% else %}
+        {% set builtItems = builtItems.concat([{
+          value: item.value,
+          text: item.text,
+          checked: item.checked if item.checked else false
+        }]) %}
+      {% endif %}
+    {% endfor %}
+
+    {{ govukRadios({
+      idPrefix: q.name,
+      name: q.name,
+      value: data[q.name],
+      classes: "govuk-radios--inline" if q.inline else "",
+      fieldset: {
+        legend: {
+          text: q.legend,
+          isPageHeading: q.legendSize === "l" or q.legendSize === "xl",
+          classes: "govuk-fieldset__legend--" + (q.legendSize if q.legendSize else "m")
+        }
+      },
+      hint: { text: q.hint } if q.hint else undefined,
+      errorMessage: errorMap[q.name] if errorMap and errorMap[q.name] else undefined,
+      items: builtItems
+    }) }}
+
+
+  {# ── INPUT (single line) ─────────────────────────────────── #}
+  {% elif q.type === "input" %}
+
+    {{ govukInput({
+      id: q.name,
+      name: q.name,
+      classes: q.classes if q.classes else "",
+      label: {
+        text: q.label,
+        isPageHeading: q.legendSize === "l" or q.legendSize === "xl",
+        classes: "govuk-label--" + (q.legendSize if q.legendSize else "m")
+      },
+      hint: { text: q.hint } if q.hint else undefined,
+      errorMessage: errorMap[q.name] if errorMap and errorMap[q.name] else undefined,
+      value: data[q.name]
+    }) }}
+
+
+  {# ── TEXTAREA (multi-line) ───────────────────────────────── #}
+  {% elif q.type === "textarea" %}
+
+    {{ govukTextarea({
+      id: q.name,
+      name: q.name,
+      rows: q.rows if q.rows else 5,
+      label: {
+        text: q.label,
+        isPageHeading: q.legendSize === "l" or q.legendSize === "xl",
+        classes: "govuk-label--" + (q.legendSize if q.legendSize else "m")
+      },
+      hint: { text: q.hint } if q.hint else undefined,
+      errorMessage: errorMap[q.name] if errorMap and errorMap[q.name] else undefined,
+      value: data[q.name]
+    }) }}
+
+
+  {# ── SELECT / AUTOCOMPLETE ───────────────────────────────── #}
+  {# Renders a <select> and expects accessible-autocomplete to be  #}
+  {# initialised on the page via the autocomplete JS bundle.        #}
+  {% elif q.type === "select" %}
+
+    {% if q.label %}
+      <h2 class="govuk-heading-m">{{ q.label }}</h2>
+    {% elif q.legend %}
+      <h2 class="govuk-heading-m">{{ q.legend }}</h2>
+    {% endif %}
+    {% if q.hint %}
+      <p class="govuk-hint">{{ q.hint }}</p>
+    {% endif %}
+
+    <select
+      id="{{ q.name }}"
+      name="{{ q.name }}"
+      class="govuk-select"
+      data-module="accessible-autocomplete">
+      <option value="">Select an option</option>
+      {% for item in q.items %}
+        <option value="{{ item.value }}"
+          {% if data[q.name] === item.value %}selected{% endif %}>
+          {{ item.text }}
+        </option>
+      {% endfor %}
+    </select>
+
+
+  {# ── UNKNOWN TYPE WARNING (visible only during prototyping) ─ #}
+  {% else %}
+    <p class="govuk-error-message">
+      ⚠ Unknown question type "{{ q.type }}" for "{{ q.name }}" – check questions.js
+    </p>
+
+  {% endif %}
+
+{% endmacro %}
