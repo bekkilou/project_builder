@@ -1,4 +1,5 @@
 {% extends "layouts/main.html" %}
+{% from "_partials/_question.html" import renderQuestion %}
 
 {% block pageTitle %}
   {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – HRA Prototype

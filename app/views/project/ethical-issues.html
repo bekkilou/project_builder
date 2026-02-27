@@ -1,4 +1,5 @@
 {% extends "layouts/main.html" %}
+{% from "_partials/_question.html" import renderQuestion %}
 
 {% block pageTitle %}
   {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – GOV.UK Prototype Kit
@@ -21,234 +22,36 @@
       </h1>
 
       <form class="form" action="/path/of/next/page" method="post">
-        <!-- if might be PR (I still don't know what PR is) -->
-        {{ govukRadios({
-          classes: "govuk-radios--inline",
-          name: "fullRecReview",
-          value: data['fullRecReview'],
-          fieldset: {
-            legend: {
-              text: "Do you think your application has material ethical issues which need review by a full REC?",
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          hint: {
-            text: ""
-          },
-          items: [
-            {
-              value: "Yes",
-              text: "Yes"
-            },
-            {
-              value: "No",
-              text: "No"
-            }
-          ]
-        }) }}
 
+        <!-- if might be PR (I still don't know what PR is) -->
+        {{ renderQuestion(questions.fullRecReview, data, errors, null, null, errorMap) }}
 
         <!-- if not PR OR fullRecReview == Yes -->
-        {{ govukCharacterCount({
-          name: "ethicalIssues",
-          id: "ethical-issues",
-          value: data['ethicalIssues'],
-          maxlength: 5000,
-          label: {
-            text: "Summarise the main ethical issues arising from the project.",
-            classes: "govuk-label--m",
-            isPageHeading: false
-          },
-          hint: {
-            html: "<ul>
-                <li>
-                  consider risks, burdens and benefits involved
-                </li>
-                <li>
-                  include justifications for balancing risks and benefits (such as the involvement of potential participants being vulnerable at time of approach)
-                </li>
-                <li>
-                  complete this in language understandable to a member of the public.
-                </li>
-              </ul>"
-          }
-        }) }}
-
+        {{ renderQuestion(questions.ethicalIssues, data, errors, null, null, errorMap) }}
 
         <!-- fullRecReview == No -->
-        {{ govukCharacterCount({
-          name: "fullRecReviewNo",
-          id: "ethical-issues",
-          value: data['fullRecReviewNo'],
-          maxlength: 5000,
-          label: {
-            text: "Clarify why you consider your application does not have material ethical issues",
-            classes: "govuk-label--m",
-            isPageHeading: false
-          },
-          hint: {
-            html: ""
-          }
-        }) }}
-
-
+        {{ renderQuestion(questions.fullRecReviewNo, data, errors, null, null, errorMap) }}
 
         <!-- if researchActivities != non-clinical interviews -->
-        {{ govukRadios({
-          classes: "govuk-radios--inline",
-          name: "possibleHealthFindings",
-          value: data['possibleHealthFindings'],
-          fieldset: {
-            legend: {
-              text: "Is it possible that the project could produce health related findings of clinical significance for donors or their relatives?",
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          hint: {
-            text: ""
-          },
-          items: [
-            {
-              value: "Yes",
-              text: "Yes"
-            },
-            {
-              value: "No",
-              text: "No"
-            }
-          ]
-        }) }}
-
+        {{ renderQuestion(questions.possibleHealthFindings, data, errors, null, null, errorMap) }}
 
         <!-- if possibleHealthFindings == Yes -->
-        {{ govukRadios({
-          classes: "govuk-radios--inline",
-          name: "possibleHealthFindingsYes",
-          value: data['possibleHealthFindingsYes'],
-          fieldset: {
-            legend: {
-              text: "Will arrangements be made to notify the individuals concerned?",
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          hint: {
-            text: ""
-          },
-          items: [
-            {
-              value: "Yes",
-              text: "Yes"
-            },
-            {
-              value: "No",
-              text: "No"
-            }
-          ]
-        }) }}
-
+        {{ renderQuestion(questions.possibleHealthFindingsYes, data, errors, null, null, errorMap) }}
 
         <!-- if possibleHealthFindings == No -->
-        {{ govukCharacterCount({
-          name: "possibleHealthFindingsNo",
-          id: "possible-health-findings-no",
-          value: data['possibleHealthFindingsNo'],
-          maxlength: 5000,
-          label: {
-            text: "Explain why individuals concerned will not be notified.",
-            classes: "govuk-label--m",
-            isPageHeading: false
-          },
-          hint: {
-            html: ""
-          }
-        }) }}
+        {{ renderQuestion(questions.possibleHealthFindingsNo, data, errors, null, null, errorMap) }}
 
         <!-- Always show -->
-        {{ govukCheckboxes({
-          classes: "govuk-checkboxes",
-          name: "applicationPrevious",
-          value: data['applicationPrevious'],
-          fieldset: {
-            legend: {
-              text: "Is this application any of the following:",
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          hint: {
-            text: ""
-          },
-          items: [
-            {
-              value: "has previously received an unfavourable opinion by a REC in the UK",
-              text: "has previously received an unfavourable opinion by a REC in the UK"
-            },
-            {
-              value: "has previously received an unfavourable opinion by a REC in another country",
-              text: "has previously received an unfavourable opinion by a REC in another country"
-            },
-            {
-              value: "linked to another project",
-              text: "linked to another project"
-            },
-            {
-              value: "none of the above",
-              text: "none of the above"
-            }
-          ]
-        }) }}
+        {{ renderQuestion(questions.applicationPrevious, data, errors, null, null, errorMap) }}
 
         <!-- if applicationPrevious == Unfavourable UK -->
-        {{ govukInput({
-          label: {
-            text: "Provide the IRAS ID of the project that received an unfavourable opinion",
-            classes: "govuk-label--m"
-          },
-          hint: {
-            text: ""
-          },
-          id: "previous-iras-id",
-          name: "previousIrasID",
-          value: data["previousIrasID"]
-        }) }}
-
+        {{ renderQuestion(questions.previousIrasId, data, errors, null, null, errorMap) }}
 
         <!-- if applicationPrevious == unfavourable UK or elsewhere -->
-        {{ govukCharacterCount({
-          name: "unfavourableReason",
-          id: "unfavourable-reason",
-          value: data['unfavourableReason'],
-          maxlength: 5000,
-          label: {
-            text: "Explain how the reasons for the unfavourable opinion have been addressed in this application.",
-            classes: "govuk-label--m",
-            isPageHeading: false
-          },
-          hint: {
-            html: ""
-          }
-        }) }}
-
+        {{ renderQuestion(questions.unfavourableReason, data, errors, null, null, errorMap) }}
 
         <!-- if applicationPrevious == linked to other -->
-        {{ govukCharacterCount({
-          name: "linkedToOther",
-          id: "linked-to-other",
-          value: data['linkedToOther'],
-          maxlength: 2000,
-          label: {
-            text: "Provide any information about the linked project that will help reviewers to understand the background to this application or the decisions you have made in this application.",
-            classes: "govuk-label--m",
-            isPageHeading: false
-          },
-          hint: {
-            html: ""
-          }
-        }) }}
-
+        {{ renderQuestion(questions.linkedToOther, data, errors, null, null, errorMap) }}
 
         <div class="govuk-button-group">
           {{ govukButton({

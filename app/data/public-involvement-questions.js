@@ -36,7 +36,8 @@ module.exports = {
       { value: "regulatory_submissions",           text: "Preparing regulatory submissions" },
       { value: "rec_meetings",                     text: "Planning to attend the Research Ethics Committee meetings to help explain how and why the research design is likely to be acceptable to research participants" },
       { value: "other",                            text: "Other" },
-      { value: "not_involved",                     text: "Patients, service users or their carers, or members of the public have not been involved" }
+      { divider: "or"},
+      { value: "not_involved",                     text: "Patients, service users or their carers, or members of the public have not been involved", behaviour: "exclusive" }
     ]
   },
 

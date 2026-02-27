@@ -5,41 +5,9 @@
 
 window.GOVUKPrototypeKit.documentReady(() => {
 
-  const sponsorOrgs = [
-    "Airedale NHS Foundation Trust",
-    "AstraZeneca UK Limited",
-    "Belfast Health and Social Care Trust",
-    "Cambridge University Hospitals NHS Foundation Trust",
-    "Cardiff & Vale University LHB",
-    "Cardiff University",
-    "Derbyshire Healthcare NHS Foundation Trust",
-    "East Lancashire Hospitals NHS Trust",
-    "Greater Glasgow and Clyde",
-    "Guy's and St Thomas' NHS Foundation Trust",
-    "Imperial College Healthcare NHS Trust",
-    "Lifescan Scotland Ltd.",
-    "Prifysgol Aberystwyth",
-    "Queen Victoria Hospital NHS Foundation Trust",
-    "University Hospital Southampton NHS Foundation Trust",
-    "University of Aberdeen",
-    "University of Birmingham",
-    "University of Bristol",
-    "University of Edinburgh",
-    "University of Manchester"
-  ]
+  // sponsorOrg autocomplete is now handled by the renderQuestion macro in _question.html
+  // Items are defined in questions.js and initialised inline when the select type is rendered
 
-  const container = document.querySelector('#autocomplete-container')
-
-  if (container && window.accessibleAutocomplete) {
-    window.accessibleAutocomplete({
-      element: container,
-      id: 'sponsor-org',
-      name: 'sponsorOrg',
-      source: sponsorOrgs,
-      minLength: 2,
-      autoselect: true
-    })
-  }
   initMojSubNavAsTabs()
 
 })

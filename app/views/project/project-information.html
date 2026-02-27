@@ -1,4 +1,5 @@
 {% extends "layouts/main.html" %}
+{% from "_partials/_question.html" import renderQuestion %}
 
 {% block pageTitle %}
   {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – GOV.UK Prototype Kit
@@ -21,87 +22,15 @@
       </h1>
 
       <form class="form" action="/project/public-involvement" method="post">
+        {{ renderQuestion(questions.protocolRef, data, errors, null, null, errorMap) }}
 
-        {{ govukInput({
-          label: {
-            text: "Provide protocol reference number",
-            classes: "govuk-label--m"
-          },
-          hint: {
-            text: "This should be no more than 50 characters"
-          },
-          id: "protocol-ref",
-          name: "protocolRef",
-          value: data["protocolRef"]
-        }) }}
-
-        {% if (data['isCTIMP'] == "Yes") %}
         {% set euctHtml %}
-        {{ govukInput({
-          id: "euct-number",
-          name: "EU Clinical Trial (EUCT) number",
-          type: "text",
-          classes: "govuk-!-width-one-third",
-          value: data["EU Clinical Trial (EUCT) number"],
-          label: {
-            text: "Enter EUCT here"
-          }
-        }) }}
+          {{ renderQuestion(questions.euctNumber, data, errors) }}
         {% endset -%}
-        {{ govukRadios({
-          name: "euct",
-          fieldset: {
-            legend: {
-              text: "Do you have an EU Clinical Trial (EUCT) number",
-              isPageHeading: false,
-              classes: "govuk-fieldset govuk-fieldset__legend--m"
-            }
-          },
-          hint: {
-            text: "Select one option"
-          },
-          items: [
-            {
-              value: "Yes",
-              text: "Yes",
-              conditional: {
-                html: euctHtml
-              }
-            },
-            {
-              value: "Not applicable",
-              text: "Not applicable"
-            }
-          ]
-        }) }}
+        {{ renderQuestion(questions.euct, data, errors, null, euctHtml, errorMap) }}
 
-        {% endif %}
+        {{ renderQuestion(questions.projectSummary, data, errors, null, euctHtml, errorMap) }}
 
-        {{ govukCharacterCount({
-          name: "projectSummary",
-          id: "project-summary",
-          maxlength: 5000,
-          label: {
-            text: "Research project public summary:",
-            classes: "govuk-label--m",
-            isPageHeading: false
-          },
-          hint: {
-            html: "
-            <ul>
-              <li>
-                explain why the research is being carried out, the questions it seeks to answer, its design and methodology
-                </li>
-              <li>
-                do not reproduce or refer to the protocol
-                </li>
-              <li>
-                complete this section in language understandable to a member of the public (maximum 300 words)
-                </li>
-            </ul>
-            "
-          }
-        }) }}
         {{ govukInsetText({
           html: "<p>This summary will be published on the Health Research Authority (HRA) website following approval.</p>"
         }) }}

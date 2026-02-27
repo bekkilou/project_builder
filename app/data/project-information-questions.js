@@ -29,12 +29,19 @@ module.exports = {
     // as it requires a conditional reveal with a sub-input
   },
 
+  euctNumber: {
+    type: "input",
+    name: "euctNumber",
+    legendSize: "m",
+    label: "Enter EUCT here"
+  },
+
   projectSummary: {
     type: "textarea",
     name: "projectSummary",
     legendSize: "l",
     label: "Research project public summary",
-    hint: "Explain why the research is being carried out, the questions it seeks to answer, its design and methodology. Do not reproduce or refer to the protocol. Complete this in language understandable to a member of the public (maximum 300 words).",
+    hint: "<ul><li>Explain why the research is being carried out, the questions it seeks to answer, its design and methodology.</li><li>Do not reproduce or refer to the protocol.</li><li>Complete this in language understandable to a member of the public (maximum 300 words).</li></ul>",
     rows: 8
   }
 

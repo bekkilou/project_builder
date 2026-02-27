@@ -167,7 +167,7 @@
         isPageHeading: q.legendSize === "l" or q.legendSize === "xl",
         classes: "govuk-label--" + (q.legendSize if q.legendSize else "m")
       },
-      hint: { text: q.hint } if q.hint else undefined,
+      hint: { html: q.hint } if q.hint else undefined,
       errorMessage: errorMap[q.name] if errorMap and errorMap[q.name] else undefined,
       value: data[q.name]
     }) }}
