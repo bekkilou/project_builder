@@ -8,6 +8,10 @@ const {
   renderWithErrors
 } = require('./helpers/routing')
 
+// Pull error messages from the central questions config
+// so they only ever need updating in one place (data/questions.js)
+const questions = require('../data/scoping-questions')
+
 
 // NOTE: If your checkbox value is different, change this:
 const CLINICAL_ACTIVITIES = 'clinical_people_activities'
@@ -20,7 +24,7 @@ function hasClinicalOrTreatmentActivities(data) {
 
 // Decide what comes after age-range
 function nextAfterAgeRange(data) {
-  const isCTIMPYes = data['isCTIMP'] === 'yes'
+  const isCTIMPYes = String(data['isCTIMP'] || '').toLowerCase() === 'yes'
   const hasClinicalOrTreatment = hasClinicalOrTreatmentActivities(data)
 
   // Clinical investigation should only come up if CTIMP == yes
@@ -47,7 +51,7 @@ router.post('/project-scope/participants', function (req, res) {
   const participantGroups = asArray(data['participantGroups'])
 
   if (participantGroups.length === 0) {
-    addError(errors, 'participantGroups', 'Select at least one participant group')
+    addError(errors, 'participantGroups', questions.participantGroups.errorMessage)
   }
 
   if (errors.length) {
@@ -101,7 +105,7 @@ router.post('/project-scope/activities', function (req, res) {
   const researchActivities = asArray(data['researchActivities'])
 
   if (researchActivities.length === 0) {
-    addError(errors, 'researchActivities', 'Select at least one research activity')
+    addError(errors, 'researchActivities', questions.researchActivities.errorMessage)
   }
 
   if (errors.length) {
@@ -164,6 +168,39 @@ router.post('/project-scope/activities', function (req, res) {
   if (returnTo) return res.redirect(returnTo)
   return res.redirect('/project-scope/participant-age')
 })
+
+// CTIMP -> Participant age
+router.post('/project-scope/ctimp', function (req, res) {
+  const data = req.session.data
+  const errors = []
+
+  const rawIsCTIMP = data['isCTIMP'] // could be "yes", "Yes", etc.
+  const isCTIMP = String(rawIsCTIMP || '').toLowerCase()
+  const ctimpCombined = data['ctimpCombined'] // only required if yes
+
+  if (!rawIsCTIMP) {
+    addError(errors, 'isCTIMP', questions.isCTIMP.errorMessage)
+  }
+
+  if (isCTIMP === 'yes' && !ctimpCombined) {
+    addError(errors, 'ctimpCombined', questions.ctimpCombined.errorMessage)
+  }
+
+  if (errors.length) {
+    return renderWithErrors(res, 'project-scope/ctimp', errors)
+  }
+
+  // Cleanup: if CTIMP is no, combined is irrelevant
+  if (isCTIMP === 'no') {
+    clear(data, ['ctimpCombined'])
+  }
+
+  const returnTo = req.query.returnTo
+  if (returnTo) return res.redirect(returnTo)
+
+  return res.redirect('/project-scope/participant-age')
+})
+
 // Participant age -> Age ranges
 router.post('/project-scope/participant-age', function (req, res) {
   const data = req.session.data
@@ -172,7 +209,7 @@ router.post('/project-scope/participant-age', function (req, res) {
   const adultsAndChildren = asArray(data['adultsAndChildren'])
 
   if (adultsAndChildren.length === 0) {
-    addError(errors, 'adultsAndChildren', 'Select whether you are involving adults or children')
+    addError(errors, 'adultsAndChildren', questions.adultsAndChildren.errorMessage)
   }
 
   if (errors.length) {
@@ -215,11 +252,11 @@ router.post('/project-scope/participant-age-range', function (req, res) {
   const adultAge = asArray(data['adultAge'])
 
   if (involvesChildren && childAge.length === 0) {
-    addError(errors, 'childAge', 'Select at least one child age range')
+    addError(errors, 'childAge', questions.childAge.errorMessage)
   }
 
   if (involvesAdults && adultAge.length === 0) {
-    addError(errors, 'adultAge', 'Select at least one adult age range')
+    addError(errors, 'adultAge', questions.adultAge.errorMessage)
   }
 
   if (errors.length) {
@@ -235,7 +272,7 @@ router.post('/project-scope/participant-age-range', function (req, res) {
 
   // Cleanup answers for pages we might skip
   // If not CTIMP=yes, clinical investigation is irrelevant
-  if (data['isCTIMP'] !== 'yes') {
+  if (String(data['isCTIMP'] || '').toLowerCase() !== 'yes') {
     delete data['isClinical']
   }
 
@@ -254,7 +291,7 @@ router.post('/project-scope/clinical-investigation', function (req, res) {
   const errors = []
 
   if (!data['isClinical']) {
-    addError(errors, 'isClinical', 'Select whether this project involves a medical device investigation')
+    addError(errors, 'isClinical', questions.isClinical.errorMessage)
   }
 
   if (errors.length) {
@@ -281,7 +318,7 @@ router.post('/project-scope/ionising-radiation', function (req, res) {
   const errors = []
 
   if (!data['isIonising']) {
-    addError(errors, 'isIonising', 'Select whether the project involves ionising radiation')
+    addError(errors, 'isIonising', questions.isIonising.errorMessage)
   }
 
   if (errors.length) {
@@ -305,7 +342,7 @@ router.post('/project-scope/biological-samples', function (req, res) {
   const errors = []
 
   if (!data['isBioSample']) {
-    addError(errors, 'isBioSample', 'Select whether you will take or use human biological samples')
+    addError(errors, 'isBioSample', questions.isBioSample.errorMessage)
   }
 
   if (errors.length) {
@@ -326,7 +363,7 @@ router.post('/project-scope/participant-consent', function (req, res) {
   const participantConsent = data['participantConsent'] // expects: all | none | some | already
 
   if (!participantConsent) {
-    addError(errors, 'participantConsent', 'Select whether you will seek consent from or on behalf of participants')
+    addError(errors, 'participantConsent', questions.participantConsent.errorMessage)
   }
 
   if (errors.length) {
@@ -369,11 +406,11 @@ router.post('/project-scope/participant-consent-not-obtained', function (req, re
     adultsAndChildren.includes('adult_including_16_17_scotland')
 
   if (noConsent.length === 0) {
-    addError(errors, 'noConsent', 'Select at least one situation when consent or assent will not be obtained')
+    addError(errors, 'noConsent', questions.noConsent.errorMessage)
   }
 
   if (involvesAdults && !data['isCapable']) {
-    addError(errors, 'isCapable', 'Select what capacity adult participants will have to consent to their participation')
+    addError(errors, 'isCapable', questions.isCapable.errorMessage)
   }
 
   if (errors.length) {
@@ -406,11 +443,11 @@ router.post('/project-scope/hmpps', function (req, res) {
   const hmppsNations = asArray(data['hmppsNations'])
 
   if (!isHMPPS) {
-    addError(errors, 'isHMPPS', 'Select whether HMPPS is involved')
+    addError(errors, 'isHMPPS', questions.isHMPPS.errorMessage)
   }
 
   if (isHMPPS === 'yes' && hmppsNations.length === 0) {
-    addError(errors, 'hmppsNations', 'Select at least one UK nation')
+    addError(errors, 'hmppsNations', questions.hmppsNations.errorMessage)
   }
 
   if (errors.length) {
@@ -433,7 +470,7 @@ router.post('/project-scope/mod', function (req, res) {
   const errors = []
 
   if (!data['isMOD']) {
-    addError(errors, 'isMOD', 'Select whether the project involves MOD activity')
+    addError(errors, 'isMOD', questions.isMOD.errorMessage)
   }
 
   if (errors.length) {
@@ -452,7 +489,7 @@ router.post('/project-scope/hfea', function (req, res) {
   const errors = []
 
   if (!data['isHFEA']) {
-    addError(errors, 'isHFEA', 'Select whether the project involves HFEA regulated activities or data')
+    addError(errors, 'isHFEA', questions.isHFEA.errorMessage)
   }
 
   if (errors.length) {
@@ -462,6 +499,11 @@ router.post('/project-scope/hfea', function (req, res) {
   return res.redirect('/project-scope/check')
 })
 
+const { buildApprovalsPathway } = require('../helpers/approvals-pathway')
 
+router.get('/project-scope/check', (req, res) => {
+  req.session.data.approvalsPathway = buildApprovalsPathway(req.session.data)
+  res.render('project-scope/check')
+})
 
 module.exports = router

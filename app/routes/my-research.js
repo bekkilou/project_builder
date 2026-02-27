@@ -19,15 +19,6 @@ router.post('/my-research/create-project-check', function (req, res) {
       now.toLocaleString('en-GB', { month: 'long' }) + ' ' +
       now.getFullYear()
 
-    const datePart =
-      now.getFullYear().toString().slice(-2) +
-      String(now.getMonth() + 1).padStart(2, '0') +
-      String(now.getDate()).padStart(2, '0')
-
-    const randomPart =
-      Math.random().toString(36).substring(2, 6).toUpperCase()
-
-    req.session.data.projectReference = `HRA-${datePart}-${randomPart}`
   }
 
   res.redirect('/my-research-w-record')

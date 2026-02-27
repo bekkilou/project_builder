@@ -16,7 +16,7 @@
       {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
       {{ govukInsetText({
-        html: '<strong>Project reference:</strong> '+ data.projectReference +' <br />
+        html: '<strong>IRAS ID:</strong> 123456<br />
         <strong>Short project title:</strong>'+ data.projectTitle +'<br />
         <strong>Project phase:</strong>Preparing project / Technical review / Ready to apply / Application in progress / Approved / Active study / Modification / Suspended / Withdrawn / Ended / Closed<br />
         <strong>Status:</strong> A reusable, global status'
@@ -61,10 +61,10 @@
             rows: [
               {
                 key: {
-                  text: "Project reference"
+                  text: "IRAS ID"
                 },
                 value: {
-                  text: data['projectReference']
+                  text: '123456'
                 }
               },
               {
@@ -87,7 +87,8 @@
           }) }}
 
           <div class="">
-           
+           <h2 class="govuk-heading-m">Approvals pathway</h2>
+           {% include "includes/approvals-pathway.njk" %}
           </div>
 
           <div class="">

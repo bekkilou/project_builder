@@ -1,4 +1,5 @@
 {% extends "layouts/main.html" %}
+{% from "_partials/_question.html" import renderQuestion %}
 
 {% block pageTitle %}
   {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – HRA Prototype
@@ -37,44 +38,13 @@
       <form method="post" novalidate>
 <span class="govuk-caption-l">{{ data['projectTitle'] or "Project title"}}</span>
 
-{% set hmppsHtml %}
-      {{ govukCheckboxes({
-        idPrefix: "hmppsNations",
-        name: "hmppsNations",
-        values: data["hmppsNations"],
-        fieldset: {
-          legend: { text: "In which UK nations will the project involve people in custody or under probation supervision?",
-          classes: "govuk-fieldset__legend--m" }
-        },
-        hint: { text: "Select all that apply" },
-        errorMessage: errorMap and errorMap["hmppsNations"],
-        items: hmppsNationItems
-      }) }}
+      {% set hmppsHtml %}
+        {{ renderQuestion(questions.hmppsNations, data, errors) }}
+
       {% endset %}
 
-      {{ govukRadios({
-        idPrefix: "isHMPPS",
-        classes: "govuk-radios--inline",
-        name: "isHMPPS",
-        value: data["isHMPPS"],
-        fieldset: {
-          legend: {
-            text: "Does this project involve people in custody or under probation supervision?",
-            isPageHeading: true,
-            classes: "govuk-fieldset__legend--l"
-          }
-        },
-        errorMessage: errorMap and errorMap["isHMPPS"],
-        items: [
-          {
-            value: "yes",
-            text: "Yes",
-            conditional:
-              {html: hmppsHtml}
-          },
-          { value: "no", text: "No" }
-        ]
-      }) }}
+      {{ renderQuestion(questions.isHMPPS, data, errors, null, hmppsHtml, errorMap) }}
+
 
 
         <div class="govuk-button-group">

@@ -1,4 +1,5 @@
 {% extends "layouts/main.html" %}
+{% from "_partials/_question.html" import renderQuestion %}
 
 {% block pageTitle %}
   Question page template – {{ serviceName }} – GOV.UK Prototype Kit
@@ -18,24 +19,8 @@
 
       <form method="post" novalidate>
         <span class="govuk-caption-l">{{ data['projectTitle'] or "Project title"}}</span>
-        {{ govukRadios({
-          idPrefix: "isIonising",
-          classes: "govuk-radios--inline",
-          name: "isIonising",
-          value: data["isIonising"],
-          fieldset: {
-            legend: {
-              text: "Does this project involve exposing participants to ionising radiation?",
-              isPageHeading: true,
-              classes: "govuk-fieldset__legend--l"
-            }
-          },
-          errorMessage: errorMap and errorMap["isIonising"],
-          items: [
-            { value: "yes", text: "Yes" },
-            { value: "no", text: "No" }
-          ]
-        }) }}
+        {{ renderQuestion(questions.isIonising, data, errors, null, null, errorMap) }}
+
 
         {{ govukDetails({
           summaryText: "Unsure if your project meets this criteria?",

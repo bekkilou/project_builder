@@ -15,118 +15,36 @@
 
   {# ----------------------------
      Value -> label lookups
-     (so summary shows readable text, not internal values)
+     Derived automatically from questions.js items —
+     no need to maintain separate maps here.
+     To change display text, edit questions.js only.
   ----------------------------- #}
 
-  {% set yesNoMap = {
-    "yes": "Yes",
-    "no": "No",
-    "Yes": "Yes",
-    "No": "No"
-  } %}
+  {# Render one stored value as its display label for a given question.
+     Usage: {{ labelFor(questions.myQuestion, storedValue) }} #}
+  {% macro labelFor(question, value) %}
+    {%- set found = "" -%}
+    {%- for item in question.items -%}
+      {%- if item.value == value -%}{%- set found = item.text -%}{%- endif -%}
+    {%- endfor -%}
+    {{- found or value -}}
+  {% endmacro %}
 
-  {% set participantGroupMap = {
-    "carers_guardians": "Carers, parents or legal guardians of patients or participants",
-    "healthy_volunteers": "Healthy volunteers or controls",
-    "public": "Members of the public",
-    "nhs_patients_service_users": "Patients or service users of NHS or HSC provided or commissioned services",
-    "care_home_residents": "Patients or residents in care homes, independent health care clinics, nursing homes or residential care",
-    "deceased": "People who are known to be deceased prior to their inclusion in the project",
-    "other_social_care_users": "Service users in other social care settings",
-    "nhs_hsc_staff": "Staff working in NHS or HSC provided or commissioned services",
-    "other_care_staff": "Staff working in other care settings",
-    "other": "Other"
-  } %}
+  {# Render a list of stored values as their display labels, one <p> per item.
+     Usage: {{ labelsFor(questions.myQuestion, data["myField"]) }} #}
+  {% macro labelsFor(question, values) %}
+    {%- set arr = values if values is not string else [values] -%}
+    {%- for value in arr -%}
+      {%- set found = "" -%}
+      {%- for item in question.items -%}
+        {%- if item.value == value -%}{%- set found = item.text -%}{%- endif -%}
+      {%- endfor -%}
+      <p>{{- found or value -}}</p>
+    {%- endfor -%}
+  {% endmacro %}
 
-  {# Build display list #}
-  {% set participantGroupsDisplay = [] %}
-  {% for val in (data.participantGroups or []) %}
-    {% if val == "other" %}
-      {% if data.participantGroupsOther %}
-        {% set participantGroupsDisplay = participantGroupsDisplay.concat("Other: " + (data.participantGroupsOther | escape)) %}
-      {% else %}
-        {% set participantGroupsDisplay = participantGroupsDisplay.concat("Other") %}
-      {% endif %}
-    {% else %}
-      {% set participantGroupsDisplay = participantGroupsDisplay.concat(participantGroupMap[val]) %}
-    {% endif %}
-  {% endfor %}
-
-  {% set researchActivityMap = {
-    "previously_collected_data": "Use of previously collected data about people",
-    "previously_collected_biosamples": "Use of previously collected human biological samples",
-    "non_clinical_staff_activities": "Non-clinical activities with staff, such as interviews, questionnaires and observations",
-    "non_clinical_people_interviews_surveys": "Non-clinical activities with people, such as interviews or surveys",
-    "non_clinical_people_procedures": "Non-clinical activities with people, such as non-clinical assessments, observations or care procedures",
-    "clinical_people_activities": "Clinical activities with people, such as collecting human biological samples, imaging investigations or diagnostics",
-    "treatment": "Treatment, such as medicines, devices, surgery, vaccines or therapies"
-  } %}
-
-  {% set ctimpCombinedMap = {
-    "ctimp": "Clinical trial of an investigational medicinal product",
-    "ctimp-and-device": "Combined trial of an investigational medicinal product and an investigational medical device",
-    "clinical trial of an investigational medicinal product": "Clinical trial of an investigational medicinal product",
-    "combined trial of an investigational medicinal product and an investigational medical device": "Combined trial of an investigational medicinal product and an investigational medical device"
-  } %}
-
-  {% set ageRangeMap = {
-    "in_utero": "In utero",
-    "preterm_under_37_weeks": "Preterm newborn infants (up to gestational age less than 37 weeks)",
-    "newborn_0_27_days": "Newborn (0 to 27 days)",
-    "28_days_to_23_months": "28 days to 23 months",
-    "2_to_9_years": "2 to 9 years",
-    "10_to_15_years": "10 to 15 years",
-    "16_to_17_years": "16 to 17 years",
-    "18_to_39_years": "18 to 39 years",
-    "40_to_49_years": "40 to 49 years",
-    "50_to_59_years": "50 to 59 years",
-    "60_to_69_years": "60 to 69 years",
-    "70_plus_years": "70+ years"
-  } %}
-
-
-  {% set participantConsentMap = {
-    "all": "All adults will have capacity",
-    "none": "No adults will have capacity",
-    "some": "Some adults may lack capacity",
-    "already": "Consent has already been obtained for previously collected data or samples"
-  } %}
-
-  {% set noConsentMap = {
-    "non_identifiable_patient_data": "For the use of non-identifiable patient or care data by the research team",
-    "identifiable_data_usual_care_team": "For access to identifiable patient or care data by the usual care team (including identification of potential participants)",
-    "identifiable_data_no_legal_basis": "For access to identifiable patient or care data by people without an existing legal basis (including identification of potential participants)",
-    "previously_collected_non_identifiable_biosamples": "For the use of previously collected non-identifiable human biological samples",
-    "previously_collected_identifiable_biosamples_no_consent": "For the use of previously collected identifiable human biological samples without relevant consent for their use in this project",
-    "adult_lacks_capacity": "When adults do not have capacity to consent to their participation",
-    "other": "Other"
-  } %}
-
-
-  {% set isCapableMap = {
-    "all": "All adults will have capacity to consent for themselves as participants",
-    "none": "No adults will have capacity to consent for themselves as participants",
-    "some": "Some adults may lack capacity to consent for themselves as participants",
-    "already": "Consent has already been obtained for previously collected data or samples",
-    "all adults will have capacity to consent for themselves as participants": "All adults will have capacity to consent for themselves as participants",
-    "no adults will have capacity to consent for themselves as participants": "No adults will have capacity to consent for themselves as participants",
-    "some adults may lack capacity to consent for themselves as participants": "Some adults may lack capacity to consent for themselves as participants"
-  } %}
-
-  {% set isHFEAMap = {
-    "regulated-activities": "Yes, activities regulated by HFEA",
-    "register-data": "Yes, accessing data from the HFEA register",
-    "no": "No",
-    "yes, activities regulated by HFEA": "Yes, activities regulated by HFEA",
-    "yes, accessing data from the HFEA register": "Yes, accessing data from the HFEA register"
-  } %}
-
-  {% set adultsAndChildrenMap = {
-    "adult": "Adults",
-    "adult_including_16_17_scotland": "Adults (including children 16–17 years old in Scotland)",
-    "child_u18": "Children (under 18 years old)",
-    "child_u16": "Children (under 16 years of age)"
-  } %}
+  {# Simple yes/no normaliser — still useful for fields that have no items array #}
+  {% set yesNoMap = { "yes": "Yes", "no": "No", "Yes": "Yes", "No": "No" } %}
 
 {# ----------------------------
    Normalise arrays
@@ -418,17 +336,10 @@
         Who will take part in this project or provide data or samples?
       </dt>
       <dd class="govuk-summary-list__value">
-        {% for value in data["participantGroups"] %}
-          {% if value == "other" %}
-            {% if data["participantGroupsOther"] %}
-              <p>Other: {{ data["participantGroupsOther"] | escape }}</p>
-            {% else %}
-              <p>Other</p>
-            {% endif %}
-          {% else %}
-            <p>{{ participantGroupMap[value] or value }}</p>
+        {{ labelsFor(questions.participantGroups, data["participantGroups"]) }}
+          {% if "other" in data["participantGroups"] and data["participantGroupsOther"] %}
+            <p>Other: {{ data["participantGroupsOther"] | escape }}</p>
           {% endif %}
-        {% endfor %}
       </dd>
       <dd class="govuk-summary-list__actions">
         <a class="govuk-link" href="/project-scope/participants?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> participant groups</span></a>
@@ -443,9 +354,7 @@
             What activities will this project involve?
           </dt>
           <dd class="govuk-summary-list__value">
-            {% for value in data["researchActivities"] %}
-              <p>{{ researchActivityMap[value] or value }}</p>
-            {% endfor %}
+            {{ labelsFor(questions.researchActivities, data["researchActivities"]) }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link" href="/project-scope/activities?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> research activities</span></a>
@@ -459,7 +368,7 @@
             Is this a clinical trial of an investigational medicinal product (CTIMP)?
           </dt>
           <dd class="govuk-summary-list__value">
-            {{ yesNoMap[data['isCTIMP']] or data['isCTIMP'] }}
+            {{ labelFor(questions.isCTIMP, data['isCTIMP']) }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link" href="/project-scope/ctimp?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> clinical trial</span></a>
@@ -473,7 +382,7 @@
               What type of CTIMP is this?
             </dt>
             <dd class="govuk-summary-list__value">
-              {{ ctimpCombinedMap[data['ctimpCombined'] or data['CTIMPCombined'] or data['CTIMPcombined']] or (data['ctimpCombined'] or data['CTIMPCombined'] or data['CTIMPcombined']) }}
+              {{ labelFor(questions.ctimpCombined, data['ctimpCombined'] or data['CTIMPCombined'] or data['CTIMPcombined']) }}
             </dd>
             <dd class="govuk-summary-list__actions">
               <a class="govuk-link" href="/project-scope/ctimp?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> CTIMP type</span></a>
@@ -488,9 +397,7 @@
             Will the project involve adults, children or both?
           </dt>
           <dd class="govuk-summary-list__value">
-            {% for v in data["adultsAndChildren"] %}
-            <p>{{ adultsAndChildrenMap[v] or v }}</p>
-          {% endfor %}
+            {{ labelsFor(questions.adultsAndChildren, data["adultsAndChildren"]) }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link" href="/project-scope/participant-age?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> adults or children</span></a>
@@ -503,9 +410,7 @@
               What ages are your child participants?
             </dt>
             <dd class="govuk-summary-list__value">
-              {% for v in data["childAge"] %}
-                <p>{{ ageRangeMap[v] or v }}</p>
-              {% endfor %}
+              {{ labelsFor(questions.childAge, data["childAge"]) }}
             </dd>
             <dd class="govuk-summary-list__actions">
               <a class="govuk-link" href="/project-scope/participant-age-range?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> child age ranges</span></a>
@@ -519,9 +424,7 @@
               What ages are your adult participants?
             </dt>
             <dd class="govuk-summary-list__value">
-              {% for v in data["adultAge"] %}
-                <p>{{ ageRangeMap[v] or v }}</p>
-              {% endfor %}
+              {{ labelsFor(questions.adultAge, data["adultAge"]) }}
             </dd>
             <dd class="govuk-summary-list__actions">
               <a class="govuk-link" href="/project-scope/participant-age-range?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> adult age ranges</span></a>
@@ -536,7 +439,7 @@
             Does this project involve a clinical investigation or other study of a medical device (including digital technology)?
           </dt>
           <dd class="govuk-summary-list__value">
-            {{ yesNoMap[data['isClinical']] or data['isClinical'] }}
+            {{ labelFor(questions.isClinical, data['isClinical']) }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link" href="/project-scope/clinical-investigation?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> medical device study</span></a>
@@ -550,7 +453,7 @@
             Does this project involve exposing participants to ionising radiation?
           </dt>
           <dd class="govuk-summary-list__value">
-            {{ yesNoMap[data['isIonising']] or data['isIonising'] }}
+            {{ labelFor(questions.isIonising, data['isIonising']) }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link" href="/project-scope/ionising-radiation?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> ionising radiation</span></a>
@@ -564,7 +467,7 @@
             Will this project involve taking or using human biological samples?
           </dt>
           <dd class="govuk-summary-list__value">
-            {{ yesNoMap[data['isBioSample']] or data['isBioSample'] }}
+            {{ labelFor(questions.isBioSample, data['isBioSample']) }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link" href="/project-scope/biological-samples?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> biological samples</span></a>
@@ -578,7 +481,7 @@
             Will consent be sought from or on behalf of participants?
           </dt>
           <dd class="govuk-summary-list__value">
-            {{ participantConsentMap[data['participantConsent']] or data['participantConsent'] }}
+            {{ labelFor(questions.participantConsent, data['participantConsent']) }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link" href="/project-scope/consent?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> participant consent</span></a>
@@ -592,9 +495,7 @@
             In which situations will consent or assent not be obtained?
           </dt>
           <dd class="govuk-summary-list__value">
-            {% for v in data["noConsent"] %}
-              <p>{{ noConsentMap[v] or v }}</p>
-            {% endfor %}
+            {{ labelsFor(questions.noConsent, data["noConsent"]) }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link" href="/project-scope/participant-consent?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> situations where consent is not obtained</span></a>
@@ -608,7 +509,7 @@
             Will adult participants have capacity to consent for themselves?"
           </dt>
           <dd class="govuk-summary-list__value">
-            {{ isCapableMap[data['isCapable']] or data['isCapable'] }}
+            {{ labelFor(questions.isCapable, data['isCapable']) }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link" href="/project-scope/participant-consent?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> capacity to consent</span></a>
@@ -622,7 +523,7 @@
             Does this project involve people in custody or under probation supervision?
           </dt>
           <dd class="govuk-summary-list__value">
-            {{ yesNoMap[data['isHMPPS']] or data['isHMPPS'] }}
+            {{ labelFor(questions.isHMPPS, data['isHMPPS']) }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link" href="/project-scope/hmpps?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> HMPPS involvement</span></a>
@@ -636,7 +537,7 @@
             Does this project involve participants, sites or activity under Ministry of Defence (MOD) responsibility?
           </dt>
           <dd class="govuk-summary-list__value">
-            {{ yesNoMap[data['isMOD']] or data['isMOD'] }}
+            {{ labelFor(questions.isMOD, data['isMOD']) }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link" href="/project-scope/mod?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> MOD involvement</span></a>
@@ -650,7 +551,7 @@
             Does this project involve activities or data regulated by the Human Fertilisation and Embryology Authority (HFEA)?
           </dt>
           <dd class="govuk-summary-list__value">
-            {{ isHFEAMap[data['isHFEA']] or data['isHFEA'] }}
+            {{ labelFor(questions.isHFEA, data['isHFEA']) }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link" href="/project-scope/hfea?returnTo=/project-scope/check">Change<span class="govuk-visually-hidden"> HFEA involvement</span></a>

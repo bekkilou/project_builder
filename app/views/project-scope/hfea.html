@@ -1,4 +1,5 @@
 {% extends "layouts/main.html" %}
+{% from "_partials/_question.html" import renderQuestion %}
 
 {% block pageTitle %}
   {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – HRA Prototype
@@ -28,23 +29,7 @@
 -->
       <form method="post" novalidate>
         <span class="govuk-caption-l">{{ data['projectTitle'] or "Project title"}}</span>
-      {{ govukRadios({
-        idPrefix: "isHFEA",
-        classes: "govuk-radios",
-        name: "isHFEA",
-        value: data["isHFEA"],
-        fieldset: {
-          legend: { text: "Does this project involve activities or data regulated by the Human Fertilisation and Embryology Authority (HFEA)?",
-          isPageHeading: true,
-          classes: "govuk-fieldset__legend--l" }
-        },
-        errorMessage: errorMap and errorMap["isHFEA"],
-        items: [
-          { value: "regulated-activities", text: "Yes, activities regulated by HFEA" },
-          { value: "register-data", text: "Yes, accessing data from the HFEA register" },
-          { value: "no", text: "No" }
-        ]
-      }) }}
+        {{ renderQuestion(questions.isHFEA, data, errors, null, null, errorMap) }}
         <div class="govuk-button-group">
           {{ govukButton({
             text: "Save and continue"

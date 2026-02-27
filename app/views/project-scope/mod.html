@@ -1,4 +1,5 @@
 {% extends "layouts/main.html" %}
+{% from "_partials/_question.html" import renderQuestion %}
 
 {% block pageTitle %}
   {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – HRA Prototype
@@ -29,22 +30,8 @@
 -->
       <form method="post" novalidate>
         <span class="govuk-caption-l">{{ data['projectTitle'] or "Project title"}}</span>
-      {{ govukRadios({
-        idPrefix: "isMOD",
-        classes: "govuk-radios--inline",
-        name: "isMOD",
-        value: data["isMOD"],
-        fieldset: {
-          legend: { text: "Does this project involve participants, sites or activity under Ministry of Defence (MOD) responsibility?",
-          isPageHeading: true,
-          classes: "govuk-fieldset__legend--l" }
-        },
-        errorMessage: errorMap and errorMap["isMOD"],
-        items: [
-          { value: "yes", text: "Yes" },
-          { value: "no", text: "No" }
-        ]
-      }) }}
+        {{ renderQuestion(questions.isMOD, data, errors, null, null, errorMap) }}
+
         <div class="govuk-button-group">
           {{ govukButton({
             text: "Save and continue"

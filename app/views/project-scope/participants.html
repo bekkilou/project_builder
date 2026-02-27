@@ -1,4 +1,5 @@
 {% extends "layouts/main.html" %}
+{% from "_partials/_question.html" import renderQuestion %}
 
 {% block pageTitle %}
   {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – HRA Prototype
@@ -20,36 +21,19 @@
     value: data["participantGroupsOther"]
   }) }}
 {% endset %}
-{% set participantGroupItemsWithNhs = [
-  { value: "carers_guardians", text: "Carers, parents or legal guardians of patients or participants" },
-  { value: "healthy_volunteers", text: "Healthy volunteers or controls" },
-  { value: "public", text: "Members of the public" },
-  { value: "nhs_patients_service_users", text: "Patients or service users of NHS or HSC provided or commissioned services" },
-  { value: "care_home_residents", text: "Patients or residents in care homes, independent health care clinics, nursing homes or residential care" },
-  { value: "deceased", text: "People who are known to be deceased prior to their inclusion in the project" },
-  { value: "other_social_care_users", text: "Service users in other social care settings" },
-  { value: "nhs_hsc_staff", text: "Staff working in NHS or HSC provided or commissioned services" },
-  { value: "other_care_staff", text: "Staff working in other care settings" },
-  { value: "other", text: "Other", conditional: { html: otherParticipantGroupHtml } }
-] %}
 
-{% set participantGroupItemsWithoutNhs = [
-  { value: "carers_guardians", text: "Carers, parents or legal guardians of patients or participants" },
-  { value: "healthy_volunteers", text: "Healthy volunteers or controls" },
-  { value: "public", text: "Members of the public" },
-  { value: "care_home_residents", text: "Patients or residents in care homes, independent health care clinics, nursing homes or residential care" },
-  { value: "deceased", text: "People who are known to be deceased prior to their inclusion in the project" },
-  { value: "other_social_care_users", text: "Service users in other social care settings" },
-  { value: "other_care_staff", text: "Staff working in other care settings" },
-  { value: "other", text: "Other", conditional: { html: otherParticipantGroupHtml } }
-] %}
 
-{% if (data['nhs-hsc-org'] | lower) == "yes" %}
-  {% set participantGroupItems = participantGroupItemsWithNhs %}
-{% else %}
-  {% set participantGroupItems = participantGroupItemsWithoutNhs %}
-{% endif %}
-
+{% set isNhs = (data['nhs-hsc-org'] | lower) == "yes" %}
+{% set participantGroupItems = [] %}
+{% for item in questions.participantGroups.items %}
+  {% if not item.nhsOnly or isNhs %}
+    {% if item.value === "other" %}
+      {% set participantGroupItems = participantGroupItems.concat([{ value: item.value, text: item.text, conditional: { html: otherParticipantGroupHtml } }]) %}
+    {% else %}
+      {% set participantGroupItems = participantGroupItems.concat([item]) %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
 
 {% if errors and errors.length %}
   {{ govukErrorSummary({
@@ -60,30 +44,9 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-<!--
-      <h1 class="govuk-heading-l">
-        {{ data['projectTitle'] or "Project title"}} Configuration
-      </h1>
--->
       <form method="post" novalidate>
         <span class="govuk-caption-l">{{ data['projectTitle'] or "Project title"}}</span>
-      {{ govukCheckboxes({
-        idPrefix: "participantGroups",
-        name: "participantGroups",
-        values: data["participantGroups"],
-        fieldset: {
-          legend: {
-            text: "Who will take part in this project or provide data or samples?",
-            isPageHeading: true,
-            classes: "govuk-fieldset__legend--l"
-          }
-        },
-        hint: { text: "Select all that apply" },
-        errorMessage: errorMap and errorMap["participantGroups"],
-        items: participantGroupItems
-      }) }}
-
-
+       {{ renderQuestion(questions.participantGroups, data, errors, participantGroupItems, null, errorMap) }}
         <div class="govuk-button-group">
           {{ govukButton({
             text: "Save and continue"
