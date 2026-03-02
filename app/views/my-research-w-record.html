@@ -20,6 +20,17 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full-width">
+      {% set html %}
+        <h3 class="govuk-notification-banner__heading">
+          Your project has been created
+        </h3>
+        <p class="govuk-body">You can add more information to your project <a href='/project-scope/start'>here</a></p>
+      {% endset %}
+
+      {{ govukNotificationBanner({
+        html: html,
+        type: "success"
+      }) }}
 
       <h1 class="govuk-heading-l">
         My research
@@ -88,10 +99,6 @@
           href: "/my-research/create-project-details",
           isStartButton: false
         }) }}
-          &nbsp;
-        <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-          Create project record for existing project
-        </button>
       </div>
   </div>
 

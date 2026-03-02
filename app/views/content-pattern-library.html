@@ -1,0 +1,1983 @@
+<!DOCTYPE html>
+<html lang="en" class="govuk-template">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Logic System — Pattern Library</title>
+
+  <!-- GOV.UK Frontend CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/govuk-frontend@5.4.0/dist/govuk/govuk-frontend.min.css">
+
+  <style>
+    /* ── Layout shell ───────────────────────────────────────────── */
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .app-subnav {
+      width: 260px;
+      flex-shrink: 0;
+      background: #f3f2f1;
+      border-right: 1px solid #b1b4b6;
+      padding: 20px 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .app-main {
+      flex: 1;
+      min-width: 0;
+      padding: 30px 40px 60px;
+      max-width: 900px;
+    }
+
+    /* ── Custom header strip ─────────────────────────────────────── */
+    .app-header-strip {
+      background: #0b0c0c;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .app-header-strip__title {
+      font-family: "GDS Transport", arial, sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      margin: 0;
+      letter-spacing: 0;
+    }
+
+    .app-header-strip__meta {
+      font-family: "GDS Transport", arial, sans-serif;
+      font-size: 13px;
+      color: #b1b4b6;
+    }
+
+    /* ── Subnav ──────────────────────────────────────────────────── */
+    .app-subnav__section-label {
+      font-family: "GDS Transport", arial, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: #505a5f;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      padding: 16px 20px 6px;
+    }
+
+    .app-subnav__item {
+      display: block;
+      padding: 7px 20px;
+      font-family: "GDS Transport", arial, sans-serif;
+      font-size: 14px;
+      color: #1d70b8;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+    }
+
+    .app-subnav__item:hover {
+      background: #e8f0f8;
+      color: #003078;
+      text-decoration: underline;
+    }
+
+    .app-subnav__item--active {
+      border-left-color: #1d70b8;
+      background: #e8f0f8;
+      color: #003078;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .app-subnav__item .app-tag {
+      font-size: 11px;
+      background: #dee0e2;
+      color: #505a5f;
+      padding: 1px 5px;
+      margin-left: 5px;
+      border-radius: 2px;
+      font-family: monospace;
+    }
+
+    /* ── Pattern sections ────────────────────────────────────────── */
+    .app-pattern-section {
+      margin-bottom: 50px;
+      scroll-margin-top: 20px;
+    }
+
+    /* ── Pattern card (tabbed) ───────────────────────────────────── */
+    .app-pattern-card {
+      border: 1px solid #b1b4b6;
+      margin-bottom: 20px;
+    }
+
+    .app-pattern-card__header {
+      background: #f3f2f1;
+      border-bottom: 1px solid #b1b4b6;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .app-pattern-card__title {
+      font-family: "GDS Transport", arial, sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #0b0c0c;
+    }
+
+    .app-pattern-card__id {
+      font-family: monospace;
+      font-size: 12px;
+      color: #505a5f;
+      background: #fff;
+      border: 1px solid #b1b4b6;
+      padding: 2px 8px;
+      margin-left: 8px;
+    }
+
+    /* ── Tabs ────────────────────────────────────────────────────── */
+    .app-tabs {
+      display: flex;
+      gap: 2px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .app-tabs__btn {
+      font-family: "GDS Transport", arial, sans-serif;
+      font-size: 13px;
+      padding: 5px 12px;
+      border: 1px solid #b1b4b6;
+      background: #fff;
+      color: #1d70b8;
+      cursor: pointer;
+      border-radius: 0;
+    }
+
+    .app-tabs__btn--active {
+      background: #1d70b8;
+      color: #fff;
+      border-color: #1d70b8;
+    }
+
+    .app-tabs__btn:hover:not(.app-tabs__btn--active) {
+      background: #e8f0f8;
+    }
+
+    .app-pattern-card__body {
+      padding: 20px;
+      background: #fff;
+    }
+
+    .app-tab-panel { display: none; }
+    .app-tab-panel--active { display: block; }
+
+    /* ── Preview container ───────────────────────────────────────── */
+    .app-preview {
+      background: #fff;
+      border: 1px solid #dee0e2;
+      padding: 24px;
+      margin-bottom: 4px;
+    }
+
+    .app-preview--grey {
+      background: #f3f2f1;
+    }
+
+    /* ── Template code block ─────────────────────────────────────── */
+    .app-code {
+      background: #0b0c0c;
+      color: #e8e8e8;
+      font-family: monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      padding: 16px 20px;
+      overflow-x: auto;
+      white-space: pre;
+      margin: 0;
+    }
+
+    .app-code .token { color: #f47738; }
+    .app-code .comment { color: #6f777b; }
+    .app-code .kw { color: #85c1e9; }
+    .app-code .str { color: #98fb98; }
+    .app-code .lbl { color: #f9c642; }
+
+    /* ── Do / Don't ──────────────────────────────────────────────── */
+    .app-do-dont {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .app-do {
+      border-left: 5px solid #00703c;
+      padding: 14px 16px;
+      background: #e3f3eb;
+    }
+
+    .app-dont {
+      border-left: 5px solid #d4351c;
+      padding: 14px 16px;
+      background: #fce9e6;
+    }
+
+    .app-do__heading {
+      font-family: "GDS Transport", arial, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #00703c;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin: 0 0 8px;
+    }
+
+    .app-dont__heading {
+      font-family: "GDS Transport", arial, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #d4351c;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin: 0 0 8px;
+    }
+
+    .app-do ul, .app-dont ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .app-do li, .app-dont li {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    /* ── Acceptance criteria ─────────────────────────────────────── */
+    .app-ac-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .app-ac-list li {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      background: #f3f2f1;
+      margin-bottom: 6px;
+      font-family: "GDS Transport", arial, sans-serif;
+      font-size: 14px;
+    }
+
+    .app-ac-badge {
+      font-family: monospace;
+      font-size: 11px;
+      background: #1d70b8;
+      color: #fff;
+      padding: 2px 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── Vocab cards ─────────────────────────────────────────────── */
+    .app-vocab-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 16px;
+    }
+
+    .app-vocab-card {
+      border: 1px solid #b1b4b6;
+      padding: 16px;
+      background: #fff;
+    }
+
+    .app-vocab-card__term {
+      font-family: "GDS Transport", arial, sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .app-vocab-card__def {
+      font-size: 14px;
+      color: #505a5f;
+      margin-bottom: 12px;
+    }
+
+    .app-vocab-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    .app-vocab-label {
+      font-family: monospace;
+      font-size: 11px;
+      padding: 1px 5px;
+      border-radius: 2px;
+      flex-shrink: 0;
+      min-width: 48px;
+      text-align: center;
+    }
+
+    .app-vocab-label--use { background: #cce2d8; color: #005a30; }
+    .app-vocab-label--avoid { background: #f6d7d2; color: #942514; }
+    .app-vocab-label--eg { background: #d2e2f1; color: #003078; }
+
+    /* ── Decision trees ──────────────────────────────────────────── */
+    .app-decision-tree {
+      background: #0b0c0c;
+      color: #e8e8e8;
+      font-family: monospace;
+      font-size: 13px;
+      line-height: 1.8;
+      padding: 20px;
+      overflow-x: auto;
+    }
+
+    /* ── Metrics grid ────────────────────────────────────────────── */
+    .app-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .app-metric-card {
+      border: 1px solid #b1b4b6;
+      padding: 20px;
+      background: #fff;
+      text-align: center;
+    }
+
+    .app-metric-card__label {
+      font-family: "GDS Transport", arial, sans-serif;
+      font-size: 13px;
+      color: #505a5f;
+      margin-bottom: 8px;
+    }
+
+    .app-metric-card__target {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0b0c0c;
+    }
+
+    .app-metric-card__dir {
+      font-size: 12px;
+      color: #6f777b;
+      margin-top: 4px;
+    }
+
+    /* ── Governance workflow ─────────────────────────────────────── */
+    .app-workflow {
+      position: relative;
+    }
+
+    .app-workflow-step {
+      display: flex;
+      gap: 16px;
+      position: relative;
+      padding-bottom: 24px;
+    }
+
+    .app-workflow-step:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 32px;
+      bottom: 0;
+      width: 1px;
+      background: #b1b4b6;
+    }
+
+    .app-workflow-step__node {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #1d70b8;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+      z-index: 1;
+      font-family: "GDS Transport", arial, sans-serif;
+    }
+
+    .app-workflow-step__content h4 {
+      font-size: 16px;
+      margin-top: 4px;
+      margin-bottom: 4px;
+    }
+
+    .app-workflow-step__owner {
+      display: inline-block;
+      font-family: monospace;
+      font-size: 12px;
+      background: #f3f2f1;
+      border: 1px solid #b1b4b6;
+      padding: 1px 6px;
+      margin-top: 4px;
+    }
+
+    /* ── GOV.UK tag colour variants ──────────────────────────────── */
+    /* Override to use standard govuk-tag colours */
+
+    /* ── QA checklist ────────────────────────────────────────────── */
+    .app-qa-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 12px;
+      background: #f3f2f1;
+      margin-bottom: 6px;
+      transition: background 0.15s;
+      cursor: pointer;
+    }
+
+    .app-qa-item--checked {
+      background: #cce2d8;
+    }
+
+    .app-qa-item input { cursor: pointer; margin-top: 2px; flex-shrink: 0; }
+    .app-qa-item span { font-size: 14px; }
+
+    /* ── Inline status demos ─────────────────────────────────────── */
+    .app-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #dee0e2;
+    }
+
+    .app-status-row:last-child { border-bottom: none; }
+    .app-status-row:first-child { padding-top: 0; }
+
+    .app-status-explainer {
+      color: #505a5f;
+      font-size: 14px;
+      max-width: 320px;
+      text-align: right;
+    }
+
+    /* ── Conditional reveal demo ─────────────────────────────────── */
+    .app-conditional-reveal {
+      display: none;
+      margin-top: 10px;
+      padding: 20px;
+      background: #f3f2f1;
+      border-left: 4px solid #1d70b8;
+    }
+
+    .app-conditional-reveal.visible { display: block; }
+
+    /* ── Tooltip demo ────────────────────────────────────────────── */
+    .app-tooltip-wrapper {
+      position: relative;
+      display: inline;
+    }
+
+    .app-tooltip-trigger {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      background: #1d70b8;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: help;
+      border: none;
+      margin-left: 3px;
+      vertical-align: middle;
+    }
+
+    .app-tooltip-bubble {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 0;
+      background: #0b0c0c;
+      color: #fff;
+      padding: 10px 14px;
+      font-size: 13px;
+      line-height: 1.5;
+      width: 240px;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,.3);
+    }
+
+    .app-tooltip-wrapper:hover .app-tooltip-bubble,
+    .app-tooltip-trigger:focus + .app-tooltip-bubble {
+      display: block;
+    }
+
+    /* ── Two-col spec grid ───────────────────────────────────────── */
+    .app-spec-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 12px;
+    }
+
+    .app-spec-grid h4 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: #505a5f;
+      margin-bottom: 6px;
+    }
+
+    .app-spec-grid ul {
+      margin: 0 0 12px;
+      padding-left: 18px;
+    }
+
+    .app-spec-grid li { font-size: 14px; margin-bottom: 3px; }
+    .app-spec-grid p { font-size: 14px; color: #505a5f; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .app-layout { flex-direction: column; }
+      .app-subnav { width: 100%; height: auto; position: static; }
+      .app-main { padding: 20px; }
+      .app-do-dont, .app-spec-grid, .app-metrics-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body class="govuk-template__body">
+
+<script>
+  document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');
+</script>
+
+<!-- GOV.UK Header -->
+<header class="govuk-header" role="banner" data-module="govuk-header">
+  <div class="govuk-header__container govuk-width-container">
+    <div class="govuk-header__logo">
+      <a href="#overview" class="govuk-header__link govuk-header__link--homepage">
+        <svg focusable="false" role="img" class="govuk-header__logotype" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 152 30" height="30" width="152" aria-label="GOV.UK">
+          <title>GOV.UK</title>
+          <path d="M6.7 12.2c1 .4 2.1.7 3.2.7 1.5 0 2.4-.6 2.4-1.5 0-.9-.8-1.4-2.5-1.4H8.3l.5-2.3h1.2c1.1 0 1.9-.5 1.9-1.3 0-.7-.7-1.1-1.7-1.1-1 0-2 .4-2.9 1L6 4c1.1-.7 2.6-1.2 4.4-1.2 2.5 0 4.2 1.2 4.2 3 0 1.3-.8 2.4-2.1 2.9 1.4.4 2.3 1.4 2.3 2.9 0 2.2-2 3.5-4.8 3.5-1.8 0-3.4-.6-4.4-1.4l1.1-2.5zm12.5-7.7l-3.7 10.6H12l3.7-10.6h3.5zm6.2 0l2.2 7.2 2.2-7.2h3.3L29.5 15h-3.7l-3.6-10.5h3.2zm12 0l-3.6 10.5h-3.4l3.6-10.5h3.4z" fill="#fff"/>
+          <path d="M93 12l-5.9-9h3.6l3.8 5.9 3.8-5.9h3.6L96.1 12v5.7h-3.1V12zm-18.3 3.5c.9.5 2.1.8 3.5.8 2.1 0 3.4-.8 3.4-2.1 0-1.2-1-1.8-3-1.8H77v-2.5h1.4c1.7 0 2.8-.7 2.8-1.8 0-1-.9-1.6-2.4-1.6-1.2 0-2.4.4-3.4 1.1l-1-2.5c1.3-.9 3-1.5 5-1.5 3.3 0 5.5 1.6 5.5 4 0 1.5-.9 2.8-2.4 3.4 1.6.5 2.7 1.7 2.7 3.4 0 2.8-2.4 4.7-6.2 4.7-2 0-3.9-.7-5-1.6l1-2.6z" fill="#fff"/>
+        </svg>
+      </a>
+    </div>
+    <div class="govuk-header__content">
+      <a href="#overview" class="govuk-header__link govuk-header__service-name">
+        Content Logic System — Pattern Library
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- Phase banner -->
+<div class="govuk-width-container">
+  <div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+      <strong class="govuk-tag govuk-phase-banner__content__tag">v1.0</strong>
+      <span class="govuk-phase-banner__text">SAFe-compatible · GDS-aligned · 11 content patterns · CLS v1.0</span>
+    </p>
+  </div>
+</div>
+
+<!-- Main layout -->
+<div class="app-layout">
+
+  <!-- Sidebar nav -->
+  <nav class="app-subnav" aria-label="Pattern navigation">
+    <div class="app-subnav__section-label">Foundation</div>
+    <a class="app-subnav__item app-subnav__item--active" href="#overview">Overview</a>
+    <a class="app-subnav__item" href="#vocabulary">Controlled Vocabulary</a>
+    <a class="app-subnav__item" href="#message-anatomy">Message Anatomy</a>
+
+    <div class="app-subnav__section-label">Content Patterns</div>
+    <a class="app-subnav__item" href="#status">Status <span class="app-tag">CPL-01</span></a>
+    <a class="app-subnav__item" href="#warning">Warning <span class="app-tag">CPL-02</span></a>
+    <a class="app-subnav__item" href="#error">Error <span class="app-tag">CPL-03</span></a>
+    <a class="app-subnav__item" href="#form-label">Form Label + Help <span class="app-tag">CPL-04</span></a>
+    <a class="app-subnav__item" href="#conditional">Conditional Question <span class="app-tag">CPL-05</span></a>
+    <a class="app-subnav__item" href="#dashboard">Dashboard / Table <span class="app-tag">CPL-06</span></a>
+    <a class="app-subnav__item" href="#confirmation">Confirmation <span class="app-tag">CPL-07</span></a>
+    <a class="app-subnav__item" href="#guidance">Guidance Block <span class="app-tag">CPL-08</span></a>
+    <a class="app-subnav__item" href="#multistep">Multi-step <span class="app-tag">CPL-09</span></a>
+    <a class="app-subnav__item" href="#tooltip">Tooltip / Definition <span class="app-tag">CPL-10</span></a>
+    <a class="app-subnav__item" href="#system-msg">System Message <span class="app-tag">CPL-11</span></a>
+
+    <div class="app-subnav__section-label">System</div>
+    <a class="app-subnav__item" href="#decision-trees">Decision Trees</a>
+    <a class="app-subnav__item" href="#governance">Governance</a>
+    <a class="app-subnav__item" href="#metrics">Metrics</a>
+    <a class="app-subnav__item" href="#qa">QA Checklist</a>
+  </nav>
+
+  <!-- Main content -->
+  <main class="app-main" id="main-content">
+
+    <!-- OVERVIEW -->
+    <section class="app-pattern-section" id="overview">
+      <h1 class="govuk-heading-xl">Content Pattern Library</h1>
+      <p class="govuk-body-l">A rules-based content system for admin dashboards, case views, status panels, forms, and notifications. Shifts content work from bespoke authoring to reusable patterns — so IXD can design at pace and CD governs with leverage.</p>
+
+      <div class="govuk-grid-row" style="margin-bottom: 30px;">
+        <div class="govuk-grid-column-one-quarter">
+          <p class="govuk-body-s govuk-!-color-secondary-text-colour govuk-!-margin-bottom-1">Core patterns</p>
+          <p class="govuk-heading-l govuk-!-margin-bottom-0">11</p>
+        </div>
+        <div class="govuk-grid-column-one-quarter">
+          <p class="govuk-body-s govuk-!-color-secondary-text-colour govuk-!-margin-bottom-1">Decision trees</p>
+          <p class="govuk-heading-l govuk-!-margin-bottom-0">3</p>
+        </div>
+        <div class="govuk-grid-column-one-quarter">
+          <p class="govuk-body-s govuk-!-color-secondary-text-colour govuk-!-margin-bottom-1">State labels</p>
+          <p class="govuk-heading-l govuk-!-margin-bottom-0">10</p>
+        </div>
+        <div class="govuk-grid-column-one-quarter">
+          <p class="govuk-body-s govuk-!-color-secondary-text-colour govuk-!-margin-bottom-1">Action verbs</p>
+          <p class="govuk-heading-l govuk-!-margin-bottom-0">10</p>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-m">Design principles</h2>
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">P-01 &nbsp;<strong class="govuk-tag">Rules before words</strong></dt>
+          <dd class="govuk-summary-list__value">Encode logic; write once, reuse many.</dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">P-02 &nbsp;<strong class="govuk-tag govuk-tag--blue">Smallest understandable unit</strong></dt>
+          <dd class="govuk-summary-list__value">Short, front-loaded, scannable.</dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">P-03 &nbsp;<strong class="govuk-tag govuk-tag--green">Predictable semantics</strong></dt>
+          <dd class="govuk-summary-list__value">Same condition, same message shape, every time.</dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">P-04 &nbsp;<strong class="govuk-tag govuk-tag--yellow">Escalate exceptions</strong></dt>
+          <dd class="govuk-summary-list__value">If a case breaks rules, escalate to CD. Recurring exceptions become new rules.</dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">P-05 &nbsp;<strong class="govuk-tag govuk-tag--purple">Evidence through usage</strong></dt>
+          <dd class="govuk-summary-list__value">Retire patterns no one uses; promote those that reduce rework.</dd>
+        </div>
+      </dl>
+    </section>
+
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+    <!-- VOCABULARY -->
+    <section class="app-pattern-section" id="vocabulary">
+      <h2 class="govuk-heading-l">Controlled Vocabulary</h2>
+      <p class="govuk-body">Single source of truth for all user-facing terms. No synonyms outside this list. CDs approve new terms; all require a use case and example sentence.</p>
+
+      <div class="app-vocab-grid govuk-!-margin-bottom-6">
+
+        <div class="app-vocab-card">
+          <div class="app-vocab-card__term">application</div>
+          <div class="app-vocab-card__def">A user's request to access a service or benefit.</div>
+          <div class="app-vocab-row"><span class="app-vocab-label app-vocab-label--use">Use</span><span>application, request</span></div>
+          <div class="app-vocab-row"><span class="app-vocab-label app-vocab-label--avoid">Avoid</span><span>case file, ticket</span></div>
+          <div class="app-vocab-row"><span class="app-vocab-label app-vocab-label--eg">e.g.</span><span>Your application is waiting for review.</span></div>
+        </div>
+
+        <div class="app-vocab-card">
+          <div class="app-vocab-card__term">action needed</div>
+          <div class="app-vocab-card__def">The service requires the user to do something before we can continue.</div>
+          <div class="app-vocab-row"><span class="app-vocab-label app-vocab-label--use">Use</span><span>action needed, needs your attention</span></div>
+          <div class="app-vocab-row"><span class="app-vocab-label app-vocab-label--avoid">Avoid</span><span>blocked, halted, pending user</span></div>
+          <div class="app-vocab-row"><span class="app-vocab-label app-vocab-label--eg">e.g.</span><span>Action needed: upload your ID document.</span></div>
+        </div>
+
+        <div class="app-vocab-card">
+          <div class="app-vocab-card__term">in review</div>
+          <div class="app-vocab-card__def">We have received the submission and are actively assessing it.</div>
+          <div class="app-vocab-row"><span class="app-vocab-label app-vocab-label--use">Use</span><span>in review</span></div>
+          <div class="app-vocab-row"><span class="app-vocab-label app-vocab-label--avoid">Avoid</span><span>processing, pending, under consideration</span></div>
+          <div class="app-vocab-row"><span class="app-vocab-label app-vocab-label--eg">e.g.</span><span>In review — We'll email you if we need more information.</span></div>
+        </div>
+
+        <div class="app-vocab-card">
+          <div class="app-vocab-card__term">approved</div>
+          <div class="app-vocab-card__def">The application has been accepted and will proceed.</div>
+          <div class="app-vocab-row"><span class="app-vocab-label app-vocab-label--use">Use</span><span>approved</span></div>
+          <div class="app-vocab-row"><span class="app-vocab-label app-vocab-label--avoid">Avoid</span><span>accepted, green-lit, confirmed</span></div>
+          <div class="app-vocab-row"><span class="app-vocab-label app-vocab-label--eg">e.g.</span><span>Approved — You'll see your payment in 3 to 5 working days.</span></div>
+        </div>
+
+        <div class="app-vocab-card">
+          <div class="app-vocab-card__term">rejected</div>
+          <div class="app-vocab-card__def">The application has been declined and will not proceed.</div>
+          <div class="app-vocab-row"><span class="app-vocab-label app-vocab-label--use">Use</span><span>rejected</span></div>
+          <div class="app-vocab-row"><span class="app-vocab-label app-vocab-label--avoid">Avoid</span><span>declined, denied, unsuccessful</span></div>
+          <div class="app-vocab-row"><span class="app-vocab-label app-vocab-label--eg">e.g.</span><span>Rejected — Read the reasons and how to appeal.</span></div>
+        </div>
+
+        <div class="app-vocab-card">
+          <div class="app-vocab-card__term">gross pay</div>
+          <div class="app-vocab-card__def">Pay before tax or deductions are applied.</div>
+          <div class="app-vocab-row"><span class="app-vocab-label app-vocab-label--use">Use</span><span>gross pay</span></div>
+          <div class="app-vocab-row"><span class="app-vocab-label app-vocab-label--avoid">Avoid</span><span>total earnings, pre-tax income</span></div>
+          <div class="app-vocab-row"><span class="app-vocab-label app-vocab-label--eg">e.g.</span><span>Gross pay — Your pay before tax. For example, £2,000.</span></div>
+        </div>
+
+      </div>
+
+      <h3 class="govuk-heading-s">State label baseline</h3>
+      <p class="govuk-body-s govuk-!-color-secondary-text-colour govuk-!-margin-bottom-3">These are the only approved state labels. Never invent new ones per team or product.</p>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <strong class="govuk-tag govuk-tag--grey">Draft</strong>
+        <strong class="govuk-tag govuk-tag--blue">In review</strong>
+        <strong class="govuk-tag govuk-tag--yellow">Action needed</strong>
+        <strong class="govuk-tag govuk-tag--light-blue">Scheduled</strong>
+        <strong class="govuk-tag govuk-tag--orange">Paused</strong>
+        <strong class="govuk-tag govuk-tag--green">Approved</strong>
+        <strong class="govuk-tag govuk-tag--red">Rejected</strong>
+        <strong class="govuk-tag govuk-tag--pink">Expired</strong>
+        <strong class="govuk-tag">Completed</strong>
+        <strong class="govuk-tag govuk-tag--grey">On hold</strong>
+      </div>
+    </section>
+
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+    <!-- MESSAGE ANATOMY -->
+    <section class="app-pattern-section" id="message-anatomy">
+      <h2 class="govuk-heading-l">Message Anatomy</h2>
+      <p class="govuk-body">All content patterns share a common structure. Use these building blocks to compose any message in the service.</p>
+
+      <div class="app-preview app-preview--grey govuk-!-margin-bottom-4">
+        <p class="govuk-body" style="font-family: monospace; font-size: 16px; line-height: 2.2;">
+          <strong class="govuk-tag govuk-tag--blue">{Type}</strong>
+          &nbsp;+&nbsp;
+          <strong class="govuk-tag govuk-tag--green">{Subject}</strong>
+          &nbsp;+&nbsp;
+          <strong class="govuk-tag govuk-tag--yellow">{Cause / State}</strong>
+          &nbsp;+&nbsp;
+          <strong class="govuk-tag govuk-tag--grey">{Effect}</strong> <span class="govuk-body-s">(optional)</span>
+          &nbsp;+&nbsp;
+          <strong class="govuk-tag govuk-tag--red">{Action}</strong>
+        </p>
+        <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-0">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key" style="width:120px;font-size:14px;">Type</dt>
+            <dd class="govuk-summary-list__value" style="font-size:14px;">status / error / info / success / warning / help</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key" style="width:120px;font-size:14px;">Subject</dt>
+            <dd class="govuk-summary-list__value" style="font-size:14px;">application / account / task / document</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key" style="width:120px;font-size:14px;">Cause</dt>
+            <dd class="govuk-summary-list__value" style="font-size:14px;">What happened or what is missing</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key" style="width:120px;font-size:14px;">Effect</dt>
+            <dd class="govuk-summary-list__value" style="font-size:14px;">What this means (skip if obvious)</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key" style="width:120px;font-size:14px;">Action</dt>
+            <dd class="govuk-summary-list__value" style="font-size:14px;">Imperative, 1 step only</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+    <!-- CPL-01 STATUS -->
+    <section class="app-pattern-section" id="status">
+      <h2 class="govuk-heading-l">
+        Status &nbsp;<strong class="govuk-tag govuk-tag--blue">CPL-01</strong>
+      </h2>
+      <p class="govuk-body">Summarise state at a glance. Used in rows, cards, and headers. State label set is closed — do not invent new labels per team or product.</p>
+
+      <div class="app-pattern-card">
+        <div class="app-pattern-card__header">
+          <span class="app-pattern-card__title">Status pattern <code class="app-pattern-card__id">status:in_review</code></span>
+          <div class="app-tabs" role="tablist">
+            <button class="app-tabs__btn app-tabs__btn--active" onclick="switchTab(this,'s01-preview')" role="tab">Preview</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s01-spec')" role="tab">Spec</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s01-ac')" role="tab">Dev AC</button>
+          </div>
+        </div>
+        <div class="app-pattern-card__body">
+
+          <div class="app-tab-panel app-tab-panel--active" id="s01-preview">
+            <div class="app-preview">
+              <div class="app-status-row">
+                <strong class="govuk-tag govuk-tag--blue">In review</strong>
+                <span class="app-status-explainer">We'll email you if we need more information.</span>
+              </div>
+              <div class="app-status-row">
+                <strong class="govuk-tag govuk-tag--yellow">Action needed</strong>
+                <span class="app-status-explainer">Upload your ID document by <strong>12 March 2026</strong>.</span>
+              </div>
+              <div class="app-status-row">
+                <strong class="govuk-tag govuk-tag--green">Approved</strong>
+                <span class="app-status-explainer">You'll see your payment in <strong>3 to 5 working days</strong>.</span>
+              </div>
+              <div class="app-status-row">
+                <strong class="govuk-tag govuk-tag--red">Rejected</strong>
+                <span class="app-status-explainer">Read the reasons and how to appeal.</span>
+              </div>
+              <div class="app-status-row">
+                <strong class="govuk-tag govuk-tag--grey">Draft</strong>
+                <span class="app-status-explainer">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s01-spec">
+            <pre class="app-code"><span class="token">{{state_label}}</span> — <span class="token">{{explainer}}</span></pre>
+            <div class="app-spec-grid">
+              <div>
+                <h4>Structure</h4>
+                <p>[State label] + optional explainer (≤ 12 words) + optional date/time</p>
+                <h4 style="margin-top:14px;">Required</h4>
+                <ul><li>state_label (from controlled vocabulary)</li></ul>
+                <h4 style="margin-top:10px;">Optional</h4>
+                <ul><li>explainer</li><li>timestamp</li></ul>
+              </div>
+              <div>
+                <h4>When to use</h4>
+                <ul>
+                  <li>Table rows and lists</li>
+                  <li>Card headers</li>
+                  <li>Page headers</li>
+                  <li>Inline summaries</li>
+                </ul>
+              </div>
+            </div>
+            <div class="app-do-dont">
+              <div class="app-do">
+                <p class="app-do__heading">✓ Do</p>
+                <ul>
+                  <li>Use the closed set of state labels</li>
+                  <li>Keep explainers ≤ 12 words</li>
+                  <li>Use the same explainer for the same condition across the service</li>
+                </ul>
+              </div>
+              <div class="app-dont">
+                <p class="app-dont__heading">✕ Don't</p>
+                <ul>
+                  <li>Invent new labels per product or team</li>
+                  <li>Use colour alone to signal state</li>
+                  <li>Embed a second action in the explainer</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s01-ac">
+            <ul class="app-ac-list">
+              <li><span class="app-ac-badge">AC-1</span>Status uses approved label from controlled vocabulary (Draft, In review, Action needed, Approved, Rejected, On hold, Expired, Completed, Scheduled, Paused).</li>
+              <li><span class="app-ac-badge">AC-2</span>If explainer is present, it is ≤ 12 words with no second action embedded.</li>
+              <li><span class="app-ac-badge">AC-3</span>Status chip always includes text — never colour alone. Programmatically associated with the entity via aria-label or heading context.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+    <!-- CPL-02 WARNING -->
+    <section class="app-pattern-section" id="warning">
+      <h2 class="govuk-heading-l">Warning &nbsp;<strong class="govuk-tag govuk-tag--orange">CPL-02</strong></h2>
+      <p class="govuk-body">Prevent harm or costly mistakes. Three-part structure: Cause → Impact → Required action.</p>
+
+      <div class="app-pattern-card">
+        <div class="app-pattern-card__header">
+          <span class="app-pattern-card__title">Warning banner <code class="app-pattern-card__id">warning:payment_mismatch</code></span>
+          <div class="app-tabs">
+            <button class="app-tabs__btn app-tabs__btn--active" onclick="switchTab(this,'s02-preview')">Preview</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s02-spec')">Spec</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s02-ac')">Dev AC</button>
+          </div>
+        </div>
+        <div class="app-pattern-card__body">
+
+          <div class="app-tab-panel app-tab-panel--active" id="s02-preview">
+            <div class="app-preview">
+              <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                  <span class="govuk-visually-hidden">Warning</span>
+                  There's a mismatch in your bank details. <strong>You will not be paid.</strong>
+                </strong>
+              </div>
+              <a href="#" class="govuk-button govuk-button--warning" style="margin-bottom: 0;">Update your account details</a>
+
+              <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" style="margin-top: 20px;">
+
+              <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                  <span class="govuk-visually-hidden">Warning</span>
+                  You're close to the deadline. <strong>Your application may be delayed.</strong>
+                </strong>
+              </div>
+              <a href="#" class="govuk-button govuk-button--warning" style="margin-bottom: 0;">Submit it today</a>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s02-spec">
+            <pre class="app-code">There's <span class="token">{{cause}}</span>. <span class="token">{{impact}}</span>. <span class="token">{{action}}</span>.</pre>
+            <div class="app-do-dont">
+              <div class="app-do">
+                <p class="app-do__heading">✓ Do</p>
+                <ul>
+                  <li>Put impact in plain terms (what will happen to the user)</li>
+                  <li>Make the action a button wherever possible</li>
+                  <li>Keep cause specific and factual</li>
+                </ul>
+              </div>
+              <div class="app-dont">
+                <p class="app-dont__heading">✕ Don't</p>
+                <ul>
+                  <li>Blame the user</li>
+                  <li>Bury the action after long explanations</li>
+                  <li>Use for low-risk informational messages</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s02-ac">
+            <ul class="app-ac-list">
+              <li><span class="app-ac-badge">AC-1</span>Warning uses three-part structure: cause → impact → action.</li>
+              <li><span class="app-ac-badge">AC-2</span>Primary action is focusable and immediately follows the impact statement.</li>
+              <li><span class="app-ac-badge">AC-3</span>Region announced to screen readers (role="alert" on dynamic insertion; govuk-warning-text component for static).</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+    <!-- CPL-03 ERROR -->
+    <section class="app-pattern-section" id="error">
+      <h2 class="govuk-heading-l">Error &nbsp;<strong class="govuk-tag govuk-tag--red">CPL-03</strong></h2>
+      <p class="govuk-body">Explain what went wrong and how to fix it. Page-level summary + field-level messages.</p>
+
+      <div class="app-pattern-card">
+        <div class="app-pattern-card__header">
+          <span class="app-pattern-card__title">Error summary + field error <code class="app-pattern-card__id">error:invalid_format</code></span>
+          <div class="app-tabs">
+            <button class="app-tabs__btn app-tabs__btn--active" onclick="switchTab(this,'s03-preview')">Preview</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s03-spec')">Spec</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s03-ac')">Dev AC</button>
+          </div>
+        </div>
+        <div class="app-pattern-card__body">
+
+          <div class="app-tab-panel app-tab-panel--active" id="s03-preview">
+            <div class="app-preview">
+              <div class="govuk-error-summary" data-module="govuk-error-summary">
+                <div role="alert">
+                  <h2 class="govuk-error-summary__title">There is a problem</h2>
+                  <div class="govuk-error-summary__body">
+                    <ul class="govuk-list govuk-error-summary__list">
+                      <li><a href="#nino-demo">National Insurance number — Enter a number in the correct format, like QQ123456C</a></li>
+                      <li><a href="#dob-demo">Date of birth — Enter a valid date of birth</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="govuk-form-group govuk-form-group--error">
+                <label class="govuk-label" for="nino-demo">What is your National Insurance number?</label>
+                <div id="nino-hint" class="govuk-hint">It's on your National Insurance card, payslip or P60.</div>
+                <p id="nino-error" class="govuk-error-message">
+                  <span class="govuk-visually-hidden">Error:</span> Enter a National Insurance number in the correct format, like <strong>QQ123456C</strong>.
+                </p>
+                <input class="govuk-input govuk-input--error" id="nino-demo" name="nino" type="text" value="QQ 12 34" aria-describedby="nino-hint nino-error">
+              </div>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s03-spec">
+            <pre class="app-code"><span class="comment">// Field-level — required</span>
+Enter your <span class="token">{{field}}</span>.
+
+<span class="comment">// Field-level — invalid format</span>
+Enter a <span class="token">{{field}}</span> in the correct format, like <span class="token">{{example}}</span>.
+
+<span class="comment">// Field-level — mismatch</span>
+Your <span class="token">{{field}}</span> doesn't match <span class="token">{{related_field}}</span>. Check and try again.
+
+<span class="comment">// Page-level heading (always)</span>
+There is a problem</pre>
+            <div class="app-do-dont">
+              <div class="app-do">
+                <p class="app-do__heading">✓ Do</p>
+                <ul>
+                  <li>Point to the exact field to fix</li>
+                  <li>Give one fix per message</li>
+                  <li>Provide a format example when relevant</li>
+                  <li>Place page summary above the first field</li>
+                </ul>
+              </div>
+              <div class="app-dont">
+                <p class="app-dont__heading">✕ Don't</p>
+                <ul>
+                  <li>Use technical codes or database messages</li>
+                  <li>Hide the page summary above the fold</li>
+                  <li>Say "invalid" without explaining how to fix</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s03-ac">
+            <ul class="app-ac-list">
+              <li><span class="app-ac-badge">AC-1</span>Error summary appears above the form with heading "There is a problem" using the govuk-error-summary component.</li>
+              <li><span class="app-ac-badge">AC-2</span>Each list item anchors directly to its field (href="#field-id").</li>
+              <li><span class="app-ac-badge">AC-3</span>Field error text linked via aria-describedby. Error text is visually adjacent to the field.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+    <!-- CPL-04 FORM LABEL -->
+    <section class="app-pattern-section" id="form-label">
+      <h2 class="govuk-heading-l">Form Label + Help &nbsp;<strong class="govuk-tag govuk-tag--green">CPL-04</strong></h2>
+      <p class="govuk-body">Ask for information unambiguously. Prefer a question to a noun label. Use hint text for how/where.</p>
+
+      <div class="app-pattern-card">
+        <div class="app-pattern-card__header">
+          <span class="app-pattern-card__title">Label, hint and example <code class="app-pattern-card__id">form:label_hint</code></span>
+          <div class="app-tabs">
+            <button class="app-tabs__btn app-tabs__btn--active" onclick="switchTab(this,'s04-preview')">Preview</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s04-spec')">Spec</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s04-ac')">Dev AC</button>
+          </div>
+        </div>
+        <div class="app-pattern-card__body">
+
+          <div class="app-tab-panel app-tab-panel--active" id="s04-preview">
+            <div class="app-preview">
+              <div class="govuk-form-group">
+                <label class="govuk-label govuk-label--s" for="payroll-demo">What is your payroll number?</label>
+                <div id="payroll-hint" class="govuk-hint">You can find this on your payslip. For example, <strong>12345678</strong>.</div>
+                <input class="govuk-input govuk-input--width-10" id="payroll-demo" name="payroll" type="text" aria-describedby="payroll-hint">
+              </div>
+              <div class="govuk-form-group">
+                <label class="govuk-label govuk-label--s" for="nino-demo2">What is your National Insurance number?</label>
+                <div id="nino2-hint" class="govuk-hint">It's on your National Insurance card or P60. For example, <strong>QQ123456C</strong>.</div>
+                <input class="govuk-input govuk-input--width-10" id="nino-demo2" name="nino2" type="text" aria-describedby="nino2-hint">
+              </div>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s04-spec">
+            <pre class="app-code">Label: <span class="token">{{question}}</span>
+Hint: <span class="token">{{how_or_where}}</span>. For example, <span class="token">{{example_value}}</span>.</pre>
+            <div class="app-do-dont">
+              <div class="app-do">
+                <p class="app-do__heading">✓ Do</p>
+                <ul>
+                  <li>Use user language, not internal field names</li>
+                  <li>Prefer a question to a noun label</li>
+                  <li>Keep hints to ≤ 14 words</li>
+                </ul>
+              </div>
+              <div class="app-dont">
+                <p class="app-dont__heading">✕ Don't</p>
+                <ul>
+                  <li>Stack multiple instructions inside labels</li>
+                  <li>Rely on placeholders as labels</li>
+                  <li>Put essential info only in tooltips</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s04-ac">
+            <ul class="app-ac-list">
+              <li><span class="app-ac-badge">AC-1</span>Each input has a visible label element programmatically associated via for/id.</li>
+              <li><span class="app-ac-badge">AC-2</span>If hint text is present, the input references it in aria-describedby.</li>
+              <li><span class="app-ac-badge">AC-3</span>Examples appear as part of hint text — not as placeholder-only content.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+    <!-- CPL-05 CONDITIONAL -->
+    <section class="app-pattern-section" id="conditional">
+      <h2 class="govuk-heading-l">Conditional Question &nbsp;<strong class="govuk-tag govuk-tag--purple">CPL-05</strong></h2>
+      <p class="govuk-body">Ask follow-up questions only when relevant. Reveal child fields immediately when the condition is met.</p>
+
+      <div class="app-pattern-card">
+        <div class="app-pattern-card__header">
+          <span class="app-pattern-card__title">Interactive conditional demo <code class="app-pattern-card__id">form:conditional</code></span>
+          <div class="app-tabs">
+            <button class="app-tabs__btn app-tabs__btn--active" onclick="switchTab(this,'s05-preview')">Preview</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s05-spec')">Spec</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s05-ac')">Dev AC</button>
+          </div>
+        </div>
+        <div class="app-pattern-card__body">
+
+          <div class="app-tab-panel app-tab-panel--active" id="s05-preview">
+            <div class="app-preview">
+              <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    <h3 class="govuk-fieldset__heading">Do you have a UK bank account?</h3>
+                  </legend>
+                  <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
+                    <div class="govuk-radios__item">
+                      <input class="govuk-radios__input" id="bank-yes" name="bank" type="radio" value="yes" data-aria-controls="conditional-bank-yes" onchange="handleConditional('bank-reveal', true)">
+                      <label class="govuk-label govuk-radios__label" for="bank-yes">Yes</label>
+                    </div>
+                    <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="bank-reveal">
+                      <div class="govuk-form-group">
+                        <label class="govuk-label" for="sortcode">What is your sort code?</label>
+                        <div id="sortcode-hint" class="govuk-hint">It's 6 digits, for example <strong>01-23-45</strong>.</div>
+                        <input class="govuk-input govuk-input--width-5" id="sortcode" name="sortcode" type="text" aria-describedby="sortcode-hint">
+                      </div>
+                      <div class="govuk-form-group">
+                        <label class="govuk-label" for="accnum2">What is your account number?</label>
+                        <div id="accnum-hint" class="govuk-hint">It's 8 digits, for example <strong>12345678</strong>.</div>
+                        <input class="govuk-input govuk-input--width-10" id="accnum2" name="accnum" type="text" aria-describedby="accnum-hint">
+                      </div>
+                    </div>
+                    <div class="govuk-radios__item">
+                      <input class="govuk-radios__input" id="bank-no" name="bank" type="radio" value="no" onchange="handleConditional('bank-reveal', false)">
+                      <label class="govuk-label govuk-radios__label" for="bank-no">No</label>
+                    </div>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s05-spec">
+            <pre class="app-code">Parent: <span class="token">{{question}}</span>
+Child (shown when <span class="token">{{condition}}</span>): <span class="token">{{follow_up_question}}</span></pre>
+            <div class="app-do-dont">
+              <div class="app-do">
+                <p class="app-do__heading">✓ Do</p>
+                <ul>
+                  <li>Reveal child content immediately when condition is met</li>
+                  <li>Keep child questions close to the parent</li>
+                  <li>Move focus to first revealed field where appropriate</li>
+                </ul>
+              </div>
+              <div class="app-dont">
+                <p class="app-dont__heading">✕ Don't</p>
+                <ul>
+                  <li>Reveal multiple unrelated groups at once</li>
+                  <li>Break tab order when showing or hiding content</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s05-ac">
+            <ul class="app-ac-list">
+              <li><span class="app-ac-badge">AC-1</span>Conditional content only renders when the user selects the triggering option.</li>
+              <li><span class="app-ac-badge">AC-2</span>Uses govuk-radios--conditional pattern with data-aria-controls. Focus management handled by govuk-frontend JS.</li>
+              <li><span class="app-ac-badge">AC-3</span>Tab order remains logical when content is shown or hidden.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+    <!-- CPL-06 DASHBOARD / TABLE -->
+    <section class="app-pattern-section" id="dashboard">
+      <h2 class="govuk-heading-l">Dashboard / Table &nbsp;<strong class="govuk-tag govuk-tag--blue">CPL-06</strong></h2>
+      <p class="govuk-body">Make large volumes of data scannable, comparable, and actionable. One concept per cell. Status chips must include text — never colour alone.</p>
+
+      <div class="app-pattern-card">
+        <div class="app-pattern-card__header">
+          <span class="app-pattern-card__title">Case list table <code class="app-pattern-card__id">table:case_list</code></span>
+          <div class="app-tabs">
+            <button class="app-tabs__btn app-tabs__btn--active" onclick="switchTab(this,'s06-preview')">Preview</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s06-spec')">Spec</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s06-ac')">Dev AC</button>
+          </div>
+        </div>
+        <div class="app-pattern-card__body">
+
+          <div class="app-tab-panel app-tab-panel--active" id="s06-preview">
+            <div class="app-preview" style="padding: 0; overflow-x: auto;">
+              <table class="govuk-table">
+                <thead class="govuk-table__head">
+                  <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Status</th>
+                    <th scope="col" class="govuk-table__header">Reference</th>
+                    <th scope="col" class="govuk-table__header">Name</th>
+                    <th scope="col" class="govuk-table__header">Last updated</th>
+                    <th scope="col" class="govuk-table__header">Due by</th>
+                    <th scope="col" class="govuk-table__header">Owner</th>
+                    <th scope="col" class="govuk-table__header">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--yellow">Action needed</strong></td>
+                    <td class="govuk-table__cell"><code>APP-2341</code></td>
+                    <td class="govuk-table__cell">Rahman, T.</td>
+                    <td class="govuk-table__cell"><span class="govuk-body-s">2 days ago<br><span class="govuk-!-color-secondary-text-colour">25 Feb 2026</span></span></td>
+                    <td class="govuk-table__cell"><strong>12 Mar 2026</strong></td>
+                    <td class="govuk-table__cell">Smith J.</td>
+                    <td class="govuk-table__cell"><a class="govuk-link" href="#">View</a> &nbsp;<a class="govuk-link" href="#">Assign</a></td>
+                  </tr>
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">In review</strong></td>
+                    <td class="govuk-table__cell"><code>APP-2298</code></td>
+                    <td class="govuk-table__cell">Okoye, A.</td>
+                    <td class="govuk-table__cell"><span class="govuk-body-s">5 days ago<br><span class="govuk-!-color-secondary-text-colour">22 Feb 2026</span></span></td>
+                    <td class="govuk-table__cell">20 Mar 2026</td>
+                    <td class="govuk-table__cell">Jones M.</td>
+                    <td class="govuk-table__cell"><a class="govuk-link" href="#">View</a> &nbsp;<a class="govuk-link" href="#">Assign</a></td>
+                  </tr>
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Approved</strong></td>
+                    <td class="govuk-table__cell"><code>APP-2187</code></td>
+                    <td class="govuk-table__cell">Li, W.</td>
+                    <td class="govuk-table__cell"><span class="govuk-body-s">12 days ago<br><span class="govuk-!-color-secondary-text-colour">15 Feb 2026</span></span></td>
+                    <td class="govuk-table__cell">—</td>
+                    <td class="govuk-table__cell">Smith J.</td>
+                    <td class="govuk-table__cell"><a class="govuk-link" href="#">View</a></td>
+                  </tr>
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--pink">Expired</strong></td>
+                    <td class="govuk-table__cell"><code>APP-2044</code></td>
+                    <td class="govuk-table__cell">Mehta, P.</td>
+                    <td class="govuk-table__cell"><span class="govuk-body-s">30 days ago<br><span class="govuk-!-color-secondary-text-colour">28 Jan 2026</span></span></td>
+                    <td class="govuk-table__cell">—</td>
+                    <td class="govuk-table__cell">—</td>
+                    <td class="govuk-table__cell"><a class="govuk-link" href="#">View</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s06-spec">
+            <pre class="app-code">Headers: Status | Reference | Name | Last updated | Owner | Due by | Actions
+
+Cell formats:
+  Status:       <span class="token">{{state_label}}</span>  [govuk-tag with text]
+  Last updated: <span class="token">{{relative_time}}</span> (<span class="token">{{absolute_date}}</span>)
+  Due by:       <span class="token">{{absolute_date}}</span>
+  Actions:      View | Edit | Assign | Download  [verbs only]</pre>
+            <div class="app-do-dont">
+              <div class="app-do">
+                <p class="app-do__heading">✓ Do</p>
+                <ul>
+                  <li>One concept per cell</li>
+                  <li>Show relative + absolute dates where timing matters</li>
+                  <li>Sort by Due by or Status by default</li>
+                </ul>
+              </div>
+              <div class="app-dont">
+                <p class="app-dont__heading">✕ Don't</p>
+                <ul>
+                  <li>Combine multiple data points in one cell</li>
+                  <li>Rely on icon-only status</li>
+                  <li>Wrap whole paragraph sentences in cells</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s06-ac">
+            <ul class="app-ac-list">
+              <li><span class="app-ac-badge">AC-1</span>Table renders with semantic &lt;th scope="col"&gt; headers using govuk-table component.</li>
+              <li><span class="app-ac-badge">AC-2</span>Status cells use govuk-tag with text. Never colour alone.</li>
+              <li><span class="app-ac-badge">AC-3</span>Column order matches the agreed content model. Abbreviations from controlled vocabulary only.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+    <!-- CPL-07 CONFIRMATION -->
+    <section class="app-pattern-section" id="confirmation">
+      <h2 class="govuk-heading-l">Confirmation &nbsp;<strong class="govuk-tag govuk-tag--green">CPL-07</strong></h2>
+      <p class="govuk-body">Confirm what happened, tell users what happens next, and offer save options. Put the result in the title.</p>
+
+      <div class="app-pattern-card">
+        <div class="app-pattern-card__header">
+          <span class="app-pattern-card__title">Submission confirmation <code class="app-pattern-card__id">confirmation:submitted</code></span>
+          <div class="app-tabs">
+            <button class="app-tabs__btn app-tabs__btn--active" onclick="switchTab(this,'s07-preview')">Preview</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s07-spec')">Spec</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s07-ac')">Dev AC</button>
+          </div>
+        </div>
+        <div class="app-pattern-card__body">
+
+          <div class="app-tab-panel app-tab-panel--active" id="s07-preview">
+            <div class="app-preview app-preview--grey">
+              <div class="govuk-panel govuk-panel--confirmation">
+                <h1 class="govuk-panel__title">Application submitted</h1>
+                <div class="govuk-panel__body">
+                  Your reference number<br><strong>APP-2341</strong>
+                </div>
+              </div>
+              <p class="govuk-body govuk-!-margin-top-6">We've sent a confirmation to <strong>name@example.com</strong>.</p>
+              <h2 class="govuk-heading-m">What happens next</h2>
+              <p class="govuk-body">We'll review your application within <strong>5 working days</strong>.</p>
+              <p class="govuk-body">We'll email you if we need more information.</p>
+              <a href="#" class="govuk-button">View application</a>
+              &nbsp;&nbsp;
+              <a href="#" class="govuk-link">Download receipt (PDF, 120KB)</a>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s07-spec">
+            <pre class="app-code"><span class="token">{{success_title}}</span>
+<span class="token">{{summary_of_what_happened}}</span>
+
+What happens next
+<span class="token">{{what_happens_next}}</span>
+
+<span class="token">{{primary_next_action}}</span>  |  <span class="token">{{secondary_option}}</span></pre>
+            <div class="app-do-dont">
+              <div class="app-do">
+                <p class="app-do__heading">✓ Do</p>
+                <ul>
+                  <li>Put the result in the title (past tense: "Application submitted")</li>
+                  <li>Offer a clear next step above the fold</li>
+                  <li>Specify timeframes concretely</li>
+                </ul>
+              </div>
+              <div class="app-dont">
+                <p class="app-dont__heading">✕ Don't</p>
+                <ul>
+                  <li>Repeat the entire form contents</li>
+                  <li>Show "success" for events the user didn't initiate</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s07-ac">
+            <ul class="app-ac-list">
+              <li><span class="app-ac-badge">AC-1</span>Uses govuk-panel--confirmation component. Title is the first heading on the page.</li>
+              <li><span class="app-ac-badge">AC-2</span>Primary next step is a govuk-button visible without scrolling.</li>
+              <li><span class="app-ac-badge">AC-3</span>PDF links indicate format and file size.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+    <!-- CPL-08 GUIDANCE -->
+    <section class="app-pattern-section" id="guidance">
+      <h2 class="govuk-heading-l">Guidance Block &nbsp;<strong class="govuk-tag govuk-tag--blue">CPL-08</strong></h2>
+      <p class="govuk-body">Short, actionable guidance within a flow. 2–3 bullets max. Use when users repeatedly ask the same question.</p>
+
+      <div class="app-pattern-card">
+        <div class="app-pattern-card__header">
+          <span class="app-pattern-card__title">Inset guidance <code class="app-pattern-card__id">guidance:inline</code></span>
+          <div class="app-tabs">
+            <button class="app-tabs__btn app-tabs__btn--active" onclick="switchTab(this,'s08-preview')">Preview</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s08-spec')">Spec</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s08-ac')">Dev AC</button>
+          </div>
+        </div>
+        <div class="app-pattern-card__body">
+
+          <div class="app-tab-panel app-tab-panel--active" id="s08-preview">
+            <div class="app-preview">
+              <div class="govuk-inset-text">
+                <h3 class="govuk-heading-s">Proving your identity</h3>
+                <ul class="govuk-list govuk-list--bullet">
+                  <li>Use a photo of your passport or driving licence.</li>
+                  <li>Make sure all four edges are visible.</li>
+                  <li>The image must be clear and not blurred.</li>
+                </ul>
+                <a class="govuk-link" href="#">How to take a clear photo</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s08-spec">
+            <pre class="app-code"><span class="token">{{heading}}</span>
+- <span class="token">{{action_or_rule_1}}</span>
+- <span class="token">{{action_or_rule_2}}</span>
+- <span class="token">{{action_or_rule_3}}</span>  [optional]
+
+Learn more: <span class="token">{{link_text}}</span></pre>
+            <div class="app-do-dont">
+              <div class="app-do">
+                <p class="app-do__heading">✓ Do</p>
+                <ul>
+                  <li>Keep bullets parallel (same grammatical form)</li>
+                  <li>Prefer 2–3 bullets max</li>
+                  <li>Use meaningful link text</li>
+                </ul>
+              </div>
+              <div class="app-dont">
+                <p class="app-dont__heading">✕ Don't</p>
+                <ul>
+                  <li>Repeat content already visible on the page</li>
+                  <li>Use for essential task-critical information</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s08-ac">
+            <ul class="app-ac-list">
+              <li><span class="app-ac-badge">AC-1</span>Uses govuk-inset-text component with a govuk-heading-s and govuk-list--bullet.</li>
+              <li><span class="app-ac-badge">AC-2</span>Links use descriptive text. No "click here" or "read more" without context.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+    <!-- CPL-09 MULTI-STEP -->
+    <section class="app-pattern-section" id="multistep">
+      <h2 class="govuk-heading-l">Multi-step Instructions &nbsp;<strong class="govuk-tag govuk-tag--orange">CPL-09</strong></h2>
+      <p class="govuk-body">Help users complete complex tasks reliably. One action per step, starting with a verb.</p>
+
+      <div class="app-pattern-card">
+        <div class="app-pattern-card__header">
+          <span class="app-pattern-card__title">Numbered steps <code class="app-pattern-card__id">instructions:multi_step</code></span>
+          <div class="app-tabs">
+            <button class="app-tabs__btn app-tabs__btn--active" onclick="switchTab(this,'s09-preview')">Preview</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s09-spec')">Spec</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s09-ac')">Dev AC</button>
+          </div>
+        </div>
+        <div class="app-pattern-card__body">
+
+          <div class="app-tab-panel app-tab-panel--active" id="s09-preview">
+            <div class="app-preview">
+              <p class="govuk-body">To <strong>verify your bank details</strong>, follow these steps:</p>
+              <ol class="govuk-list govuk-list--number">
+                <li>Download the verification file.</li>
+                <li>Upload it to your bank portal.</li>
+                <li>Return to this page and select <strong>Confirm</strong>.</li>
+              </ol>
+              <div class="govuk-inset-text" style="margin-top: 16px;">
+                <p class="govuk-body govuk-!-margin-bottom-0">Keep this tab open while you complete the steps.</p>
+              </div>
+              <a href="#" class="govuk-button govuk-!-margin-top-4">Download verification file</a>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s09-spec">
+            <pre class="app-code">To <span class="token">{{outcome}}</span>, follow these steps:
+
+1) <span class="token">{{step_1}}</span>
+2) <span class="token">{{step_2}}</span>
+3) <span class="token">{{step_3}}</span>
+
+Tip: <span class="token">{{tip}}</span></pre>
+            <div class="app-do-dont">
+              <div class="app-do">
+                <p class="app-do__heading">✓ Do</p>
+                <ul>
+                  <li>Start each step with a verb</li>
+                  <li>Keep each step to one action</li>
+                  <li>List prerequisites upfront</li>
+                </ul>
+              </div>
+              <div class="app-dont">
+                <p class="app-dont__heading">✕ Don't</p>
+                <ul>
+                  <li>Use nested lists where possible</li>
+                  <li>Write steps longer than one sentence</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s09-ac">
+            <ul class="app-ac-list">
+              <li><span class="app-ac-badge">AC-1</span>Steps render as govuk-list--number (&lt;ol&gt;). Each step is one sentence or action maximum.</li>
+              <li><span class="app-ac-badge">AC-2</span>Primary CTA appears after the list, not before it.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+    <!-- CPL-10 TOOLTIP -->
+    <section class="app-pattern-section" id="tooltip">
+      <h2 class="govuk-heading-l">Tooltip / Definition &nbsp;<strong class="govuk-tag govuk-tag--purple">CPL-10</strong></h2>
+      <p class="govuk-body">Explain domain terms without cluttering the UI. Short definition (≤ 14 words) + one example. Must be keyboard-accessible.</p>
+
+      <div class="app-pattern-card">
+        <div class="app-pattern-card__header">
+          <span class="app-pattern-card__title">Term tooltip <code class="app-pattern-card__id">tooltip:definition</code></span>
+          <div class="app-tabs">
+            <button class="app-tabs__btn app-tabs__btn--active" onclick="switchTab(this,'s10-preview')">Preview</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s10-spec')">Spec</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s10-ac')">Dev AC</button>
+          </div>
+        </div>
+        <div class="app-pattern-card__body">
+
+          <div class="app-tab-panel app-tab-panel--active" id="s10-preview">
+            <div class="app-preview">
+              <p class="govuk-body">
+                Your
+                <span class="app-tooltip-wrapper">
+                  <abbr title="Your pay before tax or deductions. For example, £2,000." style="cursor:help;text-decoration:underline dotted;">gross pay</abbr>
+                  <button class="app-tooltip-trigger" aria-describedby="gross-tip" tabindex="0">i</button>
+                  <span class="app-tooltip-bubble" id="gross-tip" role="tooltip">Your pay before tax or deductions. For example, <strong>£2,000</strong>.</span>
+                </span>
+                is used to calculate your contribution rate.
+              </p>
+              <p class="govuk-body govuk-!-margin-top-4">
+                Enter your
+                <span class="app-tooltip-wrapper">
+                  <abbr title="Your 10-digit Unique Taxpayer Reference from HMRC. For example, 1234567890." style="cursor:help;text-decoration:underline dotted;">UTR number</abbr>
+                  <button class="app-tooltip-trigger" aria-describedby="utr-tip" tabindex="0">i</button>
+                  <span class="app-tooltip-bubble" id="utr-tip" role="tooltip">Your 10-digit Unique Taxpayer Reference from HMRC. For example, <strong>1234567890</strong>.</span>
+                </span>
+                to continue.
+              </p>
+              <p class="govuk-body-s govuk-!-color-secondary-text-colour govuk-!-margin-top-4">Hover over the <strong>i</strong> buttons or the underlined terms to see definitions.</p>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s10-spec">
+            <pre class="app-code"><span class="token">{{term}}</span> — <span class="token">{{short_definition}}</span>. For example, <span class="token">{{example}}</span>.</pre>
+            <div class="app-do-dont">
+              <div class="app-do">
+                <p class="app-do__heading">✓ Do</p>
+                <ul>
+                  <li>Keep definition ≤ 14 words</li>
+                  <li>Use the controlled vocabulary</li>
+                  <li>Make tooltips focusable for keyboard users</li>
+                </ul>
+              </div>
+              <div class="app-dont">
+                <p class="app-dont__heading">✕ Don't</p>
+                <ul>
+                  <li>Use for essential task-critical information</li>
+                  <li>Rely on hover only</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s10-ac">
+            <ul class="app-ac-list">
+              <li><span class="app-ac-badge">AC-1</span>Tooltip trigger is focusable (tabindex="0") and available to keyboard and touch — not hover-only. abbr element also exposes definition to AT.</li>
+              <li><span class="app-ac-badge">AC-2</span>Tooltip text mirrors the controlled vocabulary glossary entry exactly.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+    <!-- CPL-11 SYSTEM MESSAGE -->
+    <section class="app-pattern-section" id="system-msg">
+      <h2 class="govuk-heading-l">System / Meta Message &nbsp;<strong class="govuk-tag govuk-tag--grey">CPL-11</strong></h2>
+      <p class="govuk-body">Communicate background processes, scheduled events, or deprecations. Always clarify whether the user needs to act.</p>
+
+      <div class="app-pattern-card">
+        <div class="app-pattern-card__header">
+          <span class="app-pattern-card__title">System message <code class="app-pattern-card__id">system:background_event</code></span>
+          <div class="app-tabs">
+            <button class="app-tabs__btn app-tabs__btn--active" onclick="switchTab(this,'s11-preview')">Preview</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s11-spec')">Spec</button>
+            <button class="app-tabs__btn" onclick="switchTab(this,'s11-ac')">Dev AC</button>
+          </div>
+        </div>
+        <div class="app-pattern-card__body">
+
+          <div class="app-tab-panel app-tab-panel--active" id="s11-preview">
+            <div class="app-preview">
+              <div class="govuk-notification-banner" role="region" aria-labelledby="sys-title-1" data-module="govuk-notification-banner">
+                <div class="govuk-notification-banner__header">
+                  <h2 class="govuk-notification-banner__title" id="sys-title-1">Important</h2>
+                </div>
+                <div class="govuk-notification-banner__content">
+                  <p class="govuk-body">Your documents are being scanned. <strong>You can continue using the service.</strong></p>
+                </div>
+              </div>
+
+              <div class="govuk-notification-banner govuk-!-margin-top-4" role="region" aria-labelledby="sys-title-2" data-module="govuk-notification-banner">
+                <div class="govuk-notification-banner__header">
+                  <h2 class="govuk-notification-banner__title" id="sys-title-2">Scheduled update</h2>
+                </div>
+                <div class="govuk-notification-banner__content">
+                  <p class="govuk-body">We'll update your dashboard overnight. <strong>You'll see new data from 6am tomorrow.</strong></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s11-spec">
+            <pre class="app-code"><span class="token">{{event}}</span>. <span class="token">{{effect}}</span>. <span class="token">{{user_action_if_any}}</span></pre>
+            <div class="app-do-dont">
+              <div class="app-do">
+                <p class="app-do__heading">✓ Do</p>
+                <ul>
+                  <li>Be precise about timing (6am, Monday, overnight)</li>
+                  <li>Clarify whether the user needs to act</li>
+                </ul>
+              </div>
+              <div class="app-dont">
+                <p class="app-dont__heading">✕ Don't</p>
+                <ul>
+                  <li>Show "success" for events the user didn't initiate</li>
+                  <li>Use vague timing like "soon" or "shortly"</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="app-tab-panel" id="s11-ac">
+            <ul class="app-ac-list">
+              <li><span class="app-ac-badge">AC-1</span>Uses govuk-notification-banner component. Dynamic insertions use role="alert" for urgency or role="status" for polite updates.</li>
+              <li><span class="app-ac-badge">AC-2</span>All timeframes are explicit. No "soon", "shortly", or "later".</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+    <!-- DECISION TREES -->
+    <section class="app-pattern-section" id="decision-trees">
+      <h2 class="govuk-heading-l">Decision Trees</h2>
+      <p class="govuk-body">Keep these in your repo or Confluence. IXD uses them as parameters for UI copy; CD updates rules — not every screen.</p>
+
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-half">
+          <h3 class="govuk-heading-s">Status decision tree</h3>
+          <div class="app-decision-tree"><span style="color:#85c1e9;">IF</span> required_documents_missing = <span style="color:#98fb98;">true</span>
+  <span style="color:#85c1e9;">THEN</span> status = <span style="color:#f47738;">"Action needed"</span>
+       explainer = <span style="color:#f47738;">"Upload the missing documents."</span>
+
+<span style="color:#85c1e9;">ELSE IF</span> review_started = <span style="color:#98fb98;">true</span>
+         AND decision_ready = <span style="color:#98fb98;">false</span>
+  <span style="color:#85c1e9;">THEN</span> status = <span style="color:#f47738;">"In review"</span>
+       explainer = <span style="color:#f47738;">"We'll email you if we
+       need more information."</span>
+
+<span style="color:#85c1e9;">ELSE IF</span> decision = <span style="color:#f47738;">"approved"</span>
+  <span style="color:#85c1e9;">THEN</span> status = <span style="color:#f47738;">"Approved"</span>
+       explainer = <span style="color:#f47738;">"You'll see your payment
+       in 3 to 5 days."</span>
+
+<span style="color:#85c1e9;">ELSE IF</span> decision = <span style="color:#f47738;">"rejected"</span>
+  <span style="color:#85c1e9;">THEN</span> status = <span style="color:#f47738;">"Rejected"</span>
+       explainer = <span style="color:#f47738;">"Read the reasons and
+       how to appeal."</span></div>
+        </div>
+        <div class="govuk-grid-column-one-half">
+          <h3 class="govuk-heading-s">Error decision tree</h3>
+          <div class="app-decision-tree"><span style="color:#85c1e9;">IF</span> field_empty
+  <span style="color:#85c1e9;">THEN</span> msg = <span style="color:#f47738;">"Enter your {{field}}."</span>
+
+<span style="color:#85c1e9;">ELSE IF</span> invalid_format
+  <span style="color:#85c1e9;">THEN</span> msg = <span style="color:#f47738;">"Enter a {{field}} in the
+  correct format, like {{example}}."</span>
+
+<span style="color:#85c1e9;">ELSE IF</span> rule_conflict
+  <span style="color:#85c1e9;">THEN</span> msg = <span style="color:#f47738;">"Your {{field}} doesn't
+  match {{related_field}}.
+  Check and try again."</span>
+
+<span style="color:#6f777b;">// Warning decision tree</span>
+<span style="color:#85c1e9;">IF</span> payment_details_mismatch
+  <span style="color:#85c1e9;">THEN</span> warn = <span style="color:#f47738;">"There's a mismatch in
+  your bank details. You will
+  not be paid. Update your
+  account details."</span>
+
+<span style="color:#85c1e9;">IF</span> approaching_deadline
+  <span style="color:#85c1e9;">THEN</span> warn = <span style="color:#f47738;">"Deadline is {{date}}.
+  Submit now to avoid delays."</span></div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+    <!-- GOVERNANCE -->
+    <section class="app-pattern-section" id="governance">
+      <h2 class="govuk-heading-l">Governance &amp; Contribution</h2>
+      <p class="govuk-body">Lightweight model with clear ownership. Lead CD announces changes; Content Ops approves rules.</p>
+
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-half">
+          <h3 class="govuk-heading-m">Change workflow</h3>
+          <div class="app-workflow">
+            <div class="app-workflow-step">
+              <div class="app-workflow-step__node">1</div>
+              <div class="app-workflow-step__content">
+                <h4 class="govuk-heading-s govuk-!-margin-bottom-1">Propose</h4>
+                <p class="govuk-body-s">Anyone requests a change with an example use case and sentence.</p>
+                <span class="app-workflow-step__owner">Any team member</span>
+              </div>
+            </div>
+            <div class="app-workflow-step">
+              <div class="app-workflow-step__node">2</div>
+              <div class="app-workflow-step__content">
+                <h4 class="govuk-heading-s govuk-!-margin-bottom-1">Review</h4>
+                <p class="govuk-body-s">Check CV conflicts, readability, and consistency with existing patterns.</p>
+                <span class="app-workflow-step__owner">CD + Content Ops</span>
+              </div>
+            </div>
+            <div class="app-workflow-step">
+              <div class="app-workflow-step__node">3</div>
+              <div class="app-workflow-step__content">
+                <h4 class="govuk-heading-s govuk-!-margin-bottom-1">Pilot</h4>
+                <p class="govuk-body-s">Run on one stream. Watch for rework, errors, or dev questions.</p>
+                <span class="app-workflow-step__owner">Lead CD</span>
+              </div>
+            </div>
+            <div class="app-workflow-step">
+              <div class="app-workflow-step__node">4</div>
+              <div class="app-workflow-step__content">
+                <h4 class="govuk-heading-s govuk-!-margin-bottom-1">Adopt</h4>
+                <p class="govuk-body-s">Merge version, update pattern index, announce to teams.</p>
+                <span class="app-workflow-step__owner">Content Ops</span>
+              </div>
+            </div>
+            <div class="app-workflow-step">
+              <div class="app-workflow-step__node">5</div>
+              <div class="app-workflow-step__content">
+                <h4 class="govuk-heading-s govuk-!-margin-bottom-1">Retire</h4>
+                <p class="govuk-body-s">If unused after x sprints: deprecate with sunset date, archive, link to replacement.</p>
+                <span class="app-workflow-step__owner">CD + Content Ops</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="govuk-grid-column-one-half">
+          <h3 class="govuk-heading-m">Cadence</h3>
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Weekly · 20 min</dt>
+              <dd class="govuk-summary-list__value">Content Triage — intake and exceptions</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Bi-weekly · 30 min</dt>
+              <dd class="govuk-summary-list__value">Pattern Review — adopt or retire patterns</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Monthly · 30 min</dt>
+              <dd class="govuk-summary-list__value">Glossary Review — new terms and conflicts</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Quarterly · Audit</dt>
+              <dd class="govuk-summary-list__value">Full CLS audit — remove duplicates, simplify, merge near-duplicates</dd>
+            </div>
+          </dl>
+
+          <h3 class="govuk-heading-s govuk-!-margin-top-6">Exception process</h3>
+          <p class="govuk-body-s">Tag ticket <code>content-exception</code> → CD pairs with IXD for 15–30 min → If recurring more than 3 times, <strong>promote to a new rule</strong>.</p>
+        </div>
+      </div>
+    </section>
+
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+    <!-- METRICS -->
+    <section class="app-pattern-section" id="metrics">
+      <h2 class="govuk-heading-l">Metrics &amp; Feedback Loops</h2>
+      <p class="govuk-body">Track leading indicators to catch system drift early. Share a 1-page win report at 2 and 6 weeks.</p>
+
+      <h3 class="govuk-heading-m">Leading indicators</h3>
+      <div class="app-metrics-grid govuk-!-margin-bottom-6">
+        <div class="app-metric-card">
+          <p class="app-metric-card__label">% UI strings using rules/patterns</p>
+          <p class="app-metric-card__target">↑ Aim high</p>
+          <p class="app-metric-card__dir">Higher = better system coverage</p>
+        </div>
+        <div class="app-metric-card">
+          <p class="app-metric-card__label">Avg. words per message</p>
+          <p class="app-metric-card__target">↓ Trending down</p>
+          <p class="app-metric-card__dir">Lower = clearer content</p>
+        </div>
+        <div class="app-metric-card">
+          <p class="app-metric-card__label">Exceptions per sprint</p>
+          <p class="app-metric-card__target">↓ Trending down</p>
+          <p class="app-metric-card__dir">Lower = better rule coverage</p>
+        </div>
+      </div>
+
+      <h3 class="govuk-heading-m">Lagging indicators</h3>
+      <div class="app-metrics-grid">
+        <div class="app-metric-card">
+          <p class="app-metric-card__label">Task success rate (UR)</p>
+          <p class="app-metric-card__target">↑ Improving</p>
+          <p class="app-metric-card__dir">Validated by user research</p>
+        </div>
+        <div class="app-metric-card">
+          <p class="app-metric-card__label">Time to dev handoff</p>
+          <p class="app-metric-card__target">↓ Reducing</p>
+          <p class="app-metric-card__dir">Faster = less bespoke authoring</p>
+        </div>
+        <div class="app-metric-card">
+          <p class="app-metric-card__label">Comprehension support tickets</p>
+          <p class="app-metric-card__target">↓ Reducing</p>
+          <p class="app-metric-card__dir">Lower = clearer service messages</p>
+        </div>
+      </div>
+    </section>
+
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+    <!-- QA CHECKLIST -->
+    <section class="app-pattern-section" id="qa">
+      <h2 class="govuk-heading-l">QA Checklist</h2>
+      <p class="govuk-body">Run this before every UI story ships. All items must pass before marking DoD complete.</p>
+
+      <div id="qa-list"></div>
+
+      <p class="govuk-body-s govuk-!-color-secondary-text-colour govuk-!-margin-top-4" id="qa-count"></p>
+    </section>
+
+  </main>
+</div>
+
+<!-- GOV.UK Frontend JS -->
+<script type="module">
+  import { initAll } from 'https://cdn.jsdelivr.net/npm/govuk-frontend@5.4.0/dist/govuk/govuk-frontend.min.js';
+  initAll();
+</script>
+
+<script>
+// Tab switching
+function switchTab(btn, targetId) {
+  const card = btn.closest('.app-pattern-card');
+  card.querySelectorAll('.app-tabs__btn').forEach(b => b.classList.remove('app-tabs__btn--active'));
+  card.querySelectorAll('.app-tab-panel').forEach(p => p.classList.remove('app-tab-panel--active'));
+  btn.classList.add('app-tabs__btn--active');
+  document.getElementById(targetId).classList.add('app-tab-panel--active');
+}
+
+// Conditional radio reveal
+function handleConditional(revealId, show) {
+  const el = document.getElementById(revealId);
+  if (!el) return;
+  if (show) {
+    el.classList.remove('govuk-radios__conditional--hidden');
+  } else {
+    el.classList.add('govuk-radios__conditional--hidden');
+  }
+}
+
+// QA checklist
+const qaItems = [
+  "Uses an existing rule (status / error / help)? If not, exception is justified and tagged <code>content-exception</code>.",
+  "Uses controlled vocabulary — no jargon, internal terms, or unexplained acronyms.",
+  "Messages are front-loaded; key point appears within the first 5 words.",
+  "One idea per sentence. One action per message (with at most one optional alternative).",
+  "Error messages say how to fix the problem and link to the affected field.",
+  "Status labels are from the approved closed set. Explainer is ≤ 12 words.",
+  "Colour is not the sole indicator of state — govuk-tag always includes text.",
+  "Links use meaningful text. No 'click here', 'read more', or 'learn more' without context.",
+  "Table headers are clear; one concept per cell; no wrapped paragraph text in cells.",
+  "Tooltip definitions are ≤ 14 words and include one example. Keyboard-accessible.",
+  "Screen reader semantics are correct: headings, regions, and ARIA used appropriately.",
+  "Rule ID is referenced in the ticket (e.g. <code>status:action_needed</code>, <code>error:invalid_format</code>)."
+];
+
+const list = document.getElementById('qa-list');
+const counter = document.getElementById('qa-count');
+let checked = 0;
+
+qaItems.forEach((item, i) => {
+  const label = document.createElement('label');
+  label.className = 'app-qa-item';
+  label.innerHTML = `
+    <input type="checkbox" class="govuk-checkboxes__input" onchange="updateQA(this)">
+    <span>${item}</span>
+  `;
+  list.appendChild(label);
+});
+
+function updateQA(input) {
+  const label = input.closest('.app-qa-item');
+  if (input.checked) {
+    label.classList.add('app-qa-item--checked');
+  } else {
+    label.classList.remove('app-qa-item--checked');
+  }
+  const total = document.querySelectorAll('.app-qa-item input').length;
+  const done = document.querySelectorAll('.app-qa-item input:checked').length;
+  counter.textContent = done === total ? '✓ All checks passed — ready to ship.' : `${done} of ${total} checks passed.`;
+}
+
+// Scroll-spy for sidebar
+const sections = document.querySelectorAll('.app-pattern-section');
+const navItems = document.querySelectorAll('.app-subnav__item');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navItems.forEach(n => n.classList.remove('app-subnav__item--active'));
+      const match = document.querySelector(`.app-subnav__item[href="#${entry.target.id}"]`);
+      if (match) match.classList.add('app-subnav__item--active');
+    }
+  });
+}, { rootMargin: '-10% 0px -70% 0px' });
+
+sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

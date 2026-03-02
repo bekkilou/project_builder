@@ -211,7 +211,7 @@
       {% if needsUKApprovals %}
         {{ govukDetails({
           summaryText: "Governance review",
-          text: "A UK-wide review is needed to provide assurances to NHS organisations undertaking research activities in the UK."
+          text: "A study-wide review is needed to provide assurances to NHS organisations undertaking research activities in the UK."
         }) }}
       {% endif %}
 
@@ -231,7 +231,7 @@
 
       {% if needsPBPP %}
         {{ govukDetails({
-          summaryText: "PBPP review",
+          summaryText: "Public Benefit and Privacy Panel (PBPP) review",
           text: "PBPP review may be required if you need access to identifiable patient or care data without consent or another legal basis in Scotland."
         }) }}
       {% endif %}
@@ -288,7 +288,7 @@
 
       {% if needsHFEA %}
         {{ govukDetails({
-          summaryText: "HFEA approval or permission",
+          summaryText: "Human Fertilisation and Embryology Authority (HFEA) approval or permission",
           text: "HFEA approval or permission may be required for activities regulated by the Human Fertilisation and Embryology Authority, or for access to data from the HFEA register."
         }) }}
       {% endif %}

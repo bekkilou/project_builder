@@ -17,9 +17,9 @@
 
       {{ govukInsetText({
         html: '<strong>IRAS ID:</strong> 123456<br />
-        <strong>Short project title:</strong>'+ data.projectTitle +'<br />
-        <strong>Project phase:</strong>Preparing project / Technical review / Ready to apply / Application in progress / Approved / Active study / Modification / Suspended / Withdrawn / Ended / Closed<br />
-        <strong>Status:</strong> A reusable, global status'
+        <strong>Short project title: </strong>'+ data.projectTitle +'<br />
+        <strong>Project phase:</strong> Preparing project for submission<br />
+        <strong>Status:</strong> Draft'
       }) }}
     </div>
     <div class="govuk-grid-column-one-third" style="text-align: right;">
@@ -314,7 +314,7 @@
                     html: '<a href="#">Reassign</a>'
                   },
                   {
-                    text: "0/2 parts"
+                    text: "0/2"
                   }
                 ]
               ]
@@ -333,42 +333,30 @@
           </div>
         </div>
         <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="2">
+          <h2 class="govuk-heading-m">Project team</h2>
+          <p>
+            Add the people who are working on this project. They will be able to view and contribute to your project.
+          </p>
+          <p>
+            You will need their name and email address.
+          </p>
+          {{ govukButton({
+            text: "Add project team member"
+          }) }}
         </div>
         <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="3">
+          <h2 class="govuk-heading-m">Project Sponsor</h2>
         </div>
         <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="4">
-          {{ govukSummaryList({
-            card: {
-              title: {
-                text: "History"
-              }
-            },
-            rows: [
-              {
-                key: {
-                  text: "Dummy content"
-                },
-                value: {
-                  text: "Dummy content"
-                }
-              },
-              {
-                key: {
-                  text: "Dummy content"
-                },
-                value: {
-                  text: 'Dummy content'
-                }
-              },
-              {
-                key: {
-                  text: "Dummy content"
-                },
-                value: {
-                  text: 'Dummy content'
-                }
-              }
-            ]
+          <h2 class="govuk-heading-m">Research Locations</h2>
+          <p>
+            Add the sites where your research will take place. This includes any NHS trusts, universities or other organisations involved in your project.
+          </p>
+          <p>
+            You can add more locations later if needed.
+          </p>
+          {{ govukButton({
+            text: "Add project team member"
           }) }}
         </div>
         <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="5">

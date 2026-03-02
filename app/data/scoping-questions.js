@@ -367,6 +367,7 @@ module.exports = {
     inline: true,
     legend: "Does this project involve people in custody or under probation supervision?",
     legendSize: "l",
+    hint: "This question refers only to participants you recruit through a prison or probation service. It does not apply to people with past convictions or those on community sentecnes not managed by these services.",
     errorMessage: "Select whether HMPPS is involved",
     items: [
       { value: "yes", text: "Yes" },
