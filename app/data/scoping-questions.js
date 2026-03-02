@@ -77,7 +77,7 @@ module.exports = {
   sponsorOrg: {
     type: "select",
     name: "sponsorOrg",
-    label: "Sponsor organisation",
+    label: "Primary sponsor organisation",
     legendSize: "l",
     hint: "Start typing to see suggestions and select an organisation",
     items: [

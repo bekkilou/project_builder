@@ -15,30 +15,6 @@
 
 
 
-{% set sponsorOrgItem = [
-  { value: "airedaleNHS", text: "Airedale NHS Foundation Trust" },
-  { value: "astraZeneca", text: "AstraZeneca UK Limited" },
-  { value: "belfastHSC", text: "Belfast Health and Social Care Trust" },
-  { value: "cambridgeUni", text: "Cambridge University Hospitals NHS Foundation Trust" },
-  { value: "cardiffLHB", text: "Cardiff & Vale University LHB" },
-  { value: "cardiffUni", text: "Cardiff University" },
-  { value: "derbyshireNHS", text: "Derbyshire Healthcare NHS Foundation Trust" },
-  { value: "eastLancsNHS", text: "East Lancashire Hospitals NHS Trust" },
-  { value: "greaterGlasgow", text: "Greater Glasgow and Clyde" },
-  { value: "guysStThomas", text: "Guy's and St Thomas' NHS Foundation Trust" },
-  { value: "imperialCollege", text: "Imperial College Healthcare NHS Trust" },
-  { value: "lifescanScot", text: "Lifescan Scotland Ltd." },
-  { value: "prifysgolAber", text: "Prifysgol Aberystwyth" },
-  { value: "queenVHos", text: "Queen Victoria Hospital NHS Foundation Trust" },
-  { value: "uniHosSouth", text: "University Hospital Southampton NHS Foundation Trust" },
-  { value: "uOfAber", text: "University of Aberdeen" },
-  { value: "uOfBir", text: "University of Birmingham" },
-  { value: "uOfBri", text: "University of Bristol" },
-  { value: "uOfEdi", text: "University of Edinburgh" },
-  { value: "uOfMan", text: "University of Manchester" }
-] %}
-
-
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
 
@@ -55,11 +31,6 @@
         {{ renderQuestion(questions.UKNations, data, errors, null, null, errorMap) }}
 
         {{ renderQuestion(questions.nhsHscOrg, data, errors, null, null, errorMap) }}
-
-        {% from "govuk/components/select/macro.njk" import govukSelect %}
-        <h3 class="govuk-heading-m">Sponsor organisation</h3>
-        <p>Start typing to see suggestions and select an organisation</p>
-        <div id="autocomplete-container" style="padding-bottom: 15px;"></div>
 
         {{ renderQuestion(questions.sponsorOrg, data, errors, null, null, errorMap) }}
 
@@ -111,4 +82,26 @@
   </div>
 </div>
 
+{% endblock %}
+{% block bodyEnd %}
+  {{ super() }}
+  <script>
+    (function() {
+      var items = {{ questions.sponsorOrg.items | dump | safe }};
+      var currentValue = {{ (data['sponsorOrg'] if data['sponsorOrg'] else null) | dump | safe }};
+      var defaultValue = items.find(function(i) { return i.value === currentValue; });
+
+      accessibleAutocomplete({
+        element: document.getElementById('sponsorOrg-autocomplete-container'),
+        id: 'sponsorOrg-autocomplete',
+        source: items.map(function(i) { return i.text; }),
+        defaultValue: defaultValue ? defaultValue.text : '',
+        onConfirm: function(val) {
+          var match = items.find(function(i) { return i.text === val; });
+          document.getElementById('sponsorOrg').value = match ? match.value : '';
+        },
+        showNoOptionsFound: false
+      });
+    })();
+  </script>
 {% endblock %}

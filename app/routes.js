@@ -3,6 +3,7 @@ const router = govukPrototypeKit.requests.setupRouter()
 
 const scopingQuestions = require('./data/scoping-questions')
 const projInfoQuestions = require('./data/project-information-questions')
+const partiQuestions = require('./data/participants-questions')
 const pubInvolveQuestions = require('./data/public-involvement-questions')
 const resDesQuestions = require('./data/research-design-questions')
 const resActQuestions = require('./data/research-activities-questions')
@@ -13,6 +14,16 @@ const resAnaQuestions = require('./data/research-analysis-questions')
 const governQuestions = require('./data/governance-questions')
 const transpQuestions = require('./data/transparency-questions')
 const confiQuestions = require('./data/confidentiality-questions')
+
+const adminSubQuestions = require('./data/ionising/administration-substances-questions.js')
+const ioBookingQuestions = require('./data/ionising/booking-questions.js')
+const creQuestions = require('./data/ionising/cre-questions.js')
+const exBeamQuestions = require('./data/ionising/external-beam-questions.js')
+const mpeDoseQuestions = require('./data/ionising/mpe-dose-questions.js')
+const nonIoQuestions = require('./data/ionising/non-ionising-imaging-questions.js')
+const ioPartQuestions = require('./data/ionising/administration-substances-questions.js')
+const radImagQuestions = require('./data/ionising/radiology-imaging-questions.js')
+const ratProcQuestions = require('./data/ionising/rationale-procedure-questions.js')
 
 router.use((req, res, next) => {
   res.locals.questions = {
@@ -27,7 +38,16 @@ router.use((req, res, next) => {
     ...resAnaQuestions,
     ...governQuestions,
     ...transpQuestions,
-    ...confiQuestions
+    ...confiQuestions,
+    ...adminSubQuestions,
+    ...ioBookingQuestions,
+    ...creQuestions,
+    ...exBeamQuestions,
+    ...mpeDoseQuestions,
+    ...nonIoQuestions,
+    ...ioPartQuestions,
+    ...radImagQuestions,
+    ...ratProcQuestions
     // ... spread all the rest
   }
 
