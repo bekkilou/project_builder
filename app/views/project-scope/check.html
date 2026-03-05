@@ -181,11 +181,6 @@
     <div class="govuk-grid-column-two-thirds">
       <h2 class="govuk-heading-s">Pre-submission assurances</h2>
 
-      {{ govukDetails({
-        summaryText: "Pre-submission advice (optional)",
-        text: "If you would like to, you can submit your proposed activities and protocol for pre-application advice before you formally submit your application to the review bodies for the study."
-      }) }}
-
       {% if needsRadiationAssurance %}
         {{ govukDetails({
           summaryText: "Radiation assurance",
