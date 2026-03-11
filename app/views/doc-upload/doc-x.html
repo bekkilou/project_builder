@@ -1,7 +1,7 @@
 {% extends "layouts/main.html" %}
 
 {% block pageTitle %}
-  Content page template – {{ serviceName }} – GOV.UK Prototype Kit
+  Review extracted information – {{ serviceName }} – GOV.UK Prototype Kit
 {% endblock %}
 
 {% block beforeContent %}
@@ -12,26 +12,291 @@
 {% endblock %}
 
 {% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
 
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Review extracted information</h1>
+    <p class="govuk-body">We have read your protocol document and pre-filled the fields below. Check each answer is correct before continuing — you can change anything that is wrong or missing.</p>
 
-      <h1 class="govuk-heading-l">
-        Heading goes here
-      </h1>
+    {# ── Project information ──────────────────────────────────────────── #}
+    <h2 class="govuk-heading-m">Project information</h2>
+    {{ govukSummaryList({
+      rows: [
+        {
+          key: { text: "Full study title" },
+          value: { text: data['study-full-title'] if data['study-full-title'] else "Not found in document" },
+          actions: { items: [{ href: "/project/project-information/full-title", text: "Change", visuallyHiddenText: "full study title" }] }
+        },
+        {
+          key: { text: "Short title or acronym" },
+          value: { text: data['study-short-title'] if data['study-short-title'] else "Not found in document" },
+          actions: { items: [{ href: "/project/project-information/short-title", text: "Change", visuallyHiddenText: "short title" }] }
+        },
+        {
+          key: { text: "Protocol version number and date" },
+          value: { text: data['protocolRef'] if data['protocolRef'] else "Not found in document" },
+          actions: { items: [{ href: "/project/project-information/protocol-ref", text: "Change", visuallyHiddenText: "protocol version" }] }
+        },
+        {
+          key: { text: "IRAS number" },
+          value: { text: data['iras-id'] if data['iras-id'] else "Not found in document" },
+          actions: { items: [{ href: "/project/project-information/iras-id", text: "Change", visuallyHiddenText: "IRAS number" }] }
+        },
+        {
+          key: { text: "Sponsor reference number" },
+          value: { text: data['sponsor-number'] if data['sponsor-number'] else "Not found in document" },
+          actions: { items: [{ href: "/project/project-information/sponsor-number", text: "Change", visuallyHiddenText: "sponsor number" }] }
+        },
+        {
+          key: { text: "Funder reference number" },
+          value: { text: data['funder-number'] if data['funder-number'] else "Not found in document" },
+          actions: { items: [{ href: "/project/project-information/funder-number", text: "Change", visuallyHiddenText: "funder number" }] }
+        },
+        {
+          key: { text: "Project summary (background and rationale)" },
+          value: {
+            html: '<span style="white-space:pre-wrap">' + (data['projectSummary'] | escape) + '</span>'
+              if data['projectSummary']
+              else '<strong class="govuk-tag govuk-tag--grey">Not found in document</strong>'
+          },
+          actions: { items: [{ href: "/project/project-information/project-summary", text: "Change", visuallyHiddenText: "project summary" }] }
+        }
+      ]
+    }) }}
 
-<p class="govuk-body">HTML snip: {{ data['_protocol_extracted_html_snip'] }}</p>
+    {# ── Research design ─────────────────────────────────────────────── #}
+    <h2 class="govuk-heading-m">Research design</h2>
+    {{ govukSummaryList({
+      rows: [
+        {
+          key: { text: "Principal research question or objective" },
+          value: {
+            html: '<span style="white-space:pre-wrap">' + (data['researchQuestion'] | escape) + '</span>'
+              if data['researchQuestion']
+              else '<strong class="govuk-tag govuk-tag--grey">Not found in document</strong>'
+          },
+          actions: { items: [{ href: "/project/research-design/research-question", text: "Change", visuallyHiddenText: "research question" }] }
+        },
+        {
+          key: { text: "Details of the methodologies being used" },
+          value: {
+            html: '<span style="white-space:pre-wrap">' + (data['methodologiesDetails'] | escape) + '</span>'
+              if data['methodologiesDetails']
+              else '<strong class="govuk-tag govuk-tag--grey">Not found in document</strong>'
+          },
+          actions: { items: [{ href: "/project/research-design/methodologies-details", text: "Change", visuallyHiddenText: "methodology details" }] }
+        },
+        {
+          key: { text: "What will happen to participants, their tissue or data" },
+          value: {
+            html: '<span style="white-space:pre-wrap">' + (data['willHappen'] | escape) + '</span>'
+              if data['willHappen']
+              else '<strong class="govuk-tag govuk-tag--grey">Not found in document</strong>'
+          },
+          actions: { items: [{ href: "/project/research-design/what-will-happen", text: "Change", visuallyHiddenText: "what will happen" }] }
+        }
+      ]
+    }) }}
 
-      {{ govukInput({
-  label: { text: "Full study title" },
-  id: "study-full-title",
-  name: "study-full-title",
-  value: data['study-full-title']
-}) }}
+    {# ── Participants ─────────────────────────────────────────────────── #}
+    <h2 class="govuk-heading-m">Participants</h2>
+    {{ govukSummaryList({
+      rows: [
+        {
+          key: { text: "Principal inclusion criteria" },
+          value: {
+            html: '<span style="white-space:pre-wrap">' + (data['principalInclusion'] | escape) + '</span>'
+              if data['principalInclusion']
+              else '<strong class="govuk-tag govuk-tag--grey">Not found in document</strong>'
+          },
+          actions: { items: [{ href: "/project/participants/inclusion-criteria", text: "Change", visuallyHiddenText: "inclusion criteria" }] }
+        },
+        {
+          key: { text: "Principal exclusion criteria" },
+          value: {
+            html: '<span style="white-space:pre-wrap">' + (data['principalExclusion'] | escape) + '</span>'
+              if data['principalExclusion']
+              else '<strong class="govuk-tag govuk-tag--grey">Not found in document</strong>'
+          },
+          actions: { items: [{ href: "/project/participants/exclusion-criteria", text: "Change", visuallyHiddenText: "exclusion criteria" }] }
+        },
+        {
+          key: { text: "How the study sample reflects the real-world population" },
+          value: {
+            html: '<span style="white-space:pre-wrap">' + (data['realWorldPop'] | escape) + '</span>'
+              if data['realWorldPop']
+              else '<strong class="govuk-tag govuk-tag--grey">Not found in document</strong>'
+          },
+          actions: { items: [{ href: "/project/participants/real-world-population", text: "Change", visuallyHiddenText: "real world population" }] }
+        }
+      ]
+    }) }}
 
-<p class="govuk-body">DEBUG: {{ data['study-full-title'] }}</p>
+    {# ── Research activities ──────────────────────────────────────────── #}
+    <h2 class="govuk-heading-m">Research activities</h2>
+    {{ govukSummaryList({
+      rows: [
+        {
+          key: { text: "Potential benefits for participants and society" },
+          value: {
+            html: '<span style="white-space:pre-wrap">' + (data['societyBenefits'] | escape) + '</span>'
+              if data['societyBenefits']
+              else '<strong class="govuk-tag govuk-tag--grey">Not found in document</strong>'
+          },
+          actions: { items: [{ href: "/project/research-activities/society-benefits", text: "Change", visuallyHiddenText: "society benefits" }] }
+        }
+      ]
+    }) }}
 
+    {# ── Research analysis ───────────────────────────────────────────── #}
+    <h2 class="govuk-heading-m">Research analysis</h2>
+    {{ govukSummaryList({
+      rows: [
+        {
+          key: { text: "Methods for analysing the data" },
+          value: {
+            html: '<span style="white-space:pre-wrap">' + (data['methodAnalysis'] | escape) + '</span>'
+              if data['methodAnalysis']
+              else '<strong class="govuk-tag govuk-tag--grey">Not found in document</strong>'
+          },
+          actions: { items: [{ href: "/project/research-analysis/method-analysis", text: "Change", visuallyHiddenText: "method of analysis" }] }
+        },
+        {
+          key: { text: "Why the review process is appropriate" },
+          value: {
+            html: '<span style="white-space:pre-wrap">' + (data['reviewProcess'] | escape) + '</span>'
+              if data['reviewProcess']
+              else '<strong class="govuk-tag govuk-tag--grey">Not found in document</strong>'
+          },
+          actions: { items: [{ href: "/project/research-analysis/review-process", text: "Change", visuallyHiddenText: "review process" }] }
+        },
+        {
+          key: { text: "How the sample size was decided" },
+          value: {
+            html: '<span style="white-space:pre-wrap">' + (data['sampleSize'] | escape) + '</span>'
+              if data['sampleSize']
+              else '<strong class="govuk-tag govuk-tag--grey">Not found in document</strong>'
+          },
+          actions: { items: [{ href: "/project/research-analysis/sample-size", text: "Change", visuallyHiddenText: "sample size" }] }
+        }
+      ]
+    }) }}
+
+    {# ── Ethical issues ──────────────────────────────────────────────── #}
+    <h2 class="govuk-heading-m">Ethical issues</h2>
+    {{ govukSummaryList({
+      rows: [
+        {
+          key: { text: "Summary of main ethical issues" },
+          value: {
+            html: '<span style="white-space:pre-wrap">' + (data['ethicalIssues'] | escape) + '</span>'
+              if data['ethicalIssues']
+              else '<strong class="govuk-tag govuk-tag--grey">Not found in document</strong>'
+          },
+          actions: { items: [{ href: "/project/ethical-issues/ethical-issues-summary", text: "Change", visuallyHiddenText: "ethical issues" }] }
+        }
+      ]
+    }) }}
+
+    {# ── Risks and conflicts ─────────────────────────────────────────── #}
+    <h2 class="govuk-heading-m">Risks and conflicts</h2>
+    {{ govukSummaryList({
+      rows: [
+        {
+          key: { text: "Potential risks to the research team and how they will be managed" },
+          value: {
+            html: '<span style="white-space:pre-wrap">' + (data['riskToTeam'] | escape) + '</span>'
+              if data['riskToTeam']
+              else '<strong class="govuk-tag govuk-tag--grey">Not found in document</strong>'
+          },
+          actions: { items: [{ href: "/project/risks-and-conflicts/risk-to-team", text: "Change", visuallyHiddenText: "risk to team" }] }
+        }
+      ]
+    }) }}
+
+    {# ── Governance ──────────────────────────────────────────────────── #}
+    <h2 class="govuk-heading-m">Governance</h2>
+    {{ govukSummaryList({
+      rows: [
+        {
+          key: { text: "Insurance or indemnity arrangements for sponsors" },
+          value: {
+            html: '<span style="white-space:pre-wrap">' + (data['insuranceIndemnity'] | escape) + '</span>'
+              if data['insuranceIndemnity']
+              else '<strong class="govuk-tag govuk-tag--grey">Not found in document</strong>'
+          },
+          actions: { items: [{ href: "/project/governance/insurance-indemnity", text: "Change", visuallyHiddenText: "insurance indemnity" }] }
+        },
+        {
+          key: { text: "Insurance or indemnity arrangements for investigators and collaborators" },
+          value: {
+            html: '<span style="white-space:pre-wrap">' + (data['insuranceIndemnityCollab'] | escape) + '</span>'
+              if data['insuranceIndemnityCollab']
+              else '<strong class="govuk-tag govuk-tag--grey">Not found in document</strong>'
+          },
+          actions: { items: [{ href: "/project/governance/insurance-indemnity-collab", text: "Change", visuallyHiddenText: "insurance indemnity collab" }] }
+        }
+      ]
+    }) }}
+
+    {# ── Public involvement ───────────────────────────────────────────── #}
+    <h2 class="govuk-heading-m">Public involvement</h2>
+    {{ govukSummaryList({
+      rows: [
+        {
+          key: { text: "Details of how public contributors were involved" },
+          value: {
+            html: '<span style="white-space:pre-wrap">' + (data['publicContributors'] | escape) + '</span>'
+              if data['publicContributors']
+              else '<strong class="govuk-tag govuk-tag--grey">Not found in document</strong>'
+          },
+          actions: { items: [{ href: "/project/public-involvement/involvement-details", text: "Change", visuallyHiddenText: "public contributors" }] }
+        },
+        {
+          key: { text: "Justification of public involvement approach" },
+          value: {
+            html: '<span style="white-space:pre-wrap">' + (data['justifyContribution'] | escape) + '</span>'
+              if data['justifyContribution']
+              else '<strong class="govuk-tag govuk-tag--grey">Not found in document</strong>'
+          },
+          actions: { items: [{ href: "/project/public-involvement/justify-contribution", text: "Change", visuallyHiddenText: "justify contribution" }] }
+        }
+      ]
+    }) }}
+
+    {# ── Transparency ────────────────────────────────────────────────── #}
+    <h2 class="govuk-heading-m">Transparency</h2>
+    {{ govukSummaryList({
+      rows: [
+        {
+          key: { text: "How and when participants will be informed of results" },
+          value: {
+            html: '<span style="white-space:pre-wrap">' + (data['participantResults'] | escape) + '</span>'
+              if data['participantResults']
+              else '<strong class="govuk-tag govuk-tag--grey">Not found in document</strong>'
+          },
+          actions: { items: [{ href: "/project/transparency/participant-results", text: "Change", visuallyHiddenText: "participant results" }] }
+        },
+        {
+          key: { text: "Plans for sharing de-identified data" },
+          value: {
+            html: '<span style="white-space:pre-wrap">' + (data['shareDeIdentifiedDetails'] | escape) + '</span>'
+              if data['shareDeIdentifiedDetails']
+              else '<strong class="govuk-tag govuk-tag--grey">Not found in document</strong>'
+          },
+          actions: { items: [{ href: "/project/transparency/share-de-identified-details", text: "Change", visuallyHiddenText: "share de-identified details" }] }
+        }
+      ]
+    }) }}
+
+    {# ── Actions ─────────────────────────────────────────────────────── #}
+    <div class="govuk-button-group" style="margin-top: 2rem;">
+      <form action="/doc-upload/confirm" method="post">
+        {{ govukButton({ text: "Accept and continue" }) }}
+      </form>
+      <a class="govuk-link" href="/doc-upload/experiment">Upload a different document</a>
     </div>
-  </div>
 
+  </div>
+</div>
 {% endblock %}

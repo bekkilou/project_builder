@@ -1,0 +1,35 @@
+{% extends "layouts/main.html" %}
+{% from "_partials/_question.html" import renderQuestion %}
+
+{% block pageTitle %}
+  Give details of the person or organisation who undertook the statistical review – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  {% if errors and errors.length %}
+    {{ govukErrorSummary({ titleText: "There is a problem", errorList: errors }) }}
+  {% endif %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form class="form" action="/project/research-analysis/who-review-stat" method="post">
+
+        {{ renderQuestion(questions.whoReviewStat, data, errors, null, null, errorMap) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({ text: "Save and continue" }) }}
+          {{ govukButton({ text: "Save for later", classes: "govuk-button--secondary", href: "/project/start" }) }}
+        </div>
+
+      </form>
+    </div>
+  </div>
+{% endblock %}

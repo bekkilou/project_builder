@@ -1,0 +1,104 @@
+{% extends "layouts/main.html" %}
+{% from "_partials/_question.html" import renderQuestion %}
+
+{% block pageTitle %}
+  {{ data['projectTitle'] or "Project title"}} – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        {{ data['projectTitle'] or "Project title"}} - Research design and methodology
+      </h1>
+
+      {% if errors and errors.length %}
+        {{ govukErrorSummary({ titleText: "There is a problem", errorList: errors }) }}
+      {% endif %}
+
+      <form class="form" action="/project/participants" method="post">
+
+        {# Always show #}
+        {{ renderQuestion(questions.methodologies, data, errors, null, null, errorMap) }}
+
+        {# If methodologies includes "other" #}
+        {{ renderQuestion(questions.methodologiesOther, data, errors, null, null, errorMap) }}
+
+        {# If methodologies includes randomised_controlled_trial or controlled_trial_without_randomisation #}
+        {{ renderQuestion(questions.trialMethodologies, data, errors, null, null, errorMap) }}
+
+        {# If trialMethodologies includes "other_complex_or_innovative_design" #}
+        {{ renderQuestion(questions.trialMethodologiesOther, data, errors, null, null, errorMap) }}
+
+        {# Always display #}
+        {{ renderQuestion(questions.methodologiesDetails, data, errors, null, null, errorMap) }}
+
+        {# If methodologies includes a trial type #}
+        {{ renderQuestion(questions.novelIntervention, data, errors, null, null, errorMap) }}
+
+        {# If trial AND novelIntervention == "no" #}
+        {{ renderQuestion(questions.compareIntervention, data, errors, null, null, errorMap) }}
+
+        {# If trial AND novelIntervention == "no" AND compareIntervention == "no" #}
+        {{ renderQuestion(questions.goldIntervention, data, errors, null, null, errorMap) }}
+
+        {# Always display — moj-add-another wrapper kept for multiple research questions #}
+        <div data-module="moj-add-another">
+          {% call govukFieldset({
+            classes: "moj-add-another__item",
+            legend: {
+              text: "Research question(s)",
+              classes: "moj-add-another__title govuk-fieldset__legend--l",
+              isPageHeading: false
+            }
+          }) %}
+            {{ renderQuestion(questions.researchQuestion, data, errors, null, null, errorMap) }}
+          {% endcall %}
+          <div class="moj-button-action">
+            {{ govukButton({
+              text: "Add another research question",
+              classes: "govuk-button--secondary moj-add-another__add-button govuk-!-margin-bottom-4"
+            }) }}
+          </div>
+        </div>
+
+        {# Always show #}
+        {{ renderQuestion(questions.useAI, data, errors, null, null, errorMap) }}
+
+        {# If useAI includes "designing_developing_testing_ai" #}
+        {{ renderQuestion(questions.designAI, data, errors, null, null, errorMap) }}
+
+        {# If designAI includes "other" #}
+        {{ renderQuestion(questions.otherAI, data, errors, null, null, errorMap) }}
+
+        {# If useAI includes "using_existing_ai" #}
+        {{ renderQuestion(questions.existingAI, data, errors, null, null, errorMap) }}
+
+        {# If existingAI includes "other" #}
+        {{ renderQuestion(questions.otherExistingAI, data, errors, null, null, errorMap) }}
+
+        {# Always show #}
+        {{ renderQuestion(questions.willHappen, data, errors, null, null, errorMap) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({ text: "Continue" }) }}
+          {{ govukButton({
+            text: "Save for later",
+            classes: "govuk-button--secondary",
+            href: "/project/start"
+          }) }}
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+{% endblock %}

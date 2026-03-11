@@ -29,6 +29,7 @@ router.use((req, res, next) => {
   res.locals.questions = {
     ...scopingQuestions,
     ...projInfoQuestions,
+    ...partiQuestions,
     ...pubInvolveQuestions,
     ...resDesQuestions,
     ...resActQuestions,
@@ -56,6 +57,16 @@ router.use((req, res, next) => {
 
 router.use(require('./routes/my-research'))
 router.use(require('./routes/project-scope'))
+router.use(require('./routes/confidentiality'))
+router.use(require('./routes/ethical-issues'))
+router.use(require('./routes/governance'))
+router.use(require('./routes/participants'))
+router.use(require('./routes/public-involvement'))
+router.use(require('./routes/research-activities'))
+router.use(require('./routes/research-analysis'))
+router.use(require('./routes/research-design'))
+router.use(require('./routes/risks-and-conflicts'))
+router.use(require('./routes/transparency'))
 require('./routes/doc-extract')(router)
 
 

@@ -1,0 +1,52 @@
+{% extends "layouts/main.html" %}
+{% from "_partials/_question.html" import renderQuestion %}
+
+{% block pageTitle %}
+  Public contact details – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  {% if errors and errors.length %}
+    {{ govukErrorSummary({ titleText: "There is a problem", errorList: errors }) }}
+  {% endif %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">Public contact details</h1>
+      <p class="govuk-body">This information will be made public so use generic contact details rather than naming an individual person.</p>
+
+      <form class="form" action="/project/transparency/public-contact" method="post">
+
+        {{ renderQuestion(questions.publicEmail, data, errors, null, null, errorMap) }}
+        {{ renderQuestion(questions.publicPhoneNumber, data, errors, null, null, errorMap) }}
+
+        {{ govukFieldset({
+          legend: {
+            text: "Postal address",
+            classes: "govuk-fieldset__legend--m"
+          }
+        }) }}
+
+        {{ renderQuestion(questions.publicAddressLine1, data, errors, null, null, errorMap) }}
+        {{ renderQuestion(questions.publicAddressLine2, data, errors, null, null, errorMap) }}
+        {{ renderQuestion(questions.publicAddressTown, data, errors, null, null, errorMap) }}
+        {{ renderQuestion(questions.publicAddressCounty, data, errors, null, null, errorMap) }}
+        {{ renderQuestion(questions.publicAddressPostcode, data, errors, null, null, errorMap) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({ text: "Save and continue" }) }}
+          {{ govukButton({ text: "Save for later", classes: "govuk-button--secondary", href: "/project/start" }) }}
+        </div>
+
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -3,6 +3,7 @@
 {% from "govuk/components/input/macro.njk"     import govukInput %}
 {% from "govuk/components/textarea/macro.njk"  import govukTextarea %}
 {% from "govuk/components/select/macro.njk"    import govukSelect %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 
 {#
   _question.html  –  universal question renderer
@@ -204,6 +205,28 @@
 
       </div>
 
+
+      {# ── DATE INPUT ─────────────────────────────────────────── #}
+        {% elif q.type === "date" %}
+
+          {{ govukDateInput({
+            id: q.name,
+            namePrefix: q.name,
+            fieldset: {
+              legend: {
+                text: q.legend,
+                isPageHeading: q.legendSize === "l" or q.legendSize === "xl",
+                classes: "govuk-fieldset__legend--" + (q.legendSize if q.legendSize else "m")
+              }
+            },
+            hint: { text: q.hint } if q.hint else undefined,
+            errorMessage: errorMap[q.name] if errorMap and errorMap[q.name] else undefined,
+            values: {
+              day:   data[q.name + "-day"],
+              month: data[q.name + "-month"],
+              year:  data[q.name + "-year"]
+            }
+          }) }}
 
   {# ── UNKNOWN TYPE WARNING (visible only during prototyping) ─ #}
   {% else %}

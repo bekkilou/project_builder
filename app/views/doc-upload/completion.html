@@ -1,0 +1,419 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Application completion – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Application completion</h1>
+
+    <p class="govuk-body">Fields marked
+      <strong class="govuk-tag govuk-tag--green">Answered</strong>
+      were pre-filled from your uploaded protocol. Fields marked
+      <strong class="govuk-tag govuk-tag--red">Required</strong>
+      still need to be completed before you can submit.
+    </p>
+
+    {# ─── Helper: renders a single task row ─────────────────────────────
+       answered  = true/false
+       label     = display text for the question
+       href      = link to the question page
+    ──────────────────────────────────────────────────────────────────── #}
+    {% macro taskRow(label, answered, href) %}
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="{{ href }}">{{ label }}</a>
+        </div>
+        <div class="govuk-task-list__status">
+          {% if answered %}
+            <strong class="govuk-tag govuk-tag--green">Answered</strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--red">Required</strong>
+          {% endif %}
+        </div>
+      </li>
+    {% endmacro %}
+
+    {# ─── Helper: answered check for arrays and strings ──────────────── #}
+    {# Usage: {% set ok = data['field'] | hasAnswer %} not possible in    #}
+    {# Nunjucks, so we inline the check: truthy string OR non-empty array #}
+
+    {# ════════════════════════════════════════════════════════════════════
+       PROJECT INFORMATION
+    ════════════════════════════════════════════════════════════════════ #}
+    <h2 class="govuk-heading-m">Project information</h2>
+    <ul class="govuk-task-list">
+      {{ taskRow(
+        "Protocol reference number",
+        data['protocolRef'] and data['protocolRef'].length,
+        "/project/project-information/protocol-ref"
+      ) }}
+      {{ taskRow(
+        "Research project public summary",
+        data['projectSummary'] and data['projectSummary'].length,
+        "/project/project-information/project-summary"
+      ) }}
+    </ul>
+
+    {# ════════════════════════════════════════════════════════════════════
+       RESEARCH DESIGN
+    ════════════════════════════════════════════════════════════════════ #}
+    <h2 class="govuk-heading-m">Research design</h2>
+    <ul class="govuk-task-list">
+      {{ taskRow(
+        "Select the methodology or methodologies you will be using",
+        data['methodologies'] and data['methodologies'].length,
+        "/project/research-design/methodologies"
+      ) }}
+      {{ taskRow(
+        "Give details of the methodologies you will be using",
+        data['methodologiesDetails'] and data['methodologiesDetails'].length,
+        "/project/research-design/methodologies-details"
+      ) }}
+      {{ taskRow(
+        "What is the principal research question or objective?",
+        data['researchQuestion'] and data['researchQuestion'].length,
+        "/project/research-design/research-question"
+      ) }}
+      {{ taskRow(
+        "Does your project use AI (artificial intelligence)?",
+        data['useAI'] and data['useAI'].length,
+        "/project/research-design/use-ai"
+      ) }}
+      {{ taskRow(
+        "State exactly what will happen to participants, their tissue or data",
+        data['willHappen'] and data['willHappen'].length,
+        "/project/research-design/what-will-happen"
+      ) }}
+    </ul>
+
+    {# ════════════════════════════════════════════════════════════════════
+       PARTICIPANTS
+    ════════════════════════════════════════════════════════════════════ #}
+    <h2 class="govuk-heading-m">Participants</h2>
+    <ul class="govuk-task-list">
+      {{ taskRow(
+        "What are the primary conditions or problems being studied?",
+        data['primaryCondition'] and data['primaryCondition'].length,
+        "/project/participants/primary-condition"
+      ) }}
+      {{ taskRow(
+        "Specify the primary condition or problem being studied",
+        data['primaryProblem'] and data['primaryProblem'].length,
+        "/project/participants/primary-problem"
+      ) }}
+      {{ taskRow(
+        "List the principal inclusion criteria",
+        data['principalInclusion'] and data['principalInclusion'].length,
+        "/project/participants/inclusion-criteria"
+      ) }}
+      {{ taskRow(
+        "List the principal exclusion criteria",
+        data['principalExclusion'] and data['principalExclusion'].length,
+        "/project/participants/exclusion-criteria"
+      ) }}
+      {{ taskRow(
+        "How are you making sure your study sample reflects the real-world population?",
+        data['realWorldPop'] and data['realWorldPop'].length,
+        "/project/participants/real-world-population"
+      ) }}
+      {{ taskRow(
+        "How will you ensure participants are able to participate fully?",
+        data['fullyParticipate'] and data['fullyParticipate'].length,
+        "/project/participants/full-participation"
+      ) }}
+      {{ taskRow(
+        "When do you plan to start recruiting participants?",
+        data['participantRecruitmentDate-day'] and data['participantRecruitmentDate-day'].length,
+        "/project/participants/recruitment-date"
+      ) }}
+      {{ taskRow(
+        "What measures address the risk of fake or imposter participants?",
+        data['imposterParticipant'] and data['imposterParticipant'].length,
+        "/project/participants/imposter-participants"
+      ) }}
+    </ul>
+
+    {# ════════════════════════════════════════════════════════════════════
+       RESEARCH ACTIVITIES
+    ════════════════════════════════════════════════════════════════════ #}
+    <h2 class="govuk-heading-m">Research activities</h2>
+    <ul class="govuk-task-list">
+      {{ taskRow(
+        "What are the potential benefits for participants and society?",
+        data['societyBenefits'] and data['societyBenefits'].length,
+        "/project/research-activities/society-benefits"
+      ) }}
+      {{ taskRow(
+        "When do you plan to finish collecting data for this project in the UK?",
+        data['finishDataCollection-day'] and data['finishDataCollection-day'].length,
+        "/project/research-activities/finish-data-collection"
+      ) }}
+    </ul>
+
+    {# ════════════════════════════════════════════════════════════════════
+       RESEARCH ANALYSIS
+    ════════════════════════════════════════════════════════════════════ #}
+    <h2 class="govuk-heading-m">Research analysis</h2>
+    <ul class="govuk-task-list">
+      {{ taskRow(
+        "How has the quality of the research been assessed?",
+        data['qualityAssessed'] and data['qualityAssessed'].length,
+        "/project/research-analysis/quality-assessed"
+      ) }}
+      {{ taskRow(
+        "Explain why this review process is appropriate",
+        data['reviewProcess'] and data['reviewProcess'].length,
+        "/project/research-analysis/review-process"
+      ) }}
+      {{ taskRow(
+        "What will the primary form of analysis be?",
+        data['primaryAnalysis'] and data['primaryAnalysis'].length,
+        "/project/research-analysis/primary-analysis"
+      ) }}
+      {{ taskRow(
+        "Give details of the methods for analysing the data",
+        data['methodAnalysis'] and data['methodAnalysis'].length,
+        "/project/research-analysis/method-analysis"
+      ) }}
+      {{ taskRow(
+        "What are the criteria for electively stopping the project early?",
+        data['stopEarlyCriteria'] and data['stopEarlyCriteria'].length,
+        "/project/research-analysis/stop-early-criteria"
+      ) }}
+    </ul>
+
+    {# ════════════════════════════════════════════════════════════════════
+       ETHICAL ISSUES
+    ════════════════════════════════════════════════════════════════════ #}
+    <h2 class="govuk-heading-m">Ethical issues</h2>
+    <ul class="govuk-task-list">
+      {{ taskRow(
+        "Summarise the main ethical issues arising from the project",
+        data['ethicalIssues'] and data['ethicalIssues'].length,
+        "/project/ethical-issues/ethical-issues-summary"
+      ) }}
+      {{ taskRow(
+        "Is this application any of the following?",
+        data['applicationPrevious'] and data['applicationPrevious'].length,
+        "/project/ethical-issues/application-previous"
+      ) }}
+    </ul>
+
+    {# ════════════════════════════════════════════════════════════════════
+       RISKS AND CONFLICTS
+    ════════════════════════════════════════════════════════════════════ #}
+    <h2 class="govuk-heading-m">Risks and conflicts</h2>
+    <ul class="govuk-task-list">
+      {{ taskRow(
+        "Describe potential risks to the research team and how they will be managed",
+        data['riskToTeam'] and data['riskToTeam'].length,
+        "/project/risks-and-conflicts/risk-to-team"
+      ) }}
+      {{ taskRow(
+        "Does the Chief Investigator have a personal involvement that may give rise to a conflict of interest?",
+        data['CIConflict'] and data['CIConflict'].length,
+        "/project/risks-and-conflicts/ci-conflict"
+      ) }}
+      {{ taskRow(
+        "Is the Chief Investigator a member of any NHS Research Ethics Committee?",
+        data['CIEthicsCommittee'] and data['CIEthicsCommittee'].length,
+        "/project/risks-and-conflicts/ci-ethics-committee"
+      ) }}
+      {{ taskRow(
+        "Will the Chief Investigator or any investigator receive personal payment or benefits?",
+        data['personalPayment'] and data['personalPayment'].length,
+        "/project/risks-and-conflicts/personal-payment"
+      ) }}
+    </ul>
+
+    {# ════════════════════════════════════════════════════════════════════
+       GOVERNANCE
+    ════════════════════════════════════════════════════════════════════ #}
+    <h2 class="govuk-heading-m">Governance</h2>
+    <ul class="govuk-task-list">
+      {{ taskRow(
+        "Is this project taking place in any countries other than the UK?",
+        data['UKOrMultiNation'] and data['UKOrMultiNation'].length,
+        "/project/governance/uk-or-multi-nation"
+      ) }}
+      {{ taskRow(
+        "Are any materials being supplied from an organisation not providing funding?",
+        data['suppliesNotFunder'] and data['suppliesNotFunder'].length,
+        "/project/governance/supplies-not-funder"
+      ) }}
+      {{ taskRow(
+        "Describe any logistical, legal, or management risks relating to your project",
+        data['legalRisks'] and data['legalRisks'].length,
+        "/project/governance/legal-risks"
+      ) }}
+      {{ taskRow(
+        "Insurance or indemnity arrangements for sponsors",
+        data['insuranceIndemnity'] and data['insuranceIndemnity'].length,
+        "/project/governance/insurance-indemnity"
+      ) }}
+      {{ taskRow(
+        "Insurance or indemnity arrangements for investigators and collaborators",
+        data['insuranceIndemnityCollab'] and data['insuranceIndemnityCollab'].length,
+        "/project/governance/insurance-indemnity-collab"
+      ) }}
+      {{ taskRow(
+        "Describe and justify which participant groups are excluded from insurance cover",
+        data['justifyExcluded'] and data['justifyExcluded'].length,
+        "/project/governance/justify-excluded"
+      ) }}
+      {{ taskRow(
+        "Have sponsors made arrangements for payment of compensation in the event of harm?",
+        data['sponsorCompensation'] and data['sponsorCompensation'].length,
+        "/project/governance/sponsor-compensation"
+      ) }}
+    </ul>
+
+    {# ════════════════════════════════════════════════════════════════════
+       PUBLIC INVOLVEMENT
+    ════════════════════════════════════════════════════════════════════ #}
+    <h2 class="govuk-heading-m">Public involvement</h2>
+    <ul class="govuk-task-list">
+      {{ taskRow(
+        "In which aspects have you already actively involved patients or members of the public?",
+        data['involvedContributors'] and data['involvedContributors'].length,
+        "/project/public-involvement/involvement"
+      ) }}
+    </ul>
+
+    {# ════════════════════════════════════════════════════════════════════
+       TRANSPARENCY
+    ════════════════════════════════════════════════════════════════════ #}
+    <h2 class="govuk-heading-m">Transparency</h2>
+    <ul class="govuk-task-list">
+      {{ taskRow(
+        "Is the project already registered elsewhere?",
+        data['alreadyRegistered'] and data['alreadyRegistered'].length,
+        "/project/transparency/already-registered"
+      ) }}
+      {{ taskRow(
+        "Project public summary publication deferral request",
+        data['publicationRequestDeferral'] and data['publicationRequestDeferral'].length,
+        "/project/transparency/publication-deferral"
+      ) }}
+      {{ taskRow(
+        "What is the planned end date?",
+        data['plannedEndDate-day'] and data['plannedEndDate-day'].length,
+        "/project/transparency/planned-end-date"
+      ) }}
+      {{ taskRow(
+        "How do you intend to report and disseminate the results of the project?",
+        data['DisseminateResults'] and data['DisseminateResults'].length,
+        "/project/transparency/disseminate-results"
+      ) }}
+      {{ taskRow(
+        "How and when will you inform participants of the results?",
+        data['participantResults'] and data['participantResults'].length,
+        "/project/transparency/participant-results"
+      ) }}
+      {{ taskRow(
+        "Do you plan to share de-identified individual participant-level data?",
+        data['shareDeIdentified'] and data['shareDeIdentified'].length,
+        "/project/transparency/share-de-identified"
+      ) }}
+      {{ taskRow(
+        "Give details of your plans for sharing de-identified data",
+        data['shareDeIdentifiedDetails'] and data['shareDeIdentifiedDetails'].length,
+        "/project/transparency/share-de-identified-details"
+      ) }}
+      {{ taskRow(
+        "Public contact email address",
+        data['publicEmail'] and data['publicEmail'].length,
+        "/project/transparency/public-contact"
+      ) }}
+      {{ taskRow(
+        "Scientific contact email address",
+        data['scientificEmail'] and data['scientificEmail'].length,
+        "/project/transparency/scientific-contact"
+      ) }}
+    </ul>
+
+    {# ─── Summary count ──────────────────────────────────────────────── #}
+    {# Count answered fields to show overall progress                     #}
+    {% set allFields = [
+      data['protocolRef'],
+      data['projectSummary'],
+      data['methodologies'],
+      data['methodologiesDetails'],
+      data['researchQuestion'],
+      data['useAI'],
+      data['willHappen'],
+      data['primaryCondition'],
+      data['primaryProblem'],
+      data['principalInclusion'],
+      data['principalExclusion'],
+      data['realWorldPop'],
+      data['fullyParticipate'],
+      data['participantRecruitmentDate-day'],
+      data['imposterParticipant'],
+      data['societyBenefits'],
+      data['finishDataCollection-day'],
+      data['qualityAssessed'],
+      data['reviewProcess'],
+      data['primaryAnalysis'],
+      data['methodAnalysis'],
+      data['stopEarlyCriteria'],
+      data['ethicalIssues'],
+      data['applicationPrevious'],
+      data['riskToTeam'],
+      data['CIConflict'],
+      data['CIEthicsCommittee'],
+      data['personalPayment'],
+      data['UKOrMultiNation'],
+      data['suppliesNotFunder'],
+      data['legalRisks'],
+      data['insuranceIndemnity'],
+      data['insuranceIndemnityCollab'],
+      data['justifyExcluded'],
+      data['sponsorCompensation'],
+      data['involvedContributors'],
+      data['alreadyRegistered'],
+      data['publicationRequestDeferral'],
+      data['plannedEndDate-day'],
+      data['DisseminateResults'],
+      data['participantResults'],
+      data['shareDeIdentified'],
+      data['shareDeIdentifiedDetails'],
+      data['publicEmail'],
+      data['scientificEmail']
+    ] %}
+
+    {# Replace the {% set allFields %}...{% set answeredCount %} block with: #}
+<div class="govuk-inset-text">
+  <p class="govuk-body">
+    <strong>{{ answeredCount }} of {{ totalCount }}</strong> required fields answered.
+    {% if remainingCount === 0 %}
+      You can now continue to submit your application.
+    {% else %}
+      <strong>{{ remainingCount }}</strong> still need{{ "s" if remainingCount === 1 else "" }} to be completed.
+    {% endif %}
+  </p>
+</div>
+
+    <div class="govuk-button-group">
+      {% if remainingCount === 0 %}
+        <a href="/project/submit" class="govuk-button">Continue to submission</a>
+      {% else %}
+        <a href="/project/submit" class="govuk-button govuk-button--secondary">Continue anyway</a>
+      {% endif %}
+      <a class="govuk-link" href="/doc-upload/experiment">Upload a different document</a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
