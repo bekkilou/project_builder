@@ -52,7 +52,7 @@ module.exports = {
       { value: "England",          text: "England" },
       { value: "Northern Ireland", text: "Northern Ireland" },
       { value: "Scotland",         text: "Scotland" },
-      { value: "Wales",            text: "Wales" }
+      { value: "Wales",            text: "Wales", hint: {text: 'A country in the United Kingdom'} }
     ]
   },
 
