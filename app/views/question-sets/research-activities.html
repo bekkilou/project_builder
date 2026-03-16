@@ -17,7 +17,7 @@
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">
-        {{ data['projectTitle'] or "Project title"}} - Research design and methodology
+        {{ data['projectTitle'] or "Project title"}} - Research Activities
       </h1>
 
       {% if errors and errors.length %}
@@ -27,16 +27,16 @@
       <form class="form" action="/project/participants" method="post">
 
         {# Always show #}
-        {{ renderQuestion(questions.methodologies, data, errors, null, null, errorMap) }}
+        {{ renderQuestion(questions.interventionDescription, data, errors, null, null, errorMap) }}
 
         {# If methodologies includes "other" #}
-        {{ renderQuestion(questions.methodologiesOther, data, errors, null, null, errorMap) }}
+        {{ renderQuestion(questions.firstInHuman, data, errors, null, null, errorMap) }}
 
         {# If methodologies includes randomised_controlled_trial or controlled_trial_without_randomisation #}
-        {{ renderQuestion(questions.trialMethodologies, data, errors, null, null, errorMap) }}
+        {{ renderQuestion(questions.delayTreatment, data, errors, null, null, errorMap) }}
 
         {# If trialMethodologies includes "other_complex_or_innovative_design" #}
-        {{ renderQuestion(questions.trialMethodologiesOther, data, errors, null, null, errorMap) }}
+        {{ renderQuestion(questions.compareStandard, data, errors, null, null, errorMap) }}
 
         {# Always display #}
         {{ renderQuestion(questions.methodologiesDetails, data, errors, null, null, errorMap) }}
