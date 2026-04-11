@@ -1,5 +1,5 @@
 {% extends "layouts/main.html" %}
-{% from "_partials/_question.html" import renderQuestion %}
+{% from "_partials/_question.html" import renderAnswers %}
 
 {% block pageTitle %}
   Check your answers – Public involvement – {{ serviceName }} – GOV.UK Prototype Kit
@@ -18,17 +18,22 @@
 
       <h1 class="govuk-heading-l">Check your answers</h1>
 
-      {{ govukSummaryList({
-        rows: [
-          {
-            key: { text: "TODO: question label" },
-            value: { text: data['TODO_field_name'] or "Not answered" },
-            actions: { items: [{ href: "/project/public-involvement/TODO-page", text: "Change", visuallyHiddenText: "TODO" }] }
-          }
-        ]
-      }) }}
+      <p>Some sort of paragraph to explain what happens next</p>
 
-      <form action="/project/public-involvement/check-complete" method="post">
+      {{ renderAnswers([
+        questions.involvedContributors,
+        questions.publicContributors,
+        questions.identifyContributors,
+        questions.identifyContributorsOther,
+        questions.contributorDetails,
+        questions.importantContribution,
+        questions.futureContribution,
+        questions.futureContributionOther,
+        questions.justifyContribution,
+        questions.justifyNoContribution
+      ], data, "/public-involvement/") }}
+
+      <form action="/project/start01" method="post">
         {{ govukButton({ text: "Confirm and continue" }) }}
       </form>
 

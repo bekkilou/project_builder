@@ -15,6 +15,7 @@ module.exports = {
 
   involvedContributors: {
     type: "checkboxes",
+    id: "OQ9999",
     name: "involvedContributors",
     legendSize: "l",
     legend: "In which aspects of the project have you already actively involved patients or their carers, service users or members of the public?",
@@ -35,10 +36,14 @@ module.exports = {
       { value: "dissemination_plan",               text: "Developing the dissemination plan for the research" },
       { value: "regulatory_submissions",           text: "Preparing regulatory submissions" },
       { value: "rec_meetings",                     text: "Planning to attend the Research Ethics Committee meetings to help explain how and why the research design is likely to be acceptable to research participants" },
-      { value: "other",                            text: "Other" },
+      { value: "other", text: "Other", hint: "Please specify in the box below" },
       { divider: "or"},
       { value: "not_involved",                     text: "Patients, service users or their carers, or members of the public have not been involved", behaviour: "exclusive" }
-    ]
+    ],
+    guidance: {
+      summary: "What to include in your answer",
+      html: "Read the <a href='/guidance/ppi' class='govuk-link'>public involvement guidance</a> for more detail on what reviewers are looking for."
+    }
   },
 
   publicContributors: {
@@ -110,6 +115,9 @@ module.exports = {
     legend: "How do you plan to involve public contributors in the remaining stages of the research process?",
     hint: "Select all that apply",
     alwaysShow: true,
+    proportionateReview: true,
+    recDataset: true,
+    studyWideDataset: true,
     items: [
       { value: "advisory_group",          text: "Being a member of research advisory or reference group" },
       { value: "trial_management_group",  text: "Being a member of the Trial Management Group or Data Monitoring Committee" },

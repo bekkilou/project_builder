@@ -1,6 +1,7 @@
 const govukPrototypeKit = require('govuk-prototype-kit')
 const router = govukPrototypeKit.requests.setupRouter()
 
+
 const scopingQuestions = require('./data/scoping-questions')
 const projInfoQuestions = require('./data/project-information-questions')
 const partiQuestions = require('./data/participants-questions')
@@ -69,5 +70,14 @@ router.use(require('./routes/risks-and-conflicts'))
 router.use(require('./routes/transparency'))
 require('./routes/doc-extract')(router)
 
+require('./routes/export-routes')(router)
+
+const { getSectionStatuses } = require('./routes/helpers/section-status')
+
+router.get('/project/start01', (req, res) => {
+  res.locals.sectionStatuses = getSectionStatuses(req.session.data)
+  res.render('project/start01')
+})
+require('./routes/start-routes')(router)
 
 module.exports = router

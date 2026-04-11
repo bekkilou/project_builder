@@ -1,9 +1,11 @@
-{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
-{% from "govuk/components/radios/macro.njk"    import govukRadios %}
-{% from "govuk/components/input/macro.njk"     import govukInput %}
-{% from "govuk/components/textarea/macro.njk"  import govukTextarea %}
-{% from "govuk/components/select/macro.njk"    import govukSelect %}
-{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/checkboxes/macro.njk"     import govukCheckboxes %}
+{% from "govuk/components/radios/macro.njk"         import govukRadios %}
+{% from "govuk/components/input/macro.njk"          import govukInput %}
+{% from "govuk/components/textarea/macro.njk"       import govukTextarea %}
+{% from "govuk/components/select/macro.njk"         import govukSelect %}
+{% from "govuk/components/date-input/macro.njk"     import govukDateInput %}
+{% from "govuk/components/details/macro.njk"        import govukDetails %}
+{% from "govuk/components/summary-list/macro.njk"   import govukSummaryList %}
 
 {#
   _question.html  –  universal question renderer
@@ -16,15 +18,122 @@
     {{ renderQuestion(questions.myQuestionKey, data, errors) }}
     Pass a 4th argument to override the items list for conditional filtering:
     {{ renderQuestion(questions.myQuestionKey, data, errors, filteredItems) }}
+    Pass questions as the 7th argument to enable revealOn for checkboxes/radios:
+    {{ renderQuestion(questions.myQuestionKey, data, errors, null, null, errorMap, questions) }}
 
   The macro handles all question types defined in questions.js:
-    checkboxes | radios | radios-conditional | input | textarea | select
+    checkboxes | radios | radios-conditional | input | textarea | select | date
+
+  Item-level hints:
+    Add a `hint` property to any item in a checkboxes or radios items array.
+    e.g. { value: "other", text: "Other", hint: "Please give details below" }
+
+  Conditional reveal via revealOn (checkboxes and radios):
+    Add `revealOn` to any item, referencing another question by name.
+    When that item is selected, the referenced question renders inline below it.
+    Requires `questions` to be passed as the 7th argument.
+    Supports textarea and input question types as the revealed field.
+    e.g. { value: "other", text: "Other", revealOn: "identifyContributorsOther" }
+
+  Guidance panel (Details component):
+    Add a `guidance` object to any question to render a collapsible Details component
+    directly below the form control. Supports HTML content so you can include links.
+    e.g. guidance: {
+           summary: "Help with identifying public contributors",
+           html: "Read the <a href='/guidance/ppi' class='govuk-link'>PPI guidance</a> for more detail."
+         }
+
+  Check answers (renderAnswers macro):
+    Renders a govukSummaryList for a section's questions, showing only answered questions.
+    Each row shows the question label/legend, the resolved response, and a change link.
+    Checkboxes with multiple values are rendered as separate lines within the value cell.
+
+    Import and use on a check answers page like this:
+
+      {% from "_partials/_question.html" import renderAnswers %}
+
+      {{ renderAnswers([
+        questions.involvedContributors,
+        questions.publicContributors,
+        questions.identifyContributors
+      ], data, "/public-involvement/") }}
+
+    The third argument is the base URL for change links.
+    Each change link will be: baseChangeUrl + question.name
+    e.g. "/public-involvement/involvedContributors"
+    Adjust your routes to handle these URLs and redirect back to the right page.
 #}
 
-{% macro renderQuestion(q, data, errors, itemsOverride, conditionalHtml, errorMap) %}
+{% macro renderQuestion(q, data, errors, itemsOverride, conditionalHtml, errorMap, questions) %}
+
+  {# ── CAPTION ─────────────────────────────────────────────── #}
+  {# If q.id is defined, build a caption string to prepend to   #}
+  {# the legend or label HTML. Uses govuk-caption-* sizing to   #}
+  {# match the legend/label size.                               #}
+  {% set captionSize = q.legendSize if q.legendSize else "m" %}
+  {% if q.id %}
+    {% set captionHtml %}
+      <span class="govuk-caption-{{ captionSize }}">{{ q.id }}</span>
+    {% endset %}
+  {% else %}
+    {% set captionHtml = "" %}
+  {% endif %}
 
   {# ── CHECKBOXES ─────────────────────────────────────────── #}
   {% if q.type === "checkboxes" %}
+
+    {# Build items to support item-level hints and conditional reveals.      #}
+    {# If itemsOverride is passed, use that as-is.                           #}
+    {# Otherwise build from q.items.                                         #}
+    {# If an item has `revealOn`, look up that question from the questions   #}
+    {# object and render it as a textarea/input revealed when checked.       #}
+    {% if itemsOverride %}
+      {% set builtItems = itemsOverride %}
+    {% else %}
+      {% set builtItems = [] %}
+      {% for item in q.items %}
+        {% if item.divider %}
+          {% set builtItems = builtItems.concat([{ divider: item.divider }]) %}
+        {% elif item.revealOn and questions and questions[item.revealOn] %}
+          {% set revealedQ = questions[item.revealOn] %}
+          {% set revealedHtml %}
+            {% if revealedQ.type === "textarea" %}
+              {{ govukTextarea({
+                id: revealedQ.name,
+                name: revealedQ.name,
+                rows: revealedQ.rows if revealedQ.rows else 3,
+                label: { text: revealedQ.label },
+                hint: { text: revealedQ.hint } if revealedQ.hint else undefined,
+                value: data[revealedQ.name]
+              }) }}
+            {% else %}
+              {{ govukInput({
+                id: revealedQ.name,
+                name: revealedQ.name,
+                classes: "govuk-!-width-one-half",
+                label: { text: revealedQ.label },
+                hint: { text: revealedQ.hint } if revealedQ.hint else undefined,
+                value: data[revealedQ.name]
+              }) }}
+            {% endif %}
+          {% endset %}
+          {% set builtItems = builtItems.concat([{
+            value: item.value,
+            text: item.text,
+            hint: { text: item.hint } if item.hint else undefined,
+            behaviour: item.behaviour if item.behaviour else undefined,
+            conditional: { html: revealedHtml }
+          }]) %}
+        {% else %}
+          {% set builtItems = builtItems.concat([{
+            value: item.value,
+            text: item.text,
+            hint: { text: item.hint } if item.hint else undefined,
+            behaviour: item.behaviour if item.behaviour else undefined
+          }]) %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
 
     {{ govukCheckboxes({
       idPrefix: q.name,
@@ -32,36 +141,70 @@
       values: data[q.name] if data[q.name] else [],
       fieldset: {
         legend: {
-          text: q.legend,
+          html: captionHtml + q.legend,
           isPageHeading: q.legendSize === "l" or q.legendSize === "xl",
           classes: "govuk-fieldset__legend--" + (q.legendSize if q.legendSize else "m")
         }
       },
       hint: { text: q.hint } if q.hint else undefined,
       errorMessage: errorMap[q.name] if errorMap and errorMap[q.name] else undefined,
-      items: itemsOverride if itemsOverride else q.items
+      items: builtItems
     }) }}
 
 
   {# ── RADIOS (standard) ──────────────────────────────────── #}
-  {# Pass conditionalHtml as 5th arg to reveal content under a specific value. #}
-  {# Set q.conditionalValue in scoping-questions.js to control which option triggers it (default: "yes") #}
+  {# Items with `revealOn` will reveal the referenced question  #}
+  {# when selected. The existing conditionalHtml arg (5th) also #}
+  {# still works for template-level overrides.                  #}
   {% elif q.type === "radios" %}
 
-    {# If a conditionalHtml override is provided, attach it to the trigger value #}
-    {% if conditionalHtml %}
-      {% set triggerValue = q.conditionalValue if q.conditionalValue else "yes" %}
-      {% set builtItems = [] %}
-      {% for item in q.items %}
-        {% if item.value === triggerValue %}
-          {% set builtItems = builtItems.concat([{ value: item.value, text: item.text, conditional: { html: conditionalHtml } }]) %}
-        {% else %}
-          {% set builtItems = builtItems.concat([{ value: item.value, text: item.text }]) %}
-        {% endif %}
-      {% endfor %}
-    {% else %}
-      {% set builtItems = q.items %}
-    {% endif %}
+    {% set triggerValue = q.conditionalValue if q.conditionalValue else "yes" %}
+    {% set builtItems = [] %}
+    {% for item in q.items %}
+      {% if item.revealOn and questions and questions[item.revealOn] %}
+        {% set revealedQ = questions[item.revealOn] %}
+        {% set revealedHtml %}
+          {% if revealedQ.type === "textarea" %}
+            {{ govukTextarea({
+              id: revealedQ.name,
+              name: revealedQ.name,
+              rows: revealedQ.rows if revealedQ.rows else 3,
+              label: { text: revealedQ.label },
+              hint: { text: revealedQ.hint } if revealedQ.hint else undefined,
+              value: data[revealedQ.name]
+            }) }}
+          {% else %}
+            {{ govukInput({
+              id: revealedQ.name,
+              name: revealedQ.name,
+              classes: "govuk-!-width-one-half",
+              label: { text: revealedQ.label },
+              hint: { text: revealedQ.hint } if revealedQ.hint else undefined,
+              value: data[revealedQ.name]
+            }) }}
+          {% endif %}
+        {% endset %}
+        {% set builtItems = builtItems.concat([{
+          value: item.value,
+          text: item.text,
+          hint: { text: item.hint } if item.hint else undefined,
+          conditional: { html: revealedHtml }
+        }]) %}
+      {% elif conditionalHtml and item.value === triggerValue %}
+        {% set builtItems = builtItems.concat([{
+          value: item.value,
+          text: item.text,
+          hint: { text: item.hint } if item.hint else undefined,
+          conditional: { html: conditionalHtml }
+        }]) %}
+      {% else %}
+        {% set builtItems = builtItems.concat([{
+          value: item.value,
+          text: item.text,
+          hint: { text: item.hint } if item.hint else undefined
+        }]) %}
+      {% endif %}
+    {% endfor %}
 
     {{ govukRadios({
       idPrefix: q.name,
@@ -70,7 +213,7 @@
       classes: "govuk-radios--inline" if q.inline else "",
       fieldset: {
         legend: {
-          text: q.legend,
+          html: captionHtml + q.legend,
           isPageHeading: q.legendSize === "l" or q.legendSize === "xl",
           classes: "govuk-fieldset__legend--" + (q.legendSize if q.legendSize else "m")
         }
@@ -85,7 +228,7 @@
   {# Use when one or more options should reveal additional fields #}
   {% elif q.type === "radios-conditional" %}
 
-    {# Build the items array, injecting conditional HTML where needed #}
+    {# Build the items array, injecting conditional HTML and item hints where needed #}
     {% set builtItems = [] %}
     {% for item in q.items %}
       {% if item.conditionalFields %}
@@ -107,6 +250,7 @@
         {% set builtItems = builtItems.concat([{
           value: item.value,
           text: item.text,
+          hint: { text: item.hint } if item.hint else undefined,
           checked: item.checked if item.checked else false,
           conditional: { html: conditionalHtml }
         }]) %}
@@ -115,6 +259,7 @@
         {% set builtItems = builtItems.concat([{
           value: item.value,
           text: item.text,
+          hint: { text: item.hint } if item.hint else undefined,
           checked: item.checked if item.checked else false
         }]) %}
       {% endif %}
@@ -127,7 +272,7 @@
       classes: "govuk-radios--inline" if q.inline else "",
       fieldset: {
         legend: {
-          text: q.legend,
+          html: captionHtml + q.legend,
           isPageHeading: q.legendSize === "l" or q.legendSize === "xl",
           classes: "govuk-fieldset__legend--" + (q.legendSize if q.legendSize else "m")
         }
@@ -146,7 +291,7 @@
       name: q.name,
       classes: q.classes if q.classes else "",
       label: {
-        text: q.label,
+        html: captionHtml + q.label,
         isPageHeading: q.legendSize === "l" or q.legendSize === "xl",
         classes: "govuk-label--" + (q.legendSize if q.legendSize else "m")
       },
@@ -164,7 +309,7 @@
       name: q.name,
       rows: q.rows if q.rows else 5,
       label: {
-        text: q.label,
+        html: captionHtml + q.label,
         isPageHeading: q.legendSize === "l" or q.legendSize === "xl",
         classes: "govuk-label--" + (q.legendSize if q.legendSize else "m")
       },
@@ -174,59 +319,59 @@
     }) }}
 
 
-    {# ── SELECT / AUTOCOMPLETE ───────────────────────────────── #}
-    {# Renders a label, hint, error message, hidden input, and a      #}
-    {# <div> container for accessible-autocomplete to enhance.        #}
-    {# The page must call window.initAutocomplete(q.name) after       #}
-    {# rendering — this is handled by the script block in the         #}
-    {# sample-question-page.html template.                            #}
-    {% elif q.type === "select" %}
+  {# ── SELECT / AUTOCOMPLETE ───────────────────────────────── #}
+  {# Renders a label, hint, error message, hidden input, and a      #}
+  {# <div> container for accessible-autocomplete to enhance.        #}
+  {# The page must call window.initAutocomplete(q.name) after       #}
+  {# rendering — this is handled by the script block in the         #}
+  {# sample-question-page.html template.                            #}
+  {% elif q.type === "select" %}
 
-      {# Accessible label #}
-      <div class="govuk-form-group{% if errorMap and errorMap[q.name] %} govuk-form-group--error{% endif %}">
-        <label class="govuk-label govuk-label--{{ q.legendSize if q.legendSize else 'l' }}"
-               for="{{ q.name }}-autocomplete">
-          {{ q.label or q.legend }}
-        </label>
-        {% if q.hint %}
-          <div id="{{ q.name }}-hint" class="govuk-hint">{{ q.hint }}</div>
-        {% endif %}
-        {% if errorMap and errorMap[q.name] %}
-          <p id="{{ q.name }}-error" class="govuk-error-message">
-            <span class="govuk-visually-hidden">Error:</span> {{ errorMap[q.name].text }}
-          </p>
-        {% endif %}
+    <div class="govuk-form-group{% if errorMap and errorMap[q.name] %} govuk-form-group--error{% endif %}">
+      <label class="govuk-label govuk-label--{{ q.legendSize if q.legendSize else 'l' }}"
+             for="{{ q.name }}-autocomplete">
+        {% if q.id %}<span class="govuk-caption-{{ captionSize }}">{{ q.id }}</span>{% endif %}
+        {{ q.label or q.legend }}
+      </label>
+      {% if q.hint %}
+        <div id="{{ q.name }}-hint" class="govuk-hint">{{ q.hint }}</div>
+      {% endif %}
+      {% if errorMap and errorMap[q.name] %}
+        <p id="{{ q.name }}-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error:</span> {{ errorMap[q.name].text }}
+        </p>
+      {% endif %}
 
-        {# Container that accessible-autocomplete will enhance #}
-        <div id="{{ q.name }}-autocomplete-container"></div>
+      {# Container that accessible-autocomplete will enhance #}
+      <div id="{{ q.name }}-autocomplete-container"></div>
 
-        {# Hidden input carries the submitted value #}
-        <input type="hidden" id="{{ q.name }}" name="{{ q.name }}" value="{{ data[q.name] }}">
+      {# Hidden input carries the submitted value #}
+      <input type="hidden" id="{{ q.name }}" name="{{ q.name }}" value="{{ data[q.name] }}">
 
-      </div>
+    </div>
 
 
-      {# ── DATE INPUT ─────────────────────────────────────────── #}
-        {% elif q.type === "date" %}
+  {# ── DATE INPUT ─────────────────────────────────────────── #}
+  {% elif q.type === "date" %}
 
-          {{ govukDateInput({
-            id: q.name,
-            namePrefix: q.name,
-            fieldset: {
-              legend: {
-                text: q.legend,
-                isPageHeading: q.legendSize === "l" or q.legendSize === "xl",
-                classes: "govuk-fieldset__legend--" + (q.legendSize if q.legendSize else "m")
-              }
-            },
-            hint: { text: q.hint } if q.hint else undefined,
-            errorMessage: errorMap[q.name] if errorMap and errorMap[q.name] else undefined,
-            values: {
-              day:   data[q.name + "-day"],
-              month: data[q.name + "-month"],
-              year:  data[q.name + "-year"]
-            }
-          }) }}
+    {{ govukDateInput({
+      id: q.name,
+      namePrefix: q.name,
+      fieldset: {
+        legend: {
+          html: captionHtml + q.legend,
+          isPageHeading: q.legendSize === "l" or q.legendSize === "xl",
+          classes: "govuk-fieldset__legend--" + (q.legendSize if q.legendSize else "m")
+        }
+      },
+      hint: { text: q.hint } if q.hint else undefined,
+      errorMessage: errorMap[q.name] if errorMap and errorMap[q.name] else undefined,
+      values: {
+        day:   data[q.name + "-day"],
+        month: data[q.name + "-month"],
+        year:  data[q.name + "-year"]
+      }
+    }) }}
 
   {# ── UNKNOWN TYPE WARNING (visible only during prototyping) ─ #}
   {% else %}
@@ -234,6 +379,135 @@
       ⚠ Unknown question type "{{ q.type }}" for "{{ q.name }}" – check questions.js
     </p>
 
+  {% endif %}
+
+  {# ── GUIDANCE PANEL ──────────────────────────────────────── #}
+  {# Renders a collapsible Details component below the form     #}
+  {# control if q.guidance is defined. See header comment for   #}
+  {# the config shape. Inlined here to avoid Nunjucks same-file #}
+  {# macro scoping limitations.                                  #}
+  {% if q.guidance %}
+    {{ govukDetails({
+      summaryText: q.guidance.summary,
+      html: q.guidance.html
+    }) }}
+  {% endif %}
+
+{% endmacro %}
+
+
+{#
+  ── renderAnswers  ──────────────────────────────────────────────────────────
+  Renders a govukSummaryList for a section's questions.
+  Only questions that have been answered are included as rows.
+  Checkboxes with multiple selections are shown as separate lines.
+
+  Arguments:
+    questionList  – array of question objects for this section, e.g.
+                    [ questions.involvedContributors, questions.publicContributors ]
+    data          – the session data object (pass `data` from the template)
+    baseChangeUrl – base URL string for change links; question name is appended,
+                    e.g. "/public-involvement/" produces "/public-involvement/involvedContributors"
+#}
+{% macro renderAnswers(questionList, data, baseChangeUrl) %}
+
+  {% set rows = [] %}
+
+  {% for q in questionList %}
+
+    {# ── Resolve the response value for this question ── #}
+
+    {% if q.type === "date" %}
+
+      {# Reassemble date from its three parts #}
+      {% set day   = data[q.name + "-day"]   %}
+      {% set month = data[q.name + "-month"] %}
+      {% set year  = data[q.name + "-year"]  %}
+      {% if day or month or year %}
+        {% set resolvedHtml = (day if day else "") + "/" + (month if month else "") + "/" + (year if year else "") %}
+      {% else %}
+        {% set resolvedHtml = "" %}
+      {% endif %}
+
+    {% elif q.type === "checkboxes" %}
+
+      {# Map stored values back to item labels, render each on its own line #}
+      {% set rawValues = data[q.name] if data[q.name] else [] %}
+      {% set lines = [] %}
+      {% for val in rawValues %}
+        {% set matchedItem = undefined %}
+        {% for item in q.items %}
+          {% if item.value === val %}
+            {% set matchedItem = item %}
+          {% endif %}
+        {% endfor %}
+        {% set lines = lines.concat([ matchedItem.text if matchedItem else val ]) %}
+      {% endfor %}
+
+      {# Join lines with a <br> so each selection appears on its own line #}
+      {% if lines | length %}
+        {% set resolvedHtml %}
+          {% for line in lines %}
+            {{ line }}{% if not loop.last %}<br>{% endif %}
+          {% endfor %}
+        {% endset %}
+      {% else %}
+        {% set resolvedHtml = "" %}
+      {% endif %}
+
+    {% elif q.type === "radios" or q.type === "radios-conditional" %}
+
+      {# Map stored value back to item label #}
+      {% set rawValue = data[q.name] %}
+      {% set resolvedHtml = "" %}
+      {% if rawValue %}
+        {% for item in q.items %}
+          {% if item.value === rawValue %}
+            {% set resolvedHtml = item.text %}
+          {% endif %}
+        {% endfor %}
+        {# Fall back to raw value if no matching item found #}
+        {% if not resolvedHtml %}
+          {% set resolvedHtml = rawValue %}
+        {% endif %}
+      {% endif %}
+
+    {% elif q.type === "select" %}
+
+      {% set rawValue = data[q.name] %}
+      {% set resolvedHtml = rawValue if rawValue else "" %}
+
+    {% else %}
+
+      {# input, textarea #}
+      {% set resolvedHtml = data[q.name] if data[q.name] else "" %}
+
+    {% endif %}
+
+    {# ── Only add a row if there is a response ── #}
+    {% if resolvedHtml %}
+      {% set rows = rows.concat([{
+        key: {
+          text: q.legend if q.legend else q.label
+        },
+        value: {
+          html: resolvedHtml
+        },
+        actions: {
+          items: [{
+            href: baseChangeUrl + q.name,
+            text: "Change",
+            visuallyHiddenText: q.legend if q.legend else q.label
+          }]
+        }
+      }]) %}
+    {% endif %}
+
+  {% endfor %}
+
+  {# Only render the summary list if at least one question has been answered #}
+  {% if rows | length %}
+    {{ govukSummaryList({ rows: rows }) }}
   {% endif %}
 
 {% endmacro %}
