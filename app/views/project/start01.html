@@ -25,27 +25,88 @@
       <h1 class="govuk-heading-xl">
         {{ data['project-title'] or "Project" }} overview
       </h1>
+      {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-      {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
-
-      {{ govukInsetText({
-        html: '<strong>IRAS ID:</strong> 123456<br />
-        <strong>Short project title: </strong>' + data.projectTitle + '<br />
-        <strong>Project phase:</strong> Preparing project for submission<br />
-        <strong>Status:</strong> Draft'
+      {{ govukSummaryList({
+        rows: [
+          {
+            key: {
+              text: "ID"
+            },
+            value: {
+              text: "123456"
+            }
+          },
+          {
+            key: {
+              text: "Short project title"
+            },
+            value: {
+              text: data.projectTitle
+            }
+          },
+          {
+            key: {
+              text: "Phase"
+            },
+            value: {
+              text: "Preparing your application"
+            }
+          },
+          {
+            key: {
+              text: "Protocol reference number"
+            },
+            value: {
+              text: data.iqa0036
+            },
+            actions: {
+              items: [
+                {
+                  href: "/project/project-information/iqa0036",
+                  text: "Add",
+                  visuallyHiddenText: "iqa0036"
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text: "EU Clinical Trial Number"
+            },
+            value: {
+              text: data.iqa0037
+            },
+            actions: {
+              items: [
+                {
+                  href: "/project/project-information/iqa0037",
+                  text: "Add",
+                  visuallyHiddenText: "iqa0097"
+                }
+              ]
+            }
+          }
+        ]
       }) }}
-      <a href="/admin/export.csv" class="govuk-button govuk-button--secondary">
-        Download your answers (CSV)
-      </a>
+
     </div>
     <div class="govuk-grid-column-one-third" style="text-align: right;">
       <strong class="govuk-tag">Draft</strong>
     </div>
   </div>
-
+<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+  <div class="govuk-grid-row" style="background: #f4f8fb;">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-m">Modify your project scope</h2>
+      <p>You can return to the project filter at any time and change your answers.</p>
+      <p>Doing so will affect the questions you need to answer, the documents you must submit, and the approvals required for your research.</p>
+      <p><a href="/project/check">Scoping summary</a></p>
+    </div>
+  </div>
+<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
   {# ── Progress panels ─────────────────────────────────────── #}
   <div class="govuk-grid-row">
-
     {# ── Panel 1: Approvals pathway progress ─────────────────── #}
     <div class="govuk-grid-column-one-half">
       <div class="govuk-inset-text" style="margin-top: 0;">
@@ -112,13 +173,13 @@
 
   {# ── Card macros ─────────────────────────────────────────── #}
   {% macro sectionCard(title, href, status, description) %}
-    <li class="govuk-grid-column-full card-group__item">
+    <li class="govuk-grid-column-two-thirds card-group__item">
       <div class="card card--clickable">
         <div class="govuk-grid-row">
           <div class="govuk-grid-column-two-thirds">
-            <h2 class="govuk-heading-m card__heading">
+            <h3 class="govuk-heading-s card__heading">
               <a class="govuk-link card__link govuk-link--no-visited-state" href="{{ href }}">{{ title }}</a>
-            </h2>
+            </h3>
             {% if description %}
               <p class="govuk-body card__description">{{ description }}</p>
             {% endif %}
@@ -136,9 +197,9 @@
   {% macro sectionCardThird(title, href, status, description) %}
     <li class="govuk-grid-column-one-third card-group__item">
       <div class="card card--clickable">
-        <h2 class="govuk-heading-m card__heading">
+        <h3 class="govuk-heading-s card__heading">
           <a class="govuk-link card__link govuk-link--no-visited-state" href="{{ href }}">{{ title }}</a>
-        </h2>
+        </h3>
         {% if description %}
           <p class="govuk-body card__description">{{ description }}</p>
         {% endif %}
@@ -150,12 +211,6 @@
   {% endmacro %}
 
   {# ── Section cards ───────────────────────────────────────── #}
-
-    <ul class="govuk-grid-row card-group">
-      {{ sectionCardThird("Project team",       "/project/project-team/start",       sectionStatuses.projectTeam,       "The members of the research team and their roles and responsibilities.") }}
-      {{ sectionCardThird("Project sponsors",   "/project/project-sponsors/start",   sectionStatuses.projectSponsors,   "The organisations or individuals sponsoring and taking responsibility for the research.") }}
-      {{ sectionCardThird("Research locations", "/project/research-locations/start", sectionStatuses.researchLocations, "The sites and settings where the research will be carried out.") }}
-    </ul>
 
   <ul class="govuk-grid-row card-group">
     {{ sectionCard("Public involvement",              "/project/public-involvement/start",   sectionStatuses.publicInvolvement,  "Whether and how patients, carers, service users or members of the public have been or will be involved in your research.") }}
@@ -170,5 +225,8 @@
 
   </ul>
 
+  <a href="/admin/export.csv" class="govuk-button govuk-button--secondary">
+    Download your answers (CSV)
+  </a>
 
 {% endblock %}
