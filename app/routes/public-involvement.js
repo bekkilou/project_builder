@@ -8,240 +8,103 @@ const {
   renderWithErrors
 } = require('./helpers/routing')
 
-// ─── Helpers ────────────────────────────────────────────────────────────────
-
-function isInvolved (data) {
-  return !asArray(data['involvedContributors']).includes('not_involved')
-}
-
-function hasInvolvedContributors (data) {
-  return asArray(data['involvedContributors']).length > 0
-}
-
-function selectedOther (data, field) {
-  return asArray(data[field]).includes('other')
-}
-
-function hasAnyFuturePlanned (data) {
-  return !asArray(data['futureContribution']).includes('no_contribution') &&
-    asArray(data['futureContribution']).length > 0
-}
-
-function hasNoFuture (data) {
-  return asArray(data['futureContribution']).includes('no_contribution')
-}
-
 // ─── Page flow ───────────────────────────────────────────────────────────────
 //
-//  /project/public-involvement/involvement         involvedContributors (always)
-//    → if not_involved:  /why-not-involved
-//    → if other only:    /involvement-details (skipping identify)
-//    → else:             /identify-contributors
-//  /project/public-involvement/why-not-involved    patientInsights
-//  /project/public-involvement/identify-contributors  identifyContributors
-//  /project/public-involvement/identify-contributors-other  identifyContributorsOther (if other)
-//  /project/public-involvement/involvement-details   publicContributors
-//  /project/public-involvement/contributor-details   contributorDetails
-//  /project/public-involvement/important-contribution  importantContribution
-//  /project/public-involvement/future-contribution  futureContribution (always)
-//    → if other:         /future-contribution-other
-//    → if no_contribution: /justify-no-contribution
-//    → else:             /justify-contribution
-//  /project/public-involvement/future-contribution-other  futureContributionOther
-//  /project/public-involvement/justify-contribution  justifyContribution
-//  /project/public-involvement/justify-no-contribution  justifyNoContribution
+//  Note: This section is under active development. The flow is
+//  currently linear — all questions are shown to all applicants.
+//  Branching logic will be added when the question set is finalised.
+//
+//  /project/public-involvement/tbc001    How involved to date (always)
+//  /project/public-involvement/tbc002    Further details on past involvement (always)
+//  /project/public-involvement/tbc003    How lived experience shaped research (always)
+//  /project/public-involvement/tbc004    How involved in future (always)
+//  /project/public-involvement/tbc005    Further details on future involvement (always)
+//  /project/public-involvement/tbc006    Involving communities research seeks to benefit (always)
 
 // ─── Routes ──────────────────────────────────────────────────────────────────
 
-// Which aspects have you involved contributors in?
-router.post('/project/public-involvement/involvement', function (req, res) {
+router.post('/project/public-involvement/tbc001', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (asArray(data['involvedContributors']).length === 0) {
-    addError(errors, 'involvedContributors', 'Select at least one option, or select \'Patients, service users or their carers, or members of the public have not been involved\'')
+  if (asArray(data['tbc001']).length === 0) {
+    addError(errors, 'tbc001', questions['tbc001'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/public-involvement/involvement', errors)
+  if (errors.length) return renderWithErrors(res, 'project/public-involvement/tbc001', errors)
 
-  // Cleanup: if not involved, clear all "involved" answers
-  if (!isInvolved(data)) {
-    clear(data, [
-      'publicContributors',
-      'identifyContributors',
-      'identifyContributorsOther',
-      'contributorDetails',
-      'importantContribution'
-    ])
-    return res.redirect('/project/public-involvement/why-not-involved')
-  }
-
-  // If "other" selected alongside real involvements, still go to identify
-  // (involvement details is collected per-aspect on the details page)
-  return res.redirect('/project/public-involvement/identify-contributors')
+  return res.redirect('/project/public-involvement/tbc002')
 })
 
-// Why didn't you involve the public?
-router.post('/project/public-involvement/why-not-involved', function (req, res) {
+router.post('/project/public-involvement/tbc002', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['patientInsights'] || !data['patientInsights'].trim()) {
-    addError(errors, 'patientInsights', 'Enter your reasons for not involving patients, carers, service users or members of the public')
+  if (!data['tbc002'] || !data['tbc002'].trim()) {
+    addError(errors, 'tbc002', questions['tbc002'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/public-involvement/why-not-involved', errors)
+  if (errors.length) return renderWithErrors(res, 'project/public-involvement/tbc002', errors)
 
-  return res.redirect('/project/public-involvement/future-contribution')
+  return res.redirect('/project/public-involvement/tbc003')
 })
 
-// How did you identify contributors?
-router.post('/project/public-involvement/identify-contributors', function (req, res) {
+router.post('/project/public-involvement/tbc003', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (asArray(data['identifyContributors']).length === 0) {
-    addError(errors, 'identifyContributors', 'Select at least one option')
+  if (!data['tbc003'] || !data['tbc003'].trim()) {
+    addError(errors, 'tbc003', questions['tbc003'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/public-involvement/identify-contributors', errors)
+  if (errors.length) return renderWithErrors(res, 'project/public-involvement/tbc003', errors)
 
-  if (selectedOther(data, 'identifyContributors')) {
-    return res.redirect('/project/public-involvement/identify-contributors-other')
-  }
-
-  clear(data, ['identifyContributorsOther'])
-  return res.redirect('/project/public-involvement/involvement-details')
+  return res.redirect('/project/public-involvement/tbc004')
 })
 
-// Details of other identification method
-router.post('/project/public-involvement/identify-contributors-other', function (req, res) {
+router.post('/project/public-involvement/tbc004', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['identifyContributorsOther'] || !data['identifyContributorsOther'].trim()) {
-    addError(errors, 'identifyContributorsOther', 'Enter details of how you identified the public contributors')
+  if (asArray(data['tbc004']).length === 0) {
+    addError(errors, 'tbc004', questions['tbc004'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/public-involvement/identify-contributors-other', errors)
+  if (errors.length) return renderWithErrors(res, 'project/public-involvement/tbc004', errors)
 
-  return res.redirect('/project/public-involvement/involvement-details')
+  return res.redirect('/project/public-involvement/tbc005')
 })
 
-// How did you involve them?
-router.post('/project/public-involvement/involvement-details', function (req, res) {
+router.post('/project/public-involvement/tbc005', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['publicContributors'] || !data['publicContributors'].trim()) {
-    addError(errors, 'publicContributors', 'Enter details of how you involved public contributors')
+  if (!data['tbc005'] || !data['tbc005'].trim()) {
+    addError(errors, 'tbc005', questions['tbc005'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/public-involvement/involvement-details', errors)
+  if (errors.length) return renderWithErrors(res, 'project/public-involvement/tbc005', errors)
 
-  return res.redirect('/project/public-involvement/contributor-details')
+  return res.redirect('/project/public-involvement/tbc006')
 })
 
-// Tell us about the public contributors
-router.post('/project/public-involvement/contributor-details', function (req, res) {
+router.post('/project/public-involvement/tbc006', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['contributorDetails'] || !data['contributorDetails'].trim()) {
-    addError(errors, 'contributorDetails', 'Enter details about the public contributors you worked with')
+  if (!data['tbc006'] || !data['tbc006'].trim()) {
+    addError(errors, 'tbc006', questions['tbc006'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/public-involvement/contributor-details', errors)
+  if (errors.length) return renderWithErrors(res, 'project/public-involvement/tbc006', errors)
 
-  return res.redirect('/project/public-involvement/important-contribution')
-})
-
-// What did contributors say was important?
-router.post('/project/public-involvement/important-contribution', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['importantContribution'] || !data['importantContribution'].trim()) {
-    addError(errors, 'importantContribution', 'Enter what your public contributors said was important to them')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/public-involvement/important-contribution', errors)
-
-  return res.redirect('/project/public-involvement/future-contribution')
-})
-
-// Future involvement plans
-router.post('/project/public-involvement/future-contribution', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (asArray(data['futureContribution']).length === 0) {
-    addError(errors, 'futureContribution', 'Select at least one option')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/public-involvement/future-contribution', errors)
-
-  if (selectedOther(data, 'futureContribution')) {
-    return res.redirect('/project/public-involvement/future-contribution-other')
-  }
-
-  clear(data, ['futureContributionOther'])
-
-  if (hasNoFuture(data)) {
-    clear(data, ['justifyContribution'])
-    return res.redirect('/project/public-involvement/justify-no-contribution')
-  }
-
-  clear(data, ['justifyNoContribution'])
-  return res.redirect('/project/public-involvement/justify-contribution')
-})
-
-// Other future contribution details
-router.post('/project/public-involvement/future-contribution-other', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['futureContributionOther'] || !data['futureContributionOther'].trim()) {
-    addError(errors, 'futureContributionOther', 'Enter details of other aspects public contributors will advise on')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/public-involvement/future-contribution-other', errors)
-
-  if (hasNoFuture(data)) {
-    clear(data, ['justifyContribution'])
-    return res.redirect('/project/public-involvement/justify-no-contribution')
-  }
-
-  clear(data, ['justifyNoContribution'])
-  return res.redirect('/project/public-involvement/justify-contribution')
-})
-
-// Justify involvement approach
-router.post('/project/public-involvement/justify-contribution', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['justifyContribution'] || !data['justifyContribution'].trim()) {
-    addError(errors, 'justifyContribution', 'Enter a justification for your public involvement approach')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/public-involvement/justify-contribution', errors)
-
-  return res.redirect('/project/public-involvement/check')
-})
-
-// Justify no future involvement
-router.post('/project/public-involvement/justify-no-contribution', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['justifyNoContribution'] || !data['justifyNoContribution'].trim()) {
-    addError(errors, 'justifyNoContribution', 'Enter a justification for the absence of public involvement')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/public-involvement/justify-no-contribution', errors)
-
-  return res.redirect('/project/public-involvement/check')
+  return res.redirect('/project/public-involvement/check-public-involvement')
 })
 
 module.exports = router

@@ -26,7 +26,6 @@ function hasOtherParticipants (data) {
 }
 
 function isDataOnly (data) {
-  // If all activities are data/sample-only (no direct participant contact)
   const a = asArray(data['researchActivities'])
   const dataOnlyActivities = new Set([
     'previously_collected_data',
@@ -37,205 +36,217 @@ function isDataOnly (data) {
 
 // ─── Page flow ───────────────────────────────────────────────────────────────
 //
-//  /project/participants/primary-condition         primaryCondition (always)
-//  /project/participants/primary-problem           primaryProblem (always)
-//  /project/participants/inclusion-criteria        principalInclusion (always)
-//  /project/participants/exclusion-criteria        principalExclusion (always)
-//  /project/participants/real-world-population     realWorldPop (always)
-//  /project/participants/full-participation        fullyParticipate (always)
-//  /project/participants/other-participants        otherParticipants (if other group selected in scoping)
-//  /project/participants/recruitment-date          participantRecruitmentDate (always)
-//  /project/participants/how-long-involved         howLongInvolved (if not data-only)
-//  /project/participants/current-research          currentResearchParticipant (if clinical/treatment)
-//  /project/participants/vulnerable-participants   consideredVulnerable (if non-clinical)
-//  /project/participants/imposter-participants     imposterParticipant (always)
+//  /project/participants/iqa0083                   Primary condition (always)
+//  /project/participants/iqa0322                   Primary problem description (always)
+//  /project/participants/iqa0084                   Inclusion criteria (always)
+//  /project/participants/iqa0085                   Exclusion criteria (always)
+//  /project/participants/iqa0086                   Real-world population (always)
+//  /project/participants/iqa0087                   Full participation (always)
+//  /project/participants/iqa0089                   Other participants (if other group selected in scoping)
+//  /project/participants/iqa0090                   Recruitment date (always)
+//  /project/participants/iqa0091                   How long involved (if not data-only)
+//  /project/participants/iqa0092                   Current research (if clinical/treatment)
+//  /project/participants/iqa0093                   Vulnerable participants (if non-clinical)
+//  /project/participants/tbc007                    Imposter participants (always)
 
 // ─── Routes ──────────────────────────────────────────────────────────────────
 
-router.post('/project/participants/primary-condition', function (req, res) {
+router.post('/project/participants/iqa0083', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (asArray(data['primaryCondition']).length === 0) {
-    addError(errors, 'primaryCondition', 'Select at least one primary condition or problem being studied')
+  if (asArray(data['iqa0083']).length === 0) {
+    addError(errors, 'iqa0083', questions['iqa0083'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/participants/primary-condition', errors)
+  if (errors.length) return renderWithErrors(res, 'project/participants/iqa0083', errors)
 
-  return res.redirect('/project/participants/primary-problem')
+  return res.redirect('/project/participants/iqa0322')
 })
 
-router.post('/project/participants/primary-problem', function (req, res) {
+router.post('/project/participants/iqa0322', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['primaryProblem'] || !data['primaryProblem'].trim()) {
-    addError(errors, 'primaryProblem', 'Enter the primary condition or problem being studied')
+  if (!data['iqa0322'] || !data['iqa0322'].trim()) {
+    addError(errors, 'iqa0322', questions['iqa0322'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/participants/primary-problem', errors)
+  if (errors.length) return renderWithErrors(res, 'project/participants/iqa0322', errors)
 
-  return res.redirect('/project/participants/inclusion-criteria')
+  return res.redirect('/project/participants/iqa0084')
 })
 
-router.post('/project/participants/inclusion-criteria', function (req, res) {
+router.post('/project/participants/iqa0084', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['principalInclusion'] || !data['principalInclusion'].trim()) {
-    addError(errors, 'principalInclusion', 'Enter the principal inclusion criteria')
+  if (!data['iqa0084'] || !data['iqa0084'].trim()) {
+    addError(errors, 'iqa0084', questions['iqa0084'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/participants/inclusion-criteria', errors)
+  if (errors.length) return renderWithErrors(res, 'project/participants/iqa0084', errors)
 
-  return res.redirect('/project/participants/exclusion-criteria')
+  return res.redirect('/project/participants/iqa0085')
 })
 
-router.post('/project/participants/exclusion-criteria', function (req, res) {
+router.post('/project/participants/iqa0085', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['principalExclusion'] || !data['principalExclusion'].trim()) {
-    addError(errors, 'principalExclusion', 'Enter the principal exclusion criteria')
+  if (!data['iqa0085'] || !data['iqa0085'].trim()) {
+    addError(errors, 'iqa0085', questions['iqa0085'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/participants/exclusion-criteria', errors)
+  if (errors.length) return renderWithErrors(res, 'project/participants/iqa0085', errors)
 
-  return res.redirect('/project/participants/real-world-population')
+  return res.redirect('/project/participants/iqa0086')
 })
 
-router.post('/project/participants/real-world-population', function (req, res) {
+router.post('/project/participants/iqa0086', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['realWorldPop'] || !data['realWorldPop'].trim()) {
-    addError(errors, 'realWorldPop', 'Enter how you are ensuring your study sample reflects the real-world population')
+  if (!data['iqa0086'] || !data['iqa0086'].trim()) {
+    addError(errors, 'iqa0086', questions['iqa0086'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/participants/real-world-population', errors)
+  if (errors.length) return renderWithErrors(res, 'project/participants/iqa0086', errors)
 
-  return res.redirect('/project/participants/full-participation')
+  return res.redirect('/project/participants/iqa0087')
 })
 
-router.post('/project/participants/full-participation', function (req, res) {
+router.post('/project/participants/iqa0087', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['fullyParticipate'] || !data['fullyParticipate'].trim()) {
-    addError(errors, 'fullyParticipate', 'Enter how you will ensure participants are able to participate fully')
+  if (!data['iqa0087'] || !data['iqa0087'].trim()) {
+    addError(errors, 'iqa0087', questions['iqa0087'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/participants/full-participation', errors)
+  if (errors.length) return renderWithErrors(res, 'project/participants/iqa0087', errors)
 
   if (hasOtherParticipants(data)) {
-    return res.redirect('/project/participants/other-participants')
+    return res.redirect('/project/participants/iqa0089')
   }
 
-  clear(data, ['otherParticipants'])
-  return res.redirect('/project/participants/recruitment-date')
+  clear(data, ['iqa0089'])
+  return res.redirect('/project/participants/iqa0090')
 })
 
-router.post('/project/participants/other-participants', function (req, res) {
+router.post('/project/participants/iqa0089', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['otherParticipants'] || !data['otherParticipants'].trim()) {
-    addError(errors, 'otherParticipants', 'Enter details of the other groups participating in this project')
+  if (!data['iqa0089'] || !data['iqa0089'].trim()) {
+    addError(errors, 'iqa0089', questions['iqa0089'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/participants/other-participants', errors)
+  if (errors.length) return renderWithErrors(res, 'project/participants/iqa0089', errors)
 
-  return res.redirect('/project/participants/recruitment-date')
+  return res.redirect('/project/participants/iqa0090')
 })
 
-router.post('/project/participants/recruitment-date', function (req, res) {
+router.post('/project/participants/iqa0090', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  const day = data['participantRecruitmentDate-day']
-  const month = data['participantRecruitmentDate-month']
-  const year = data['participantRecruitmentDate-year']
+  const day   = data['iqa0090-day']
+  const month = data['iqa0090-month']
+  const year  = data['iqa0090-year']
 
   if (!day || !month || !year) {
-    addError(errors, 'participantRecruitmentDate', 'Enter the planned start date for recruiting participants')
+    addError(errors, 'iqa0090', questions['iqa0090'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/participants/recruitment-date', errors)
+  if (errors.length) return renderWithErrors(res, 'project/participants/iqa0090', errors)
 
   if (!isDataOnly(data)) {
-    return res.redirect('/project/participants/how-long-involved')
+    return res.redirect('/project/participants/iqa0091')
   }
 
-  clear(data, ['howLongInvolved'])
-  return res.redirect('/project/participants/imposter-participants')
+  clear(data, ['iqa0091'])
+  return res.redirect('/project/participants/tbc007')
 })
 
-router.post('/project/participants/how-long-involved', function (req, res) {
+router.post('/project/participants/iqa0091', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['howLongInvolved'] || !data['howLongInvolved'].trim()) {
-    addError(errors, 'howLongInvolved', 'Enter how long you expect each participant to be in the project')
+  if (!data['iqa0091'] || !data['iqa0091'].trim()) {
+    addError(errors, 'iqa0091', questions['iqa0091'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/participants/how-long-involved', errors)
+  if (errors.length) return renderWithErrors(res, 'project/participants/iqa0091', errors)
 
   if (isClinicalOrTreatment(data)) {
-    return res.redirect('/project/participants/current-research')
+    return res.redirect('/project/participants/iqa0092')
   }
 
-  clear(data, ['currentResearchParticipant'])
+  clear(data, ['iqa0092'])
 
   if (isNonClinical(data)) {
-    return res.redirect('/project/participants/vulnerable-participants')
+    return res.redirect('/project/participants/iqa0093')
   }
 
-  clear(data, ['consideredVulnerable'])
-  return res.redirect('/project/participants/imposter-participants')
+  clear(data, ['iqa0093'])
+  return res.redirect('/project/participants/tbc007')
 })
 
-router.post('/project/participants/current-research', function (req, res) {
+router.post('/project/participants/iqa0092', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['currentResearchParticipant'] || !data['currentResearchParticipant'].trim()) {
-    addError(errors, 'currentResearchParticipant', 'Enter the arrangements for participants currently involved in other research')
+  if (!data['iqa0092'] || !data['iqa0092'].trim()) {
+    addError(errors, 'iqa0092', questions['iqa0092'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/participants/current-research', errors)
+  if (errors.length) return renderWithErrors(res, 'project/participants/iqa0092', errors)
 
   if (isNonClinical(data)) {
-    return res.redirect('/project/participants/vulnerable-participants')
+    return res.redirect('/project/participants/iqa0093')
   }
 
-  clear(data, ['consideredVulnerable'])
-  return res.redirect('/project/participants/imposter-participants')
+  clear(data, ['iqa0093'])
+  return res.redirect('/project/participants/tbc007')
 })
 
-router.post('/project/participants/vulnerable-participants', function (req, res) {
+router.post('/project/participants/iqa0093', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['consideredVulnerable']) {
-    addError(errors, 'consideredVulnerable', 'Select whether any potential participants could be considered vulnerable')
+  if (!data['iqa0093']) {
+    addError(errors, 'iqa0093', questions['iqa0093'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/participants/vulnerable-participants', errors)
+  if (errors.length) return renderWithErrors(res, 'project/participants/iqa0093', errors)
 
-  return res.redirect('/project/participants/imposter-participants')
+  return res.redirect('/project/participants/tbc007')
 })
 
-router.post('/project/participants/imposter-participants', function (req, res) {
+router.post('/project/participants/tbc007', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['imposterParticipant'] || !data['imposterParticipant'].trim()) {
-    addError(errors, 'imposterParticipant', 'Enter the measures being taken to address the risk of fake or imposter participants')
+  if (!data['tbc007'] || !data['tbc007'].trim()) {
+    addError(errors, 'tbc007', questions['tbc007'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/participants/imposter-participants', errors)
+  if (errors.length) return renderWithErrors(res, 'project/participants/tbc007', errors)
 
-  return res.redirect('/project/participants/check')
+  return res.redirect('/project/participants/check-participants')
 })
 
 module.exports = router

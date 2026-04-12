@@ -10,315 +10,283 @@ const {
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
+// OPT0074 = randomised controlled trial, OPT0065 = controlled trial without randomisation
 function isTrial (data) {
-  const m = asArray(data['methodologies'])
-  return m.includes('randomised_controlled_trial') ||
-    m.includes('controlled_trial_without_randomisation')
+  const m = asArray(data['iqa0049'])
+  return m.includes('OPT0074') || m.includes('OPT0065')
 }
 
+// OPT0089 = designing/developing/testing AI
 function isDesigningAI (data) {
-  return asArray(data['useAI']).includes('designing_developing_testing_ai')
+  return asArray(data['iqa03277']).includes('OPT0089')
 }
 
+// OPT0090 = using existing AI
 function isUsingExistingAI (data) {
-  return asArray(data['useAI']).includes('using_existing_ai')
+  return asArray(data['iqa03277']).includes('OPT0090')
 }
 
 // ─── Page flow ───────────────────────────────────────────────────────────────
 //
-//  /project/research-design/methodologies            methodologies (always)
-//    → if other:           /methodologies-other
-//    → if trial:           /trial-methodologies
-//    → else:               /methodologies-details
-//  /project/research-design/methodologies-other      methodologiesOther
-//    → if trial:           /trial-methodologies
-//    → else:               /methodologies-details
-//  /project/research-design/trial-methodologies      trialMethodologies
-//    → if other complex:   /trial-methodologies-other
-//    → else:               /novel-intervention
-//  /project/research-design/trial-methodologies-other  trialMethodologiesOther
-//  /project/research-design/novel-intervention       novelIntervention (if trial)
-//    → if no:              /compare-intervention
-//    → if yes:             /methodologies-details
-//  /project/research-design/compare-intervention     compareIntervention (if trial + not novel)
-//    → if no:              /gold-intervention
-//    → if yes:             /methodologies-details
-//  /project/research-design/gold-intervention        goldIntervention (if trial + not novel + not compare)
-//  /project/research-design/methodologies-details    methodologiesDetails (always)
-//  /project/research-design/research-question        researchQuestion (always)
-//  /project/research-design/use-ai                   useAI (always)
-//    → if designing:       /design-ai
-//    → if existing:        /existing-ai
-//    → if no AI:           /what-will-happen
-//  /project/research-design/design-ai                designAI
-//    → if other:           /design-ai-other
-//    → if also existing:   /existing-ai
-//    → else:               /what-will-happen
-//  /project/research-design/design-ai-other          otherAI
-//    → if also existing:   /existing-ai
-//    → else:               /what-will-happen
-//  /project/research-design/existing-ai              existingAI
-//    → if other:           /existing-ai-other
-//    → else:               /what-will-happen
-//  /project/research-design/existing-ai-other        otherExistingAI
-//  /project/research-design/what-will-happen         willHappen (always)
+//  /project/research-design/iqa0049                 Research methods (always)
+//    — iqa0050 revealed inline via revealOn when OPT0033 selected
+//    → if trial:          /iqa0051
+//    → else:              /iqa0053
+//  /project/research-design/iqa0051                 Trial methods (if trial)
+//    — iqa0052 revealed inline via revealOn when OPT0083 selected
+//  /project/research-design/iqa0054                 Novel intervention (if trial)
+//    → if no:             /iqa0055
+//    → if yes:            /iqa0053
+//  /project/research-design/iqa0055                 Compare intervention (if trial + not novel)
+//    → if no:             /iqa0056
+//    → if yes:            /iqa0053
+//  /project/research-design/iqa0056                 Gold standard intervention (if trial + not novel + not compare)
+//  /project/research-design/iqa0053                 Methodology details (always)
+//  /project/research-design/iqa0057                 Main research question (always)
+//  /project/research-design/iqa0058                 Secondary research question (always)
+//  /project/research-design/iqa03277                Does project use AI (always)
+//    → if OPT0089:        /iqa03278
+//    → if OPT0090 only:   /iqa03280
+//    → else:              /iqa0060
+//  /project/research-design/iqa03278                Design AI type (if designing AI)
+//    — iqa03279 revealed inline via revealOn when OPT0033 selected
+//    → if also using existing: /iqa03280
+//    → else:              /iqa0060
+//  /project/research-design/iqa03280                Existing AI type (if using existing AI)
+//    — iqa03281 revealed inline via revealOn when OPT0033 selected
+//  /project/research-design/iqa0060                 What will happen (always)
+//
+//  Note: iqa0058 (secondary research question) was not in the original route.
+//  It is now included between iqa0057 and iqa03277.
 
 // ─── Routes ──────────────────────────────────────────────────────────────────
 
-router.post('/project/research-design/methodologies', function (req, res) {
+router.post('/project/research-design/iqa0049', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (asArray(data['methodologies']).length === 0) {
-    addError(errors, 'methodologies', 'Select at least one methodology')
+  if (asArray(data['iqa0049']).length === 0) {
+    addError(errors, 'iqa0049', questions['iqa0049'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-design/methodologies', errors)
+  // Validate revealed field if OPT0033 (other) selected
+  if (asArray(data['iqa0049']).includes('OPT0033') &&
+    (!data['iqa0050'] || !data['iqa0050'].trim())) {
+    addError(errors, 'iqa0050', questions['iqa0050'].errorMessages.required)
+  }
 
-  // Cleanup: if not a trial, clear all trial-specific answers
+  if (errors.length) {
+    clear(data, ['iqa0050'])
+    return renderWithErrors(res, 'project/research-design/iqa0049', errors)
+  }
+
+  if (!asArray(data['iqa0049']).includes('OPT0033')) clear(data, ['iqa0050'])
+
+  // Clear trial-specific answers if not a trial
   if (!isTrial(data)) {
-    clear(data, [
-      'trialMethodologies',
-      'trialMethodologiesOther',
-      'novelIntervention',
-      'compareIntervention',
-      'goldIntervention'
-    ])
+    clear(data, ['iqa0051', 'iqa0052', 'iqa0054', 'iqa0055', 'iqa0056'])
   }
 
-  if (asArray(data['methodologies']).includes('other')) {
-    return res.redirect('/project/research-design/methodologies-other')
-  }
+  if (isTrial(data)) return res.redirect('/project/research-design/iqa0051')
 
-  if (isTrial(data)) return res.redirect('/project/research-design/trial-methodologies')
-
-  clear(data, ['methodologiesOther'])
-  return res.redirect('/project/research-design/methodologies-details')
+  return res.redirect('/project/research-design/iqa0053')
 })
 
-router.post('/project/research-design/methodologies-other', function (req, res) {
+router.post('/project/research-design/iqa0051', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['methodologiesOther'] || !data['methodologiesOther'].trim()) {
-    addError(errors, 'methodologiesOther', 'Enter details of the methodologies you will be using')
+  if (asArray(data['iqa0051']).length === 0) {
+    addError(errors, 'iqa0051', questions['iqa0051'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-design/methodologies-other', errors)
+  // Validate revealed field if OPT0083 (other complex) selected
+  if (asArray(data['iqa0051']).includes('OPT0083') &&
+    (!data['iqa0052'] || !data['iqa0052'].trim())) {
+    addError(errors, 'iqa0052', questions['iqa0052'].errorMessages.required)
+  }
 
-  if (isTrial(data)) return res.redirect('/project/research-design/trial-methodologies')
+  if (errors.length) {
+    clear(data, ['iqa0052'])
+    return renderWithErrors(res, 'project/research-design/iqa0051', errors)
+  }
 
-  return res.redirect('/project/research-design/methodologies-details')
+  if (!asArray(data['iqa0051']).includes('OPT0083')) clear(data, ['iqa0052'])
+
+  return res.redirect('/project/research-design/iqa0054')
 })
 
-router.post('/project/research-design/trial-methodologies', function (req, res) {
+router.post('/project/research-design/iqa0054', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (asArray(data['trialMethodologies']).length === 0) {
-    addError(errors, 'trialMethodologies', 'Select at least one trial methodology')
+  if (!data['iqa0054']) {
+    addError(errors, 'iqa0054', questions['iqa0054'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-design/trial-methodologies', errors)
+  if (errors.length) return renderWithErrors(res, 'project/research-design/iqa0054', errors)
 
-  if (asArray(data['trialMethodologies']).includes('other_complex_or_innovative_design')) {
-    return res.redirect('/project/research-design/trial-methodologies-other')
+  if (data['iqa0054'] === 'yes') {
+    clear(data, ['iqa0055', 'iqa0056'])
+    return res.redirect('/project/research-design/iqa0053')
   }
 
-  clear(data, ['trialMethodologiesOther'])
-  return res.redirect('/project/research-design/novel-intervention')
+  return res.redirect('/project/research-design/iqa0055')
 })
 
-router.post('/project/research-design/trial-methodologies-other', function (req, res) {
+router.post('/project/research-design/iqa0055', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['trialMethodologiesOther'] || !data['trialMethodologiesOther'].trim()) {
-    addError(errors, 'trialMethodologiesOther', 'Enter details of the other complex or innovative design')
+  if (!data['iqa0055']) {
+    addError(errors, 'iqa0055', questions['iqa0055'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-design/trial-methodologies-other', errors)
+  if (errors.length) return renderWithErrors(res, 'project/research-design/iqa0055', errors)
 
-  return res.redirect('/project/research-design/novel-intervention')
+  if (data['iqa0055'] === 'yes') {
+    clear(data, ['iqa0056'])
+    return res.redirect('/project/research-design/iqa0053')
+  }
+
+  return res.redirect('/project/research-design/iqa0056')
 })
 
-router.post('/project/research-design/novel-intervention', function (req, res) {
+router.post('/project/research-design/iqa0056', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['novelIntervention']) {
-    addError(errors, 'novelIntervention', 'Select whether this is a clinical trial to study a novel intervention')
+  if (!data['iqa0056']) {
+    addError(errors, 'iqa0056', questions['iqa0056'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-design/novel-intervention', errors)
+  if (errors.length) return renderWithErrors(res, 'project/research-design/iqa0056', errors)
 
-  if (data['novelIntervention'] === 'yes') {
-    // Novel: compare and gold not relevant
-    clear(data, ['compareIntervention', 'goldIntervention'])
-    return res.redirect('/project/research-design/methodologies-details')
-  }
-
-  return res.redirect('/project/research-design/compare-intervention')
+  return res.redirect('/project/research-design/iqa0053')
 })
 
-router.post('/project/research-design/compare-intervention', function (req, res) {
+router.post('/project/research-design/iqa0053', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['compareIntervention']) {
-    addError(errors, 'compareIntervention', 'Select whether this is a trial to compare interventions in clinical practice')
+  if (!data['iqa0053'] || !data['iqa0053'].trim()) {
+    addError(errors, 'iqa0053', questions['iqa0053'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-design/compare-intervention', errors)
+  if (errors.length) return renderWithErrors(res, 'project/research-design/iqa0053', errors)
 
-  if (data['compareIntervention'] === 'yes') {
-    clear(data, ['goldIntervention'])
-    return res.redirect('/project/research-design/methodologies-details')
-  }
-
-  return res.redirect('/project/research-design/gold-intervention')
+  return res.redirect('/project/research-design/iqa0057')
 })
 
-router.post('/project/research-design/gold-intervention', function (req, res) {
+router.post('/project/research-design/iqa0057', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['goldIntervention']) {
-    addError(errors, 'goldIntervention', 'Select whether all interventions are routine gold standard care options')
+  if (!data['iqa0057'] || !data['iqa0057'].trim()) {
+    addError(errors, 'iqa0057', questions['iqa0057'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-design/gold-intervention', errors)
+  if (errors.length) return renderWithErrors(res, 'project/research-design/iqa0057', errors)
 
-  return res.redirect('/project/research-design/methodologies-details')
+  return res.redirect('/project/research-design/iqa0058')
 })
 
-router.post('/project/research-design/methodologies-details', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['methodologiesDetails'] || !data['methodologiesDetails'].trim()) {
-    addError(errors, 'methodologiesDetails', 'Enter details of the methodologies you will be using')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/research-design/methodologies-details', errors)
-
-  return res.redirect('/project/research-design/research-question')
+// iqa0058 (secondary research question) is optional — no validation required
+router.post('/project/research-design/iqa0058', function (req, res) {
+  return res.redirect('/project/research-design/iqa03277')
 })
 
-router.post('/project/research-design/research-question', function (req, res) {
+router.post('/project/research-design/iqa03277', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['researchQuestion'] || !data['researchQuestion'].trim()) {
-    addError(errors, 'researchQuestion', 'Enter the principal research question or objective')
+  if (asArray(data['iqa03277']).length === 0) {
+    addError(errors, 'iqa03277', questions['iqa03277'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-design/research-question', errors)
+  if (errors.length) return renderWithErrors(res, 'project/research-design/iqa03277', errors)
 
-  return res.redirect('/project/research-design/use-ai')
+  if (!isDesigningAI(data))    clear(data, ['iqa03278', 'iqa03279'])
+  if (!isUsingExistingAI(data)) clear(data, ['iqa03280', 'iqa03281'])
+
+  if (isDesigningAI(data))     return res.redirect('/project/research-design/iqa03278')
+  if (isUsingExistingAI(data)) return res.redirect('/project/research-design/iqa03280')
+
+  return res.redirect('/project/research-design/iqa0060')
 })
 
-router.post('/project/research-design/use-ai', function (req, res) {
+router.post('/project/research-design/iqa03278', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (asArray(data['useAI']).length === 0) {
-    addError(errors, 'useAI', 'Select at least one option')
+  if (asArray(data['iqa03278']).length === 0) {
+    addError(errors, 'iqa03278', questions['iqa03278'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-design/use-ai', errors)
+  // Validate revealed field if OPT0033 (other) selected
+  if (asArray(data['iqa03278']).includes('OPT0033') &&
+    (!data['iqa03279'] || !data['iqa03279'].trim())) {
+    addError(errors, 'iqa03279', questions['iqa03279'].errorMessages.required)
+  }
 
-  // Cleanup: if not designing AI, clear design answers
-  if (!isDesigningAI(data)) clear(data, ['designAI', 'otherAI'])
+  if (errors.length) {
+    clear(data, ['iqa03279'])
+    return renderWithErrors(res, 'project/research-design/iqa03278', errors)
+  }
 
-  // Cleanup: if not using existing AI, clear existing answers
-  if (!isUsingExistingAI(data)) clear(data, ['existingAI', 'otherExistingAI'])
+  if (!asArray(data['iqa03278']).includes('OPT0033')) clear(data, ['iqa03279'])
 
-  if (isDesigningAI(data)) return res.redirect('/project/research-design/design-ai')
+  if (isUsingExistingAI(data)) return res.redirect('/project/research-design/iqa03280')
 
-  if (isUsingExistingAI(data)) return res.redirect('/project/research-design/existing-ai')
-
-  return res.redirect('/project/research-design/what-will-happen')
+  return res.redirect('/project/research-design/iqa0060')
 })
 
-router.post('/project/research-design/design-ai', function (req, res) {
+router.post('/project/research-design/iqa03280', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (asArray(data['designAI']).length === 0) {
-    addError(errors, 'designAI', 'Select at least one type of AI')
+  if (asArray(data['iqa03280']).length === 0) {
+    addError(errors, 'iqa03280', questions['iqa03280'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-design/design-ai', errors)
-
-  if (asArray(data['designAI']).includes('other')) {
-    return res.redirect('/project/research-design/design-ai-other')
+  // Validate revealed field if OPT0033 (other) selected
+  if (asArray(data['iqa03280']).includes('OPT0033') &&
+    (!data['iqa03281'] || !data['iqa03281'].trim())) {
+    addError(errors, 'iqa03281', questions['iqa03281'].errorMessages.required)
   }
 
-  clear(data, ['otherAI'])
+  if (errors.length) {
+    clear(data, ['iqa03281'])
+    return renderWithErrors(res, 'project/research-design/iqa03280', errors)
+  }
 
-  if (isUsingExistingAI(data)) return res.redirect('/project/research-design/existing-ai')
+  if (!asArray(data['iqa03280']).includes('OPT0033')) clear(data, ['iqa03281'])
 
-  return res.redirect('/project/research-design/what-will-happen')
+  return res.redirect('/project/research-design/iqa0060')
 })
 
-router.post('/project/research-design/design-ai-other', function (req, res) {
+router.post('/project/research-design/iqa0060', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['otherAI'] || !data['otherAI'].trim()) {
-    addError(errors, 'otherAI', 'Enter a description of the type of AI being used')
+  if (!data['iqa0060'] || !data['iqa0060'].trim()) {
+    addError(errors, 'iqa0060', questions['iqa0060'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-design/design-ai-other', errors)
+  if (errors.length) return renderWithErrors(res, 'project/research-design/iqa0060', errors)
 
-  if (isUsingExistingAI(data)) return res.redirect('/project/research-design/existing-ai')
-
-  return res.redirect('/project/research-design/what-will-happen')
-})
-
-router.post('/project/research-design/existing-ai', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (asArray(data['existingAI']).length === 0) {
-    addError(errors, 'existingAI', 'Select at least one type of AI')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/research-design/existing-ai', errors)
-
-  if (asArray(data['existingAI']).includes('other')) {
-    return res.redirect('/project/research-design/existing-ai-other')
-  }
-
-  clear(data, ['otherExistingAI'])
-  return res.redirect('/project/research-design/what-will-happen')
-})
-
-router.post('/project/research-design/existing-ai-other', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['otherExistingAI'] || !data['otherExistingAI'].trim()) {
-    addError(errors, 'otherExistingAI', 'Enter a description of the type of AI being used')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/research-design/existing-ai-other', errors)
-
-  return res.redirect('/project/research-design/what-will-happen')
-})
-
-router.post('/project/research-design/what-will-happen', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['willHappen'] || !data['willHappen'].trim()) {
-    addError(errors, 'willHappen', 'Enter what will happen to participants, their tissue or data')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/research-design/what-will-happen', errors)
-
-  return res.redirect('/project/research-design/check')
+  return res.redirect('/project/research-design/check-research-design')
 })
 
 module.exports = router

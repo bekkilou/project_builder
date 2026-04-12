@@ -28,247 +28,255 @@ function isMultiNational (data) {
   return data['UKOrMultiNation'] === 'multi_national'
 }
 
+// OPT0253 = 'No deferral requested' for both iqa0165 and iqa0173
 function deferralRequested (field, data) {
-  const val = data[field] || ''
-  return val.startsWith('deferral_')
+  return data[field] && data[field] !== 'OPT0253'
 }
 
 function disseminateOther (data) {
-  return asArray(data['DisseminateResults']).includes('other')
+  return asArray(data['iqa0176']).includes('OPT0033')
 }
 
 // ─── Page flow ───────────────────────────────────────────────────────────────
 //
-//  /project/transparency/already-registered          alreadyRegistered (always)
-//  /project/transparency/request-deferral            requestDeferral (if CTIMP)
-//    → if deferral requested: /justify-deferral
-//    → else:                  /reg-arrangements (if not treatment + registered) or next
-//  /project/transparency/justify-deferral            justifyDeferral
-//  /project/transparency/reg-arrangements            regArrangements (if not treatment AND already registered)
-//    → if other:   /reg-arrangements-other
-//    → else:       /ctimp-reg-arrangements (if CTIMP) or publication-deferral
-//  /project/transparency/reg-arrangements-other      regArrangementsOther
-//  /project/transparency/ctimp-reg-arrangements      CTIMPRegArrangements (if CTIMP)
-//    — sub-inputs for ISRCTN/ClinTrials/Other refs handled on same page
-//  /project/transparency/publication-deferral        publicationRequestDeferral (always)
-//    → if deferral: /justify-publication-deferral
-//    → else:        /planned-end-date
-//  /project/transparency/justify-publication-deferral  justifyPublicationDeferral
-//  /project/transparency/planned-end-date            plannedEndDate (always)
+//  /project/transparency/iqa0169                     Is the project already registered?  (always)
+//  /project/transparency/iqa0165                     Deferral request (if CTIMP)
+//    → if deferral requested: /iqa0166
+//    → else:                  /reg-arrangements-next
+//  /project/transparency/iqa0166                     Justify deferral
+//  /project/transparency/iqa0167                     Registration arrangements (if not treatment AND already registered)
+//    → if OPT0257 (other):   /iqa0168
+//    → else:                 /iqa0169b (if CTIMP) or /iqa0173
+//  /project/transparency/iqa0168                     Other registration arrangements
+//  /project/transparency/iqa0169b                    CTIMP registry type (if CTIMP)
+//    — sub-inputs: iqa0170, iqa0171, iqa0172
+//  /project/transparency/iqa0173                     Publication deferral (always)
+//    → if deferral: /iqa0174
+//    → else:        /iqa0175
+//  /project/transparency/iqa0174                     Justify publication deferral
+//  /project/transparency/iqa0175                     Planned end date (always)
 //  /project/transparency/planned-end-date-multi      plannedEndDateMulti (if multi-national)
-//  /project/transparency/disseminate-results         DisseminateResults (always)
-//    → if other:   /disseminate-results-other
-//    → else:       /participant-results
-//  /project/transparency/disseminate-results-other   otherDisseminateResults
-//  /project/transparency/participant-results         participantResults (always)
-//  /project/transparency/share-de-identified         shareDeIdentified (always)
-//  /project/transparency/share-de-identified-details shareDeIdentifiedDetails (always)
-//  /project/transparency/remaining-bio-material      remainingBioMaterial (if bio resource)
-//    → if yes: /register-bio-material
+//  /project/transparency/iqa0176                     Disseminate results (always)
+//    → if OPT0033 (other):  /iqa0177
+//    → else:                /iqa0178
+//  /project/transparency/iqa0177                     Other dissemination details
+//  /project/transparency/iqa0178                     Participant results (always)
+//  /project/transparency/iqa0179                     Share de-identified data (always)
+//  /project/transparency/iqa0180                     De-identified data details (always)
+//  /project/transparency/iqa0181                     Remaining bio material (if bio resource)
+//    → if yes: /iqa0182
 //    → if no:  /public-contact
-//  /project/transparency/register-bio-material       registerBioMaterial
-//    → if no: /register-bio-material-no
+//  /project/transparency/iqa0182                     Register bio material
+//    → if no:  /iqa0183
 //    → if yes: /public-contact
-//  /project/transparency/register-bio-material-no    registerBioMaterialNo
-//  /project/transparency/public-contact              publicEmail + publicPhoneNumber + address (always)
-//  /project/transparency/scientific-contact          scientificEmail + scientificPhoneNumber + address (always)
+//  /project/transparency/iqa0183                     Justify not registering bio material
+//  /project/transparency/public-contact              (always)
+//  /project/transparency/scientific-contact          (always)
 
 // ─── Routes ──────────────────────────────────────────────────────────────────
 
-router.post('/project/transparency/already-registered', function (req, res) {
+router.post('/project/transparency/iqa0169', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['alreadyRegistered']) {
-    addError(errors, 'alreadyRegistered', 'Select whether the project is already registered elsewhere')
+  if (!data['iqa0169']) {
+    addError(errors, 'iqa0169', questions['iqa0169'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/transparency/already-registered', errors)
+  if (errors.length) return renderWithErrors(res, 'project/transparency/iqa0169', errors)
 
-  if (isCTIMP(data)) return res.redirect('/project/transparency/request-deferral')
+  if (isCTIMP(data)) return res.redirect('/project/transparency/iqa0165')
 
-  clear(data, ['requestDeferral', 'justifyDeferral'])
+  clear(data, ['iqa0165', 'iqa0166'])
   return res.redirect('/project/transparency/reg-arrangements-next')
 })
 
-router.post('/project/transparency/request-deferral', function (req, res) {
+router.post('/project/transparency/iqa0165', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['requestDeferral']) {
-    addError(errors, 'requestDeferral', 'Select your deferral request option')
+  if (!data['iqa0165']) {
+    addError(errors, 'iqa0165', questions['iqa0165'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/transparency/request-deferral', errors)
+  if (errors.length) return renderWithErrors(res, 'project/transparency/iqa0165', errors)
 
-  if (deferralRequested('requestDeferral', data)) {
-    return res.redirect('/project/transparency/justify-deferral')
+  if (deferralRequested('iqa0165', data)) {
+    return res.redirect('/project/transparency/iqa0166')
   }
 
-  clear(data, ['justifyDeferral'])
+  clear(data, ['iqa0166'])
   return res.redirect('/project/transparency/reg-arrangements-next')
 })
 
-router.post('/project/transparency/justify-deferral', function (req, res) {
+router.post('/project/transparency/iqa0166', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['justifyDeferral'] || !data['justifyDeferral'].trim()) {
-    addError(errors, 'justifyDeferral', 'Enter a justification for the deferral request')
+  if (!data['iqa0166'] || !data['iqa0166'].trim()) {
+    addError(errors, 'iqa0166', questions['iqa0166'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/transparency/justify-deferral', errors)
+  if (errors.length) return renderWithErrors(res, 'project/transparency/iqa0166', errors)
 
   return res.redirect('/project/transparency/reg-arrangements-next')
 })
 
-// Internal redirect — reg-arrangements only shown when not treatment AND already registered
+// Internal redirect — iqa0167 only shown when not treatment AND already registered
 router.get('/project/transparency/reg-arrangements-next', function (req, res) {
   const data = req.session.data
 
-  if (!hasTreatment(data) && data['alreadyRegistered'] === 'yes') {
-    return res.redirect('/project/transparency/reg-arrangements')
+  if (!hasTreatment(data) && data['iqa0169'] === 'yes') {
+    return res.redirect('/project/transparency/iqa0167')
   }
 
-  clear(data, ['regArrangements', 'regArrangementsOther'])
+  clear(data, ['iqa0167', 'iqa0168'])
 
-  if (isCTIMP(data)) return res.redirect('/project/transparency/ctimp-reg-arrangements')
+  if (isCTIMP(data)) return res.redirect('/project/transparency/iqa0169b')
 
-  clear(data, ['CTIMPRegArrangements'])
-  return res.redirect('/project/transparency/publication-deferral')
+  clear(data, ['iqa0169b', 'iqa0170', 'iqa0171', 'iqa0172'])
+  return res.redirect('/project/transparency/iqa0173')
 })
 
-router.post('/project/transparency/reg-arrangements', function (req, res) {
+router.post('/project/transparency/iqa0167', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (asArray(data['regArrangements']).length === 0) {
-    addError(errors, 'regArrangements', 'Select at least one registration arrangement')
+  if (asArray(data['iqa0167']).length === 0) {
+    addError(errors, 'iqa0167', questions['iqa0167'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/transparency/reg-arrangements', errors)
+  if (errors.length) return renderWithErrors(res, 'project/transparency/iqa0167', errors)
 
-  if (asArray(data['regArrangements']).includes('other')) {
-    return res.redirect('/project/transparency/reg-arrangements-other')
+  // OPT0257 = 'Other arrangements are in place'
+  if (asArray(data['iqa0167']).includes('OPT0257')) {
+    return res.redirect('/project/transparency/iqa0168')
   }
 
-  clear(data, ['regArrangementsOther'])
+  clear(data, ['iqa0168'])
 
-  if (isCTIMP(data)) return res.redirect('/project/transparency/ctimp-reg-arrangements')
+  if (isCTIMP(data)) return res.redirect('/project/transparency/iqa0169b')
 
-  clear(data, ['CTIMPRegArrangements'])
-  return res.redirect('/project/transparency/publication-deferral')
+  clear(data, ['iqa0169b', 'iqa0170', 'iqa0171', 'iqa0172'])
+  return res.redirect('/project/transparency/iqa0173')
 })
 
-router.post('/project/transparency/reg-arrangements-other', function (req, res) {
+router.post('/project/transparency/iqa0168', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['regArrangementsOther'] || !data['regArrangementsOther'].trim()) {
-    addError(errors, 'regArrangementsOther', 'Enter details of other arrangements for project registration')
+  if (!data['iqa0168'] || !data['iqa0168'].trim()) {
+    addError(errors, 'iqa0168', questions['iqa0168'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/transparency/reg-arrangements-other', errors)
+  if (errors.length) return renderWithErrors(res, 'project/transparency/iqa0168', errors)
 
-  if (isCTIMP(data)) return res.redirect('/project/transparency/ctimp-reg-arrangements')
+  if (isCTIMP(data)) return res.redirect('/project/transparency/iqa0169b')
 
-  clear(data, ['CTIMPRegArrangements'])
-  return res.redirect('/project/transparency/publication-deferral')
+  clear(data, ['iqa0169b', 'iqa0170', 'iqa0171', 'iqa0172'])
+  return res.redirect('/project/transparency/iqa0173')
 })
 
-// CTIMP reg arrangements — includes sub-inputs for reference numbers on the same page
-router.post('/project/transparency/ctimp-reg-arrangements', function (req, res) {
+router.post('/project/transparency/iqa0169b', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (asArray(data['CTIMPRegArrangements']).length === 0) {
-    addError(errors, 'CTIMPRegArrangements', 'Select at least one registration arrangement')
+  if (asArray(data['iqa0169b']).length === 0) {
+    addError(errors, 'iqa0169b', questions['iqa0169b'].errorMessages.required)
   }
 
-  // Validate sub-inputs: if ISRCTN selected, reference must be provided
-  if (asArray(data['CTIMPRegArrangements']).includes('ISRCTN') &&
-    (!data['ISRCTNReference'] || !data['ISRCTNReference'].trim())) {
-    addError(errors, 'ISRCTNReference', 'Enter the ISRCTN reference number')
+  if (asArray(data['iqa0169b']).includes('OPT0258') &&
+    (!data['iqa0170'] || !data['iqa0170'].trim())) {
+    addError(errors, 'iqa0170', questions['iqa0170'].errorMessages.required)
   }
 
-  if (asArray(data['CTIMPRegArrangements']).includes('clinicaltrials') &&
-    (!data['clinGovReference'] || !data['clinGovReference'].trim())) {
-    addError(errors, 'clinGovReference', 'Enter the Clinicaltrials.gov reference number')
+  if (asArray(data['iqa0169b']).includes('OPT0259') &&
+    (!data['iqa0171'] || !data['iqa0171'].trim())) {
+    addError(errors, 'iqa0171', questions['iqa0171'].errorMessages.required)
   }
 
-  if (asArray(data['CTIMPRegArrangements']).includes('other') &&
-    (!data['otherReference'] || !data['otherReference'].trim())) {
-    addError(errors, 'otherReference', 'Enter the name and reference number of the other registry')
+  if (asArray(data['iqa0169b']).includes('OPT0033') &&
+    (!data['iqa0172'] || !data['iqa0172'].trim())) {
+    addError(errors, 'iqa0172', questions['iqa0172'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/transparency/ctimp-reg-arrangements', errors)
+  if (errors.length) return renderWithErrors(res, 'project/transparency/iqa0169b', errors)
 
-  // Cleanup: clear reference fields for deselected options
-  if (!asArray(data['CTIMPRegArrangements']).includes('ISRCTN')) clear(data, ['ISRCTNReference'])
-  if (!asArray(data['CTIMPRegArrangements']).includes('clinicaltrials')) clear(data, ['clinGovReference'])
-  if (!asArray(data['CTIMPRegArrangements']).includes('other')) clear(data, ['otherReference'])
+  if (!asArray(data['iqa0169b']).includes('OPT0258')) clear(data, ['iqa0170'])
+  if (!asArray(data['iqa0169b']).includes('OPT0259')) clear(data, ['iqa0171'])
+  if (!asArray(data['iqa0169b']).includes('OPT0033')) clear(data, ['iqa0172'])
 
-  return res.redirect('/project/transparency/publication-deferral')
+  return res.redirect('/project/transparency/iqa0173')
 })
 
-router.post('/project/transparency/publication-deferral', function (req, res) {
+router.post('/project/transparency/iqa0173', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['publicationRequestDeferral']) {
-    addError(errors, 'publicationRequestDeferral', 'Select your publication deferral request option')
+  if (!data['iqa0173']) {
+    addError(errors, 'iqa0173', questions['iqa0173'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/transparency/publication-deferral', errors)
+  if (errors.length) return renderWithErrors(res, 'project/transparency/iqa0173', errors)
 
-  if (deferralRequested('publicationRequestDeferral', data)) {
-    return res.redirect('/project/transparency/justify-publication-deferral')
+  if (deferralRequested('iqa0173', data)) {
+    return res.redirect('/project/transparency/iqa0174')
   }
 
-  clear(data, ['justifyPublicationDeferral'])
-  return res.redirect('/project/transparency/planned-end-date')
+  clear(data, ['iqa0174'])
+  return res.redirect('/project/transparency/iqa0175')
 })
 
-router.post('/project/transparency/justify-publication-deferral', function (req, res) {
+router.post('/project/transparency/iqa0174', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['justifyPublicationDeferral'] || !data['justifyPublicationDeferral'].trim()) {
-    addError(errors, 'justifyPublicationDeferral', 'Enter a justification for the publication deferral request')
+  if (!data['iqa0174'] || !data['iqa0174'].trim()) {
+    addError(errors, 'iqa0174', questions['iqa0174'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/transparency/justify-publication-deferral', errors)
+  if (errors.length) return renderWithErrors(res, 'project/transparency/iqa0174', errors)
 
-  return res.redirect('/project/transparency/planned-end-date')
+  return res.redirect('/project/transparency/iqa0175')
 })
 
-router.post('/project/transparency/planned-end-date', function (req, res) {
+router.post('/project/transparency/iqa0175', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  const day = data['plannedEndDate-day']
-  const month = data['plannedEndDate-month']
-  const year = data['plannedEndDate-year']
+  const day   = data['iqa0175-day']
+  const month = data['iqa0175-month']
+  const year  = data['iqa0175-year']
 
   if (!day || !month || !year) {
-    addError(errors, 'plannedEndDate', 'Enter the planned end date')
+    addError(errors, 'iqa0175', questions['iqa0175'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/transparency/planned-end-date', errors)
+  if (errors.length) return renderWithErrors(res, 'project/transparency/iqa0175', errors)
 
   if (isMultiNational(data)) return res.redirect('/project/transparency/planned-end-date-multi')
 
   clear(data, ['plannedEndDateMulti'])
-  return res.redirect('/project/transparency/disseminate-results')
+  return res.redirect('/project/transparency/iqa0176')
 })
 
+// plannedEndDateMulti has no IQA ID yet — keeping descriptive path until assigned
 router.post('/project/transparency/planned-end-date-multi', function (req, res) {
   const data = req.session.data
   const errors = []
 
-  const day = data['plannedEndDateMulti-day']
+  const day   = data['plannedEndDateMulti-day']
   const month = data['plannedEndDateMulti-month']
-  const year = data['plannedEndDateMulti-year']
+  const year  = data['plannedEndDateMulti-year']
 
   if (!day || !month || !year) {
     addError(errors, 'plannedEndDateMulti', 'Enter the planned global study end date')
@@ -276,176 +284,168 @@ router.post('/project/transparency/planned-end-date-multi', function (req, res) 
 
   if (errors.length) return renderWithErrors(res, 'project/transparency/planned-end-date-multi', errors)
 
-  return res.redirect('/project/transparency/disseminate-results')
+  return res.redirect('/project/transparency/iqa0176')
 })
 
-router.post('/project/transparency/disseminate-results', function (req, res) {
+router.post('/project/transparency/iqa0176', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (asArray(data['DisseminateResults']).length === 0) {
-    addError(errors, 'DisseminateResults', 'Select at least one option for reporting and disseminating results')
+  if (asArray(data['iqa0176']).length === 0) {
+    addError(errors, 'iqa0176', questions['iqa0176'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/transparency/disseminate-results', errors)
+  if (errors.length) return renderWithErrors(res, 'project/transparency/iqa0176', errors)
 
   if (disseminateOther(data)) {
-    return res.redirect('/project/transparency/disseminate-results-other')
+    return res.redirect('/project/transparency/iqa0177')
   }
 
-  clear(data, ['otherDisseminateResults'])
-  return res.redirect('/project/transparency/participant-results')
+  clear(data, ['iqa0177'])
+  return res.redirect('/project/transparency/iqa0178')
 })
 
-router.post('/project/transparency/disseminate-results-other', function (req, res) {
+router.post('/project/transparency/iqa0177', function (req, res) {
+  const data = req.session.data
+  const questions = res.locals.questions
+  const errors = []
+
+  if (!data['iqa0177'] || !data['iqa0177'].trim()) {
+    addError(errors, 'iqa0177', questions['iqa0177'].errorMessages.required)
+  }
+
+  if (errors.length) return renderWithErrors(res, 'project/transparency/iqa0177', errors)
+
+  return res.redirect('/project/transparency/iqa0178')
+})
+
+router.post('/project/transparency/iqa0178', function (req, res) {
+  const data = req.session.data
+  const questions = res.locals.questions
+  const errors = []
+
+  if (!data['iqa0178'] || !data['iqa0178'].trim()) {
+    addError(errors, 'iqa0178', questions['iqa0178'].errorMessages.required)
+  }
+
+  if (errors.length) return renderWithErrors(res, 'project/transparency/iqa0178', errors)
+
+  return res.redirect('/project/transparency/iqa0179')
+})
+
+router.post('/project/transparency/iqa0179', function (req, res) {
+  const data = req.session.data
+  const questions = res.locals.questions
+  const errors = []
+
+  if (!data['iqa0179']) {
+    addError(errors, 'iqa0179', questions['iqa0179'].errorMessages.required)
+  }
+
+  if (errors.length) return renderWithErrors(res, 'project/transparency/iqa0179', errors)
+
+  return res.redirect('/project/transparency/iqa0180')
+})
+
+router.post('/project/transparency/iqa0180', function (req, res) {
+  const data = req.session.data
+  const questions = res.locals.questions
+  const errors = []
+
+  if (!data['iqa0180'] || !data['iqa0180'].trim()) {
+    addError(errors, 'iqa0180', questions['iqa0180'].errorMessages.required)
+  }
+
+  if (errors.length) return renderWithErrors(res, 'project/transparency/iqa0180', errors)
+
+  if (hasBioResource(data)) return res.redirect('/project/transparency/iqa0181')
+
+  clear(data, ['iqa0181', 'iqa0182', 'iqa0183'])
+  return res.redirect('/project/transparency/check-transparency')
+})
+
+router.post('/project/transparency/iqa0181', function (req, res) {
+  const data = req.session.data
+  const questions = res.locals.questions
+  const errors = []
+
+  if (!data['iqa0181']) {
+    addError(errors, 'iqa0181', questions['iqa0181'].errorMessages.required)
+  }
+
+  if (errors.length) return renderWithErrors(res, 'project/transparency/iqa0181', errors)
+
+  if (data['iqa0181'] === 'yes') {
+    return res.redirect('/project/transparency/iqa0182')
+  }
+
+  clear(data, ['iqa0182', 'iqa0183'])
+  return res.redirect('/project/transparency/check-transparency')
+})
+
+router.post('/project/transparency/iqa0182', function (req, res) {
+  const data = req.session.data
+  const questions = res.locals.questions
+  const errors = []
+
+  if (!data['iqa0182']) {
+    addError(errors, 'iqa0182', questions['iqa0182'].errorMessages.required)
+  }
+
+  if (errors.length) return renderWithErrors(res, 'project/transparency/iqa0182', errors)
+
+  if (data['iqa0182'] === 'no') {
+    return res.redirect('/project/transparency/iqa0183')
+  }
+
+  clear(data, ['iqa0183'])
+  return res.redirect('/project/transparency/check-transparency')
+})
+
+router.post('/project/transparency/iqa0183', function (req, res) {
+  const data = req.session.data
+  const questions = res.locals.questions
+  const errors = []
+
+  if (!data['iqa0183'] || !data['iqa0183'].trim()) {
+    addError(errors, 'iqa0183', questions['iqa0183'].errorMessages.required)
+  }
+
+  if (errors.length) return renderWithErrors(res, 'project/transparency/iqa0183', errors)
+
+  return res.redirect('/project/transparency/check-transparency')
+})
+
+// public-contact and scientific-contact keep descriptive paths as they
+// cover multiple fields not yet assigned individual IQA IDs
+router.post('/project/transparency/check-transparency', function (req, res) {
   const data = req.session.data
   const errors = []
 
-  if (!data['otherDisseminateResults'] || !data['otherDisseminateResults'].trim()) {
-    addError(errors, 'otherDisseminateResults', 'Enter details of other reporting and dissemination plans')
+  if (!data['iqa0185'] || !data['iqa0185'].trim()) {
+    addError(errors, 'iqa0185', 'Enter a public contact email address')
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/transparency/disseminate-results-other', errors)
-
-  return res.redirect('/project/transparency/participant-results')
-})
-
-router.post('/project/transparency/participant-results', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['participantResults'] || !data['participantResults'].trim()) {
-    addError(errors, 'participantResults', 'Enter how and when you will inform participants of the results')
+  if (!data['iqa0187'] || !data['iqa0187'].trim()) {
+    addError(errors, 'iqa0187', 'Enter a postal address for the public contact')
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/transparency/participant-results', errors)
-
-  return res.redirect('/project/transparency/share-de-identified')
-})
-
-router.post('/project/transparency/share-de-identified', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['shareDeIdentified']) {
-    addError(errors, 'shareDeIdentified', 'Select whether you plan to share de-identified individual participant-level data')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/transparency/share-de-identified', errors)
-
-  return res.redirect('/project/transparency/share-de-identified-details')
-})
-
-router.post('/project/transparency/share-de-identified-details', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['shareDeIdentifiedDetails'] || !data['shareDeIdentifiedDetails'].trim()) {
-    addError(errors, 'shareDeIdentifiedDetails', 'Enter details of your plans for sharing de-identified data or your alternative arrangements')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/transparency/share-de-identified-details', errors)
-
-  if (hasBioResource(data)) return res.redirect('/project/transparency/remaining-bio-material')
-
-  clear(data, ['remainingBioMaterial', 'registerBioMaterial', 'registerBioMaterialNo'])
-  return res.redirect('/project/transparency/public-contact')
-})
-
-router.post('/project/transparency/remaining-bio-material', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['remainingBioMaterial']) {
-    addError(errors, 'remainingBioMaterial', 'Select whether you will have any remaining human biological material at the end of the project')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/transparency/remaining-bio-material', errors)
-
-  if (data['remainingBioMaterial'] === 'yes') {
-    return res.redirect('/project/transparency/register-bio-material')
-  }
-
-  clear(data, ['registerBioMaterial', 'registerBioMaterialNo'])
-  return res.redirect('/project/transparency/public-contact')
-})
-
-router.post('/project/transparency/register-bio-material', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['registerBioMaterial']) {
-    addError(errors, 'registerBioMaterial', 'Select whether you will register remaining samples with the UKCRC Tissue Directory')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/transparency/register-bio-material', errors)
-
-  if (data['registerBioMaterial'] === 'no') {
-    return res.redirect('/project/transparency/register-bio-material-no')
-  }
-
-  clear(data, ['registerBioMaterialNo'])
-  return res.redirect('/project/transparency/public-contact')
-})
-
-router.post('/project/transparency/register-bio-material-no', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['registerBioMaterialNo'] || !data['registerBioMaterialNo'].trim()) {
-    addError(errors, 'registerBioMaterialNo', 'Enter a justification for the post-study arrangements or destruction of the material')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/transparency/register-bio-material-no', errors)
-
-  return res.redirect('/project/transparency/public-contact')
-})
-
-// Public contact — email, phone, and address on one page
-router.post('/project/transparency/public-contact', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['publicEmail'] || !data['publicEmail'].trim()) {
-    addError(errors, 'publicEmail', 'Enter a public contact email address')
-  }
-
-  if (!data['publicAddressLine1'] || !data['publicAddressLine1'].trim()) {
-    addError(errors, 'publicAddressLine1', 'Enter address line 1 for the public contact')
-  }
-
-  if (!data['publicAddressTown'] || !data['publicAddressTown'].trim()) {
-    addError(errors, 'publicAddressTown', 'Enter a town or city for the public contact')
-  }
-
-  if (!data['publicAddressPostcode'] || !data['publicAddressPostcode'].trim()) {
-    addError(errors, 'publicAddressPostcode', 'Enter a postcode for the public contact')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/transparency/public-contact', errors)
+  if (errors.length) return renderWithErrors(res, 'project/transparency/check-transparency', errors)
 
   return res.redirect('/project/transparency/scientific-contact')
 })
 
-// Scientific contact — email, phone, and address on one page
 router.post('/project/transparency/scientific-contact', function (req, res) {
   const data = req.session.data
   const errors = []
 
-  if (!data['scientificEmail'] || !data['scientificEmail'].trim()) {
-    addError(errors, 'scientificEmail', 'Enter a scientific contact email address')
+  if (!data['iqa0189'] || !data['iqa0189'].trim()) {
+    addError(errors, 'iqa0189', 'Enter a scientific contact email address')
   }
 
-  if (!data['scientificAddressLine1'] || !data['scientificAddressLine1'].trim()) {
-    addError(errors, 'scientificAddressLine1', 'Enter address line 1 for the scientific contact')
-  }
-
-  if (!data['scientificAddressTown'] || !data['scientificAddressTown'].trim()) {
-    addError(errors, 'scientificAddressTown', 'Enter a town or city for the scientific contact')
-  }
-
-  if (!data['scientificAddressPostcode'] || !data['scientificAddressPostcode'].trim()) {
-    addError(errors, 'scientificAddressPostcode', 'Enter a postcode for the scientific contact')
+  if (!data['iqa0191'] || !data['iqa0191'].trim()) {
+    addError(errors, 'iqa0191', 'Enter a postal address for the scientific contact')
   }
 
   if (errors.length) return renderWithErrors(res, 'project/transparency/scientific-contact', errors)

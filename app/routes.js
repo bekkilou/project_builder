@@ -15,7 +15,6 @@ const resAnaQuestions = require('./data/research-analysis-questions')
 const governQuestions = require('./data/governance-questions')
 const transpQuestions = require('./data/transparency-questions')
 const confiQuestions = require('./data/confidentiality-questions')
-
 const adminSubQuestions = require('./data/ionising/administration-substances-questions.js')
 const ioBookingQuestions = require('./data/ionising/booking-questions.js')
 const creQuestions = require('./data/ionising/cre-questions.js')

@@ -32,296 +32,276 @@ function hasNHSPatients (data) {
     asArray(data['participantGroups']).includes('care_home_residents')
 }
 
-// The "comparing standard" path is skipped if novelIntervention or compareIntervention/goldIntervention == yes
-function isComparingStandard (data) {
-  return data['compareStandard'] === 'no' &&
-    data['novelIntervention'] !== 'yes' &&
-    data['compareIntervention'] !== 'yes'
-}
-
 // ─── Page flow ───────────────────────────────────────────────────────────────
 //
-//  /project/research-activities/intervention-description   interventionDescription (if clinical/treatment)
-//  /project/research-activities/first-in-human            firstInHuman (if CTIMP)
-//  /project/research-activities/delay-treatment           delayTreatment (if NHS patients + clinical/treatment)
-//  /project/research-activities/compare-standard          compareStandard (if treatment)
-//    → if no:  /change-in-standard-care
-//    → if yes: /questionnaire-type (or next appropriate)
-//  /project/research-activities/change-in-standard-care   changeInStandardCare
-//  /project/research-activities/questionnaire-type        questionnaireType (if non-clinical interviews)
-//  /project/research-activities/sensitive-topic           sensitiveTopic (if non-clinical interviews)
-//  /project/research-activities/serious-disclosure        seriousDisclosure (if non-clinical interviews)
-//    → if yes: /serious-disclosure-details
-//    → if no:  /society-benefits
-//  /project/research-activities/serious-disclosure-details  seriousDisclosureDetails
-//  /project/research-activities/society-benefits           societyBenefits (always)
-//  /project/research-activities/side-effects              sideEffects (if clinical/treatment)
-//  /project/research-activities/risk-delay-treatment      riskDelayTreatment (if delayTreatment == yes)
-//  /project/research-activities/risk-sensitive-topic      riskSensitiveTreatment (if sensitiveTopic == yes)
-//  /project/research-activities/inform-gp                 informGP (if treatment)
-//    → if yes: /when-inform-gp
-//    → if no:  /continue-treatment
-//  /project/research-activities/when-inform-gp            whenInformGP
-//  /project/research-activities/continue-treatment        continueTreatment (if treatment)
-//    → yes:    /continue-treatment-yes
-//    → no:     /continue-treatment-no
-//  /project/research-activities/continue-treatment-yes    continueTreatmentYes
-//  /project/research-activities/continue-treatment-no     continueTreatmentNo
-//  /project/research-activities/finish-data-collection    finishDataCollection (always)
+//  /project/research-activities/iqa0062                Intervention description (if clinical/treatment)
+//  /project/research-activities/iqa0063                First-in-human (if CTIMP)
+//  /project/research-activities/iqa0064                Delay treatment (if NHS patients + clinical/treatment)
+//  /project/research-activities/iqa0065                Compare standard (if treatment)
+//    — iqa0066 revealed inline via revealOn when 'no' selected
+//  /project/research-activities/iqa03273               Questionnaire type (if non-clinical interviews)
+//  /project/research-activities/iqa0068                Sensitive topic (if non-clinical interviews)
+//  /project/research-activities/iqa0070                Serious disclosure (if non-clinical interviews)
+//    — iqa0071 revealed inline via revealOn when 'yes' selected
+//  /project/research-activities/iqa0072                Society benefits (always)
+//  /project/research-activities/iqa0074                Side effects (if clinical/treatment)
+//  /project/research-activities/iqa0075                Risk delay treatment (if iqa0064 == yes)
+//  /project/research-activities/iqa0076                Risk sensitive topic (if iqa0068 == yes)
+//  /project/research-activities/iqa0077                Inform GP (if treatment)
+//    — iqa0078 revealed inline via revealOn when 'yes' selected
+//  /project/research-activities/iqa0079                Continue treatment (if treatment)
+//    — iqa0080 / iqa0081 revealed inline via revealOn
+//  /project/research-activities/iqa0082                Finish data collection (always)
+//
+//  Note: iqa0073 (safety handling) is in the questions file but was not
+//  in the original route. Add a page and handler here when ready.
 
 // ─── Routes ──────────────────────────────────────────────────────────────────
 
-// Decide where to start — the first page shown varies by scoping answers
-//
 router.post('/project/research-activities/start', function (req, res) {
   const data = req.session.data
   if (hasClinicalOrTreatment(data)) {
-    return res.redirect('/project/research-activities/intervention-description')
+    return res.redirect('/project/research-activities/iqa0062')
   }
   if (hasNonClinicalInterviews(data)) {
-    return res.redirect('/project/research-activities/questionnaire-type')
+    return res.redirect('/project/research-activities/iqa03273')
   }
-  return res.redirect('/project/research-activities/society-benefits')
+  return res.redirect('/project/research-activities/iqa0072')
 })
 
-router.post('/project/research-activities/intervention-description', function (req, res) {
+router.post('/project/research-activities/iqa0062', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['interventionDescription'] || !data['interventionDescription'].trim()) {
-    addError(errors, 'interventionDescription', 'Enter a description of the intervention or treatment being studied')
+  if (!data['iqa0062'] || !data['iqa0062'].trim()) {
+    addError(errors, 'iqa0062', questions['iqa0062'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-activities/intervention-description', errors)
+  if (errors.length) return renderWithErrors(res, 'project/research-activities/iqa0062', errors)
 
-  if (isCTIMP(data)) return res.redirect('/project/research-activities/first-in-human')
+  if (isCTIMP(data)) return res.redirect('/project/research-activities/iqa0063')
 
-  clear(data, ['firstInHuman'])
+  clear(data, ['iqa0063'])
 
   if (hasNHSPatients(data) && hasClinicalOrTreatment(data)) {
-    return res.redirect('/project/research-activities/delay-treatment')
+    return res.redirect('/project/research-activities/iqa0064')
   }
 
-  clear(data, ['delayTreatment', 'riskDelayTreatment'])
+  clear(data, ['iqa0064', 'iqa0075'])
 
-  if (hasTreatment(data)) return res.redirect('/project/research-activities/compare-standard')
+  if (hasTreatment(data)) return res.redirect('/project/research-activities/iqa0065')
 
-  clear(data, ['compareStandard', 'changeInStandardCare'])
+  clear(data, ['iqa0065', 'iqa0066'])
   return res.redirect('/project/research-activities/questionnaire-type-or-benefits')
 })
 
-router.post('/project/research-activities/first-in-human', function (req, res) {
+router.post('/project/research-activities/iqa0063', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['firstInHuman']) {
-    addError(errors, 'firstInHuman', 'Select whether this treatment is first-in-human')
+  if (!data['iqa0063']) {
+    addError(errors, 'iqa0063', questions['iqa0063'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-activities/first-in-human', errors)
+  if (errors.length) return renderWithErrors(res, 'project/research-activities/iqa0063', errors)
 
   if (hasNHSPatients(data) && hasClinicalOrTreatment(data)) {
-    return res.redirect('/project/research-activities/delay-treatment')
+    return res.redirect('/project/research-activities/iqa0064')
   }
 
-  clear(data, ['delayTreatment', 'riskDelayTreatment'])
+  clear(data, ['iqa0064', 'iqa0075'])
 
-  if (hasTreatment(data)) return res.redirect('/project/research-activities/compare-standard')
+  if (hasTreatment(data)) return res.redirect('/project/research-activities/iqa0065')
 
-  clear(data, ['compareStandard', 'changeInStandardCare'])
+  clear(data, ['iqa0065', 'iqa0066'])
   return res.redirect('/project/research-activities/questionnaire-type-or-benefits')
 })
 
-router.post('/project/research-activities/delay-treatment', function (req, res) {
+router.post('/project/research-activities/iqa0064', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['delayTreatment']) {
-    addError(errors, 'delayTreatment', 'Select whether the project involves a change or delay to standard treatment or care')
+  if (!data['iqa0064']) {
+    addError(errors, 'iqa0064', questions['iqa0064'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-activities/delay-treatment', errors)
+  if (errors.length) return renderWithErrors(res, 'project/research-activities/iqa0064', errors)
 
-  if (data['delayTreatment'] === 'no') clear(data, ['riskDelayTreatment'])
+  if (data['iqa0064'] === 'no') clear(data, ['iqa0075'])
 
-  if (hasTreatment(data)) return res.redirect('/project/research-activities/compare-standard')
+  if (hasTreatment(data)) return res.redirect('/project/research-activities/iqa0065')
 
-  clear(data, ['compareStandard', 'changeInStandardCare'])
+  clear(data, ['iqa0065', 'iqa0066'])
   return res.redirect('/project/research-activities/questionnaire-type-or-benefits')
 })
 
-router.post('/project/research-activities/compare-standard', function (req, res) {
+router.post('/project/research-activities/iqa0065', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['compareStandard']) {
-    addError(errors, 'compareStandard', 'Select whether any treatments are being compared to standard care')
+  if (!data['iqa0065']) {
+    addError(errors, 'iqa0065', questions['iqa0065'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-activities/compare-standard', errors)
-
-  if (data['compareStandard'] === 'no') {
-    return res.redirect('/project/research-activities/change-in-standard-care')
+  // Validate revealed field if 'no' selected
+  if (data['iqa0065'] === 'no' && (!data['iqa0066'] || !data['iqa0066'].trim())) {
+    addError(errors, 'iqa0066', questions['iqa0066'].errorMessages.required)
   }
 
-  clear(data, ['changeInStandardCare'])
-  return res.redirect('/project/research-activities/questionnaire-type-or-benefits')
-})
-
-router.post('/project/research-activities/change-in-standard-care', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['changeInStandardCare'] || !data['changeInStandardCare'].trim()) {
-    addError(errors, 'changeInStandardCare', 'Enter the arrangements you will put in place to address changes in standard care')
+  if (errors.length) {
+    clear(data, ['iqa0066'])
+    return renderWithErrors(res, 'project/research-activities/iqa0065', errors)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-activities/change-in-standard-care', errors)
+  if (data['iqa0065'] === 'yes') clear(data, ['iqa0066'])
 
   return res.redirect('/project/research-activities/questionnaire-type-or-benefits')
 })
 
-// Internal redirect helper — routes to questionnaire-type if applicable, else society-benefits
+// Internal redirect — routes to questionnaire-type if applicable, else society-benefits
 router.get('/project/research-activities/questionnaire-type-or-benefits', function (req, res) {
   const data = req.session.data
 
   if (hasNonClinicalInterviews(data)) {
-    return res.redirect('/project/research-activities/questionnaire-type')
+    return res.redirect('/project/research-activities/iqa03273')
   }
 
-  clear(data, ['questionnaireType', 'sensitiveTopic', 'seriousDisclosure', 'seriousDisclosureDetails'])
-  return res.redirect('/project/research-activities/society-benefits')
+  clear(data, ['iqa03273', 'iqa0068', 'iqa0070', 'iqa0071', 'iqa0076'])
+  return res.redirect('/project/research-activities/iqa0072')
 })
 
-router.post('/project/research-activities/questionnaire-type', function (req, res) {
+router.post('/project/research-activities/iqa03273', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (asArray(data['questionnaireType']).length === 0) {
-    addError(errors, 'questionnaireType', 'Select at least one option, or select \'No questionnaires included in project\'')
+  if (asArray(data['iqa03273']).length === 0) {
+    addError(errors, 'iqa03273', questions['iqa03273'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-activities/questionnaire-type', errors)
+  if (errors.length) return renderWithErrors(res, 'project/research-activities/iqa03273', errors)
 
-  return res.redirect('/project/research-activities/sensitive-topic')
+  return res.redirect('/project/research-activities/iqa0068')
 })
 
-router.post('/project/research-activities/sensitive-topic', function (req, res) {
+router.post('/project/research-activities/iqa0068', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['sensitiveTopic']) {
-    addError(errors, 'sensitiveTopic', 'Select whether interviews, questionnaires or discussions may include sensitive topics')
+  if (!data['iqa0068']) {
+    addError(errors, 'iqa0068', questions['iqa0068'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-activities/sensitive-topic', errors)
+  if (errors.length) return renderWithErrors(res, 'project/research-activities/iqa0068', errors)
 
-  if (data['sensitiveTopic'] === 'no') clear(data, ['riskSensitiveTreatment'])
+  if (data['iqa0068'] === 'no') clear(data, ['iqa0076'])
 
-  return res.redirect('/project/research-activities/serious-disclosure')
+  return res.redirect('/project/research-activities/iqa0070')
 })
 
-router.post('/project/research-activities/serious-disclosure', function (req, res) {
+router.post('/project/research-activities/iqa0070', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['seriousDisclosure']) {
-    addError(errors, 'seriousDisclosure', 'Select whether discussions could include topics that result in criminal or serious disclosures')
+  if (!data['iqa0070']) {
+    addError(errors, 'iqa0070', questions['iqa0070'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-activities/serious-disclosure', errors)
-
-  if (data['seriousDisclosure'] === 'yes') {
-    return res.redirect('/project/research-activities/serious-disclosure-details')
+  // Validate revealed field if 'yes' selected
+  if (data['iqa0070'] === 'yes' && (!data['iqa0071'] || !data['iqa0071'].trim())) {
+    addError(errors, 'iqa0071', questions['iqa0071'].errorMessages.required)
   }
 
-  clear(data, ['seriousDisclosureDetails'])
-  return res.redirect('/project/research-activities/society-benefits')
+  if (errors.length) {
+    clear(data, ['iqa0071'])
+    return renderWithErrors(res, 'project/research-activities/iqa0070', errors)
+  }
+
+  if (data['iqa0070'] === 'no') clear(data, ['iqa0071'])
+
+  return res.redirect('/project/research-activities/iqa0072')
 })
 
-router.post('/project/research-activities/serious-disclosure-details', function (req, res) {
+router.post('/project/research-activities/iqa0072', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['seriousDisclosureDetails'] || !data['seriousDisclosureDetails'].trim()) {
-    addError(errors, 'seriousDisclosureDetails', 'Enter how criminal or other disclosures will be dealt with')
+  if (!data['iqa0072'] || !data['iqa0072'].trim()) {
+    addError(errors, 'iqa0072', questions['iqa0072'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-activities/serious-disclosure-details', errors)
+  if (errors.length) return renderWithErrors(res, 'project/research-activities/iqa0072', errors)
 
-  return res.redirect('/project/research-activities/society-benefits')
-})
+  if (hasClinicalOrTreatment(data)) return res.redirect('/project/research-activities/iqa0074')
 
-router.post('/project/research-activities/society-benefits', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['societyBenefits'] || !data['societyBenefits'].trim()) {
-    addError(errors, 'societyBenefits', 'Enter the potential benefits for participants and society')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/research-activities/society-benefits', errors)
-
-  if (hasClinicalOrTreatment(data)) return res.redirect('/project/research-activities/side-effects')
-
-  clear(data, ['sideEffects'])
+  clear(data, ['iqa0074'])
   return res.redirect('/project/research-activities/risks-next')
 })
 
-router.post('/project/research-activities/side-effects', function (req, res) {
+router.post('/project/research-activities/iqa0074', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['sideEffects'] || !data['sideEffects'].trim()) {
-    addError(errors, 'sideEffects', 'Enter any risks, side-effects or burdens of research activities')
+  if (!data['iqa0074'] || !data['iqa0074'].trim()) {
+    addError(errors, 'iqa0074', questions['iqa0074'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-activities/side-effects', errors)
+  if (errors.length) return renderWithErrors(res, 'project/research-activities/iqa0074', errors)
 
   return res.redirect('/project/research-activities/risks-next')
 })
 
-// Internal redirect — routes to risk pages that apply, then on to inform-gp/finish
+// Internal redirect — routes to applicable risk pages
 router.get('/project/research-activities/risks-next', function (req, res) {
   const data = req.session.data
 
-  if (data['delayTreatment'] === 'yes') {
-    return res.redirect('/project/research-activities/risk-delay-treatment')
+  if (data['iqa0064'] === 'yes') {
+    return res.redirect('/project/research-activities/iqa0075')
   }
 
-  if (data['sensitiveTopic'] === 'yes') {
-    return res.redirect('/project/research-activities/risk-sensitive-topic')
-  }
-
-  return res.redirect('/project/research-activities/treatment-next')
-})
-
-router.post('/project/research-activities/risk-delay-treatment', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['riskDelayTreatment'] || !data['riskDelayTreatment'].trim()) {
-    addError(errors, 'riskDelayTreatment', 'Enter any risks due to a change or delay to standard treatment or care')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/research-activities/risk-delay-treatment', errors)
-
-  if (data['sensitiveTopic'] === 'yes') {
-    return res.redirect('/project/research-activities/risk-sensitive-topic')
+  if (data['iqa0068'] === 'yes') {
+    return res.redirect('/project/research-activities/iqa0076')
   }
 
   return res.redirect('/project/research-activities/treatment-next')
 })
 
-router.post('/project/research-activities/risk-sensitive-topic', function (req, res) {
+router.post('/project/research-activities/iqa0075', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['riskSensitiveTreatment'] || !data['riskSensitiveTreatment'].trim()) {
-    addError(errors, 'riskSensitiveTreatment', 'Enter any risk or burden due to sensitive, embarrassing or upsetting topics')
+  if (!data['iqa0075'] || !data['iqa0075'].trim()) {
+    addError(errors, 'iqa0075', questions['iqa0075'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-activities/risk-sensitive-topic', errors)
+  if (errors.length) return renderWithErrors(res, 'project/research-activities/iqa0075', errors)
+
+  if (data['iqa0068'] === 'yes') {
+    return res.redirect('/project/research-activities/iqa0076')
+  }
+
+  return res.redirect('/project/research-activities/treatment-next')
+})
+
+router.post('/project/research-activities/iqa0076', function (req, res) {
+  const data = req.session.data
+  const questions = res.locals.questions
+  const errors = []
+
+  if (!data['iqa0076'] || !data['iqa0076'].trim()) {
+    addError(errors, 'iqa0076', questions['iqa0076'].errorMessages.required)
+  }
+
+  if (errors.length) return renderWithErrors(res, 'project/research-activities/iqa0076', errors)
 
   return res.redirect('/project/research-activities/treatment-next')
 })
@@ -330,101 +310,82 @@ router.post('/project/research-activities/risk-sensitive-topic', function (req, 
 router.get('/project/research-activities/treatment-next', function (req, res) {
   const data = req.session.data
 
-  if (hasTreatment(data)) return res.redirect('/project/research-activities/inform-gp')
+  if (hasTreatment(data)) return res.redirect('/project/research-activities/iqa0077')
 
-  clear(data, ['informGP', 'whenInformGP', 'continueTreatment', 'continueTreatmentYes', 'continueTreatmentNo'])
-  return res.redirect('/project/research-activities/finish-data-collection')
+  clear(data, ['iqa0077', 'iqa0078', 'iqa0079', 'iqa0080', 'iqa0081'])
+  return res.redirect('/project/research-activities/iqa0082')
 })
 
-router.post('/project/research-activities/inform-gp', function (req, res) {
+router.post('/project/research-activities/iqa0077', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['informGP']) {
-    addError(errors, 'informGP', 'Select whether you will inform participants\' General Practitioners')
+  if (!data['iqa0077']) {
+    addError(errors, 'iqa0077', questions['iqa0077'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-activities/inform-gp', errors)
+  // Validate revealed field if 'yes' selected
+  if (data['iqa0077'] === 'yes' && (!data['iqa0078'] || !data['iqa0078'].trim())) {
+    addError(errors, 'iqa0078', questions['iqa0078'].errorMessages.required)
+  }
 
-  if (data['informGP'] === 'yes') return res.redirect('/project/research-activities/when-inform-gp')
+  if (errors.length) {
+    clear(data, ['iqa0078'])
+    return renderWithErrors(res, 'project/research-activities/iqa0077', errors)
+  }
 
-  clear(data, ['whenInformGP'])
-  return res.redirect('/project/research-activities/continue-treatment')
+  if (data['iqa0077'] === 'no') clear(data, ['iqa0078'])
+
+  return res.redirect('/project/research-activities/iqa0079')
 })
 
-router.post('/project/research-activities/when-inform-gp', function (req, res) {
+router.post('/project/research-activities/iqa0079', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['whenInformGP'] || !data['whenInformGP'].trim()) {
-    addError(errors, 'whenInformGP', 'Enter the circumstances when you will contact the participant\'s GP')
+  if (!data['iqa0079']) {
+    addError(errors, 'iqa0079', questions['iqa0079'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-activities/when-inform-gp', errors)
+  // Validate the relevant revealed field based on selection
+  // OPT0132 = treatment continues, OPT0133 = treatment does not continue
+  if (data['iqa0079'] === 'OPT0132' && (!data['iqa0080'] || !data['iqa0080'].trim())) {
+    addError(errors, 'iqa0080', questions['iqa0080'].errorMessages.required)
+  }
 
-  return res.redirect('/project/research-activities/continue-treatment')
+  if (data['iqa0079'] === 'OPT0133' && (!data['iqa0081'] || !data['iqa0081'].trim())) {
+    addError(errors, 'iqa0081', questions['iqa0081'].errorMessages.required)
+  }
+
+  if (errors.length) {
+    clear(data, ['iqa0080', 'iqa0081'])
+    return renderWithErrors(res, 'project/research-activities/iqa0079', errors)
+  }
+
+  if (data['iqa0079'] === 'OPT0132') clear(data, ['iqa0081'])
+  if (data['iqa0079'] === 'OPT0133') clear(data, ['iqa0080'])
+
+  return res.redirect('/project/research-activities/iqa0082')
 })
 
-router.post('/project/research-activities/continue-treatment', function (req, res) {
+router.post('/project/research-activities/iqa0082', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['continueTreatment']) {
-    addError(errors, 'continueTreatment', 'Select what will happen with treatment after the project has finished')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/research-activities/continue-treatment', errors)
-
-  if (data['continueTreatment'] === 'yes') {
-    clear(data, ['continueTreatmentNo'])
-    return res.redirect('/project/research-activities/continue-treatment-yes')
-  }
-
-  clear(data, ['continueTreatmentYes'])
-  return res.redirect('/project/research-activities/continue-treatment-no')
-})
-
-router.post('/project/research-activities/continue-treatment-yes', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['continueTreatmentYes'] || !data['continueTreatmentYes'].trim()) {
-    addError(errors, 'continueTreatmentYes', 'Enter the arrangements for continued provision of treatment after the project')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/research-activities/continue-treatment-yes', errors)
-
-  return res.redirect('/project/research-activities/finish-data-collection')
-})
-
-router.post('/project/research-activities/continue-treatment-no', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['continueTreatmentNo'] || !data['continueTreatmentNo'].trim()) {
-    addError(errors, 'continueTreatmentNo', 'Enter the care arrangements after the project has finished')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/research-activities/continue-treatment-no', errors)
-
-  return res.redirect('/project/research-activities/finish-data-collection')
-})
-
-router.post('/project/research-activities/finish-data-collection', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  const day = data['finishDataCollection-day']
-  const month = data['finishDataCollection-month']
-  const year = data['finishDataCollection-year']
+  const day   = data['iqa0082-day']
+  const month = data['iqa0082-month']
+  const year  = data['iqa0082-year']
 
   if (!day || !month || !year) {
-    addError(errors, 'finishDataCollection', 'Enter the planned date for finishing data collection')
+    addError(errors, 'iqa0082', questions['iqa0082'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/research-activities/finish-data-collection', errors)
+  if (errors.length) return renderWithErrors(res, 'project/research-activities/iqa0082', errors)
 
-  return res.redirect('/project/research-activities/check')
+  return res.redirect('/project/research-activities/check-research-activities')
 })
 
 module.exports = router

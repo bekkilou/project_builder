@@ -20,14 +20,10 @@
       <h2 class="govuk-heading-m">Governance and management</h2>
 
   {{ renderAnswers([
-    questions.iqa0133,
-    questions.iqa0135,
-    questions.iqa0136,
-    questions.iqa0137,
-    questions.iqa0138,
-    questions.iqa0325,
+    questions.iqa0142,
     questions.iqa0139,
     questions.iqa0140,
+    questions.iqa0143,
     questions.iqa0147,
     questions.iqa0148,
     questions.iqa0149,
@@ -40,12 +36,12 @@
     questions.iqa0156,
     questions.iqa0157,
     questions.iqa0158,
+    questions.iqa0325
   ], data, "/project/governance/") }}
 
-      <form action="/project/governance/check-complete" method="post">
+      <form action="/project/start01" method="post">
         <div class="govuk-button-group">
           {{ govukButton({ text: "Confirm and continue" }) }}
-          <a class="govuk-link" href="/project/start">Save and come back later</a>
         </div>
       </form>
 

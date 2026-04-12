@@ -10,8 +10,6 @@ const {
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
-// Proportionate review: project is PR if it doesn't include treatment or clinical activities
-// and is not CTIMP. Adjust this logic to match your actual PR determination.
 function isPR (data) {
   const activities = asArray(data['researchActivities'])
   const hasClinicalOrTreatment = activities.includes('clinical_people_activities') ||
@@ -27,226 +25,218 @@ function isNonClinicalInterviewsOnly (data) {
       a === 'non_clinical_staff_activities')
 }
 
+// OPT0231 = unfavourable UK, OPT0232 = unfavourable other country
+// OPT0233 = linked to another project, OPT0234 = none of these
 function hasUnfavourableUK (data) {
-  return asArray(data['applicationPrevious']).includes('unfavourable_uk')
+  return asArray(data['iqa0118']).includes('OPT0231')
 }
 
 function hasUnfavourable (data) {
-  const prev = asArray(data['applicationPrevious'])
-  return prev.includes('unfavourable_uk') || prev.includes('unfavourable_other')
+  const prev = asArray(data['iqa0118'])
+  return prev.includes('OPT0231') || prev.includes('OPT0232')
 }
 
 function hasLinked (data) {
-  return asArray(data['applicationPrevious']).includes('linked_to_other')
+  return asArray(data['iqa0118']).includes('OPT0233')
 }
 
 // ─── Page flow ───────────────────────────────────────────────────────────────
 //
-//  /project/ethical-issues/full-rec-review         fullRecReview (if PR)
-//    → if yes: /ethical-issues-summary
-//    → if no:  /full-rec-review-no
-//  /project/ethical-issues/full-rec-review-no      fullRecReviewNo
-//    → /application-previous
-//  /project/ethical-issues/ethical-issues-summary  ethicalIssues (if not PR, or PR + fullRec = yes)
-//  /project/ethical-issues/health-findings         possibleHealthFindings (if not non-clinical-only)
-//    → if yes: /health-findings-notify
-//    → if no:  /health-findings-no (skip notify)
-//  /project/ethical-issues/health-findings-notify  possibleHealthFindingsYes
-//  /project/ethical-issues/health-findings-no      possibleHealthFindingsNo
-//  /project/ethical-issues/application-previous    applicationPrevious (always)
-//    → if unfavourable_uk:    /previous-iras-id
-//    → if unfavourable:       /unfavourable-reason
-//    → if linked:             /linked-project
-//    → else:                  /check
-//  /project/ethical-issues/previous-iras-id        previousIrasId
-//  /project/ethical-issues/unfavourable-reason     unfavourableReason
-//  /project/ethical-issues/linked-project          linkedToOther
+//  /project/ethical-issues                           Entry redirect
+//  /project/ethical-issues/iqa0323                   Full REC review? (if PR)
+//    → if yes: /iqa0117
+//    → if no:  /iqa0324
+//  /project/ethical-issues/iqa0324                   Why no material ethical issues
+//    → /iqa0118
+//  /project/ethical-issues/iqa0117                   Ethical issues summary (if not PR, or PR + yes)
+//    → if not non-clinical-only: /iqa0272
+//    → else:                     /iqa0118
+//  /project/ethical-issues/iqa0272                   Health-related findings notification (yes/no)
+//    — iqa0273 / iqa0274 revealed inline via revealOn
+//    → /iqa0118
+//  /project/ethical-issues/iqa0118                   Previous applications (always)
+//    → if OPT0231:   /iqa0119
+//    → if OPT0231 or OPT0232: /iqa0120
+//    → if OPT0233:   /iqa0039
+//    → else:         /check
+//  /project/ethical-issues/iqa0119                   Previous IRAS ID
+//  /project/ethical-issues/iqa0120                   Unfavourable opinion reason
+//  /project/ethical-issues/iqa0039                   Linked project information
 
 // ─── Routes ──────────────────────────────────────────────────────────────────
 
-// Entry point — skip full-rec-review question if not PR
+// Entry point — skip iqa0323 if not PR
 router.get('/project/ethical-issues', function (req, res) {
   const data = req.session.data
-  if (isPR(data)) return res.redirect('/project/ethical-issues/full-rec-review')
-  clear(data, ['fullRecReview', 'fullRecReviewNo'])
-  return res.redirect('/project/ethical-issues/ethical-issues-summary')
+  if (isPR(data)) return res.redirect('/project/ethical-issues/iqa0323')
+  clear(data, ['iqa0323', 'iqa0324'])
+  return res.redirect('/project/ethical-issues/iqa0117')
 })
 
-router.post('/project/ethical-issues/full-rec-review', function (req, res) {
+router.post('/project/ethical-issues/iqa0323', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['fullRecReview']) {
-    addError(errors, 'fullRecReview', 'Select whether your application has material ethical issues needing full REC review')
+  if (!data['iqa0323']) {
+    addError(errors, 'iqa0323', questions['iqa0323'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/ethical-issues/full-rec-review', errors)
+  if (errors.length) return renderWithErrors(res, 'project/ethical-issues/iqa0323', errors)
 
-  if (data['fullRecReview'] === 'yes') {
-    clear(data, ['fullRecReviewNo'])
-    return res.redirect('/project/ethical-issues/ethical-issues-summary')
+  if (data['iqa0323'] === 'yes') {
+    clear(data, ['iqa0324'])
+    return res.redirect('/project/ethical-issues/iqa0117')
   }
 
-  return res.redirect('/project/ethical-issues/full-rec-review-no')
+  return res.redirect('/project/ethical-issues/iqa0324')
 })
 
-router.post('/project/ethical-issues/full-rec-review-no', function (req, res) {
+router.post('/project/ethical-issues/iqa0324', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['fullRecReviewNo'] || !data['fullRecReviewNo'].trim()) {
-    addError(errors, 'fullRecReviewNo', 'Enter why you consider your application does not have material ethical issues')
+  if (!data['iqa0324'] || !data['iqa0324'].trim()) {
+    addError(errors, 'iqa0324', questions['iqa0324'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/ethical-issues/full-rec-review-no', errors)
+  if (errors.length) return renderWithErrors(res, 'project/ethical-issues/iqa0324', errors)
 
-  // PR with no full REC — skip the ethical issues summary, go straight to previous applications
-  clear(data, ['ethicalIssues'])
-  return res.redirect('/project/ethical-issues/application-previous')
+  clear(data, ['iqa0117'])
+  return res.redirect('/project/ethical-issues/iqa0118')
 })
 
-router.post('/project/ethical-issues/ethical-issues-summary', function (req, res) {
+router.post('/project/ethical-issues/iqa0117', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['ethicalIssues'] || !data['ethicalIssues'].trim()) {
-    addError(errors, 'ethicalIssues', 'Enter a summary of the main ethical issues arising from the project')
+  if (!data['iqa0117'] || !data['iqa0117'].trim()) {
+    addError(errors, 'iqa0117', questions['iqa0117'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/ethical-issues/ethical-issues-summary', errors)
+  if (errors.length) return renderWithErrors(res, 'project/ethical-issues/iqa0117', errors)
 
   if (!isNonClinicalInterviewsOnly(data)) {
-    return res.redirect('/project/ethical-issues/health-findings')
+    return res.redirect('/project/ethical-issues/iqa0272')
   }
 
-  clear(data, ['possibleHealthFindings', 'possibleHealthFindingsYes', 'possibleHealthFindingsNo'])
-  return res.redirect('/project/ethical-issues/application-previous')
+  clear(data, ['iqa0272', 'iqa0273', 'iqa0274'])
+  return res.redirect('/project/ethical-issues/iqa0118')
 })
 
-router.post('/project/ethical-issues/health-findings', function (req, res) {
+router.post('/project/ethical-issues/iqa0272', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['possibleHealthFindings']) {
-    addError(errors, 'possibleHealthFindings', 'Select whether the project could produce health related findings of clinical significance')
+  if (!data['iqa0272']) {
+    addError(errors, 'iqa0272', questions['iqa0272'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/ethical-issues/health-findings', errors)
-
-  if (data['possibleHealthFindings'] === 'yes') {
-    clear(data, ['possibleHealthFindingsNo'])
-    return res.redirect('/project/ethical-issues/health-findings-notify')
+  // Validate the revealed textarea — whichever is relevant
+  if (data['iqa0272'] === 'yes' && (!data['iqa0273'] || !data['iqa0273'].trim())) {
+    addError(errors, 'iqa0273', questions['iqa0273'].errorMessages.required)
   }
 
-  clear(data, ['possibleHealthFindingsYes'])
-  return res.redirect('/project/ethical-issues/health-findings-no')
+  if (data['iqa0272'] === 'no' && (!data['iqa0274'] || !data['iqa0274'].trim())) {
+    addError(errors, 'iqa0274', questions['iqa0274'].errorMessages.required)
+  }
+
+  if (errors.length) return renderWithErrors(res, 'project/ethical-issues/iqa0272', errors)
+
+  // Clear whichever revealed field wasn't used
+  if (data['iqa0272'] === 'yes') clear(data, ['iqa0274'])
+  if (data['iqa0272'] === 'no')  clear(data, ['iqa0273'])
+
+  return res.redirect('/project/ethical-issues/iqa0118')
 })
 
-router.post('/project/ethical-issues/health-findings-notify', function (req, res) {
+router.post('/project/ethical-issues/iqa0118', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['possibleHealthFindingsYes']) {
-    addError(errors, 'possibleHealthFindingsYes', 'Select whether arrangements will be made to notify the individuals concerned')
+  if (asArray(data['iqa0118']).length === 0) {
+    addError(errors, 'iqa0118', questions['iqa0118'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/ethical-issues/health-findings-notify', errors)
+  if (errors.length) return renderWithErrors(res, 'project/ethical-issues/iqa0118', errors)
 
-  return res.redirect('/project/ethical-issues/application-previous')
-})
+  // Clear answers for branches not taken
+  if (!hasUnfavourableUK(data)) clear(data, ['iqa0119'])
+  if (!hasUnfavourable(data))   clear(data, ['iqa0120'])
+  if (!hasLinked(data))         clear(data, ['iqa0039'])
 
-router.post('/project/ethical-issues/health-findings-no', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['possibleHealthFindingsNo'] || !data['possibleHealthFindingsNo'].trim()) {
-    addError(errors, 'possibleHealthFindingsNo', 'Enter why the individuals concerned will not be notified')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/ethical-issues/health-findings-no', errors)
-
-  return res.redirect('/project/ethical-issues/application-previous')
-})
-
-router.post('/project/ethical-issues/application-previous', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (asArray(data['applicationPrevious']).length === 0) {
-    addError(errors, 'applicationPrevious', 'Select at least one option, or select \'None of the above\'')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/ethical-issues/application-previous', errors)
-
-  // Cleanup: clear answers for branches not taken
-  if (!hasUnfavourableUK(data)) clear(data, ['previousIrasId'])
-  if (!hasUnfavourable(data)) clear(data, ['unfavourableReason'])
-  if (!hasLinked(data)) clear(data, ['linkedToOther'])
-
-  if (asArray(data['applicationPrevious']).includes('none')) {
-    return res.redirect('/project/ethical-issues/check')
+  // OPT0234 = none of these
+  if (asArray(data['iqa0118']).includes('OPT0234')) {
+    return res.redirect('/project/ethical-issues/check-ethical-issues')
   }
 
   if (hasUnfavourableUK(data)) {
-    return res.redirect('/project/ethical-issues/previous-iras-id')
+    return res.redirect('/project/ethical-issues/iqa0119')
   }
 
   if (hasUnfavourable(data)) {
-    return res.redirect('/project/ethical-issues/unfavourable-reason')
+    return res.redirect('/project/ethical-issues/iqa0120')
   }
 
   if (hasLinked(data)) {
-    return res.redirect('/project/ethical-issues/linked-project')
+    return res.redirect('/project/ethical-issues/iqa0039')
   }
 
-  return res.redirect('/project/ethical-issues/check')
+  return res.redirect('/project/ethical-issues/check-ethical-issues')
 })
 
-router.post('/project/ethical-issues/previous-iras-id', function (req, res) {
+router.post('/project/ethical-issues/iqa0119', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['previousIrasId'] || !data['previousIrasId'].trim()) {
-    addError(errors, 'previousIrasId', 'Enter the IRAS ID of the project that received an unfavourable opinion')
+  if (!data['iqa0119'] || !data['iqa0119'].trim()) {
+    addError(errors, 'iqa0119', questions['iqa0119'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/ethical-issues/previous-iras-id', errors)
+  if (errors.length) return renderWithErrors(res, 'project/ethical-issues/iqa0119', errors)
 
   if (hasUnfavourable(data)) {
-    return res.redirect('/project/ethical-issues/unfavourable-reason')
+    return res.redirect('/project/ethical-issues/iqa0120')
   }
 
-  if (hasLinked(data)) return res.redirect('/project/ethical-issues/linked-project')
+  if (hasLinked(data)) return res.redirect('/project/ethical-issues/iqa0039')
 
-  return res.redirect('/project/ethical-issues/check')
+  return res.redirect('/project/ethical-issues/check-ethical-issues')
 })
 
-router.post('/project/ethical-issues/unfavourable-reason', function (req, res) {
+router.post('/project/ethical-issues/iqa0120', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['unfavourableReason'] || !data['unfavourableReason'].trim()) {
-    addError(errors, 'unfavourableReason', 'Enter how the reasons for the unfavourable opinion have been addressed')
+  if (!data['iqa0120'] || !data['iqa0120'].trim()) {
+    addError(errors, 'iqa0120', questions['iqa0120'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/ethical-issues/unfavourable-reason', errors)
+  if (errors.length) return renderWithErrors(res, 'project/ethical-issues/iqa0120', errors)
 
-  if (hasLinked(data)) return res.redirect('/project/ethical-issues/linked-project')
+  if (hasLinked(data)) return res.redirect('/project/ethical-issues/iqa0039')
 
-  return res.redirect('/project/ethical-issues/check')
+  return res.redirect('/project/ethical-issues/check-ethical-issues')
 })
 
-router.post('/project/ethical-issues/linked-project', function (req, res) {
+router.post('/project/ethical-issues/iqa0039', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['linkedToOther'] || !data['linkedToOther'].trim()) {
-    addError(errors, 'linkedToOther', 'Enter information about the linked project')
+  if (!data['iqa0039'] || !data['iqa0039'].trim()) {
+    addError(errors, 'iqa0039', questions['iqa0039'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/ethical-issues/linked-project', errors)
+  if (errors.length) return renderWithErrors(res, 'project/ethical-issues/iqa0039', errors)
 
-  return res.redirect('/project/ethical-issues/check')
+  return res.redirect('/project/ethical-issues/check-ethical-issues')
 })
 
 module.exports = router

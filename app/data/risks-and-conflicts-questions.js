@@ -9,6 +9,11 @@
 //  recBooking           – needed for REC Booking
 //  recDataset           – contributes towards the REC dataset
 //  studyWideDataset     – contributes towards the Study Wide Review dataset
+//
+//  Error messages:
+//  Each question that requires validation has an errorMessages object.
+//  Reference these in route files instead of hardcoding strings:
+//    addError(errors, 'iqa0110', questions['iqa0110'].errorMessages.required)
 // ============================================================
 
 module.exports = {
@@ -19,7 +24,10 @@ module.exports = {
     type: 'textarea',
     legendSize: 'l',
     label: 'Describe any risks to the research team and how you will manage them',
-	hint: 'For example, potential risks to researchers visiting participants in their homes ',
+    hint: 'For example, potential risks to researchers visiting participants in their homes',
+    errorMessages: {
+      required: 'Enter potential risks to the research team and how they will be managed'
+    },
     recDataset: true,
     rows: 5,
   },
@@ -31,11 +39,14 @@ module.exports = {
     legendSize: 'l',
     legend: 'Do any investigators have a personal interest in a sponsor or funder that could be a conflict of interest?',
     hint: 'For example, financial interests, share-holding, or a personal relationship',
+    errorMessages: {
+      required: 'Select whether any investigator has a personal involvement that may give rise to a conflict of interest'
+    },
     recDataset: true,
     studyWideDataset: true,
     items: [
-      { value: 'yes', text: 'Yes' },
-      { value: 'no', text: 'No' },
+      { value: 'yes', text: 'Yes', revealOn: 'iqa0112' },
+      { value: 'no',  text: 'No' },
     ],
   },
 
@@ -46,6 +57,9 @@ module.exports = {
     legendSize: 'l',
     label: 'Give details of any potential conflict of interest',
     hint: 'Include details of the individuals and the nature of the conflict',
+    errorMessages: {
+      required: 'Enter details of the potential conflict of interest'
+    },
     recDataset: true,
     rows: 5,
   },
@@ -56,11 +70,14 @@ module.exports = {
     type: 'radios',
     legendSize: 'l',
     legend: 'Is the Chief Investigator a member of any NHS Research Ethics Committee?',
-	hint: 'select one option',
+    hint: 'Select one option',
+    errorMessages: {
+      required: 'Select whether the Chief Investigator is a member of any NHS Research Ethics Committee'
+    },
     recDataset: true,
     items: [
-      { value: 'yes', text: 'Yes' },
-      { value: 'no', text: 'No' },
+      { value: 'yes', text: 'Yes', revealOn: 'iqa0114' },
+      { value: 'no',  text: 'No' },
     ],
   },
 
@@ -70,12 +87,15 @@ module.exports = {
     type: 'checkboxes',
     legendSize: 'l',
     legend: 'Which Research Ethics Committees are they a member of?',
-	hint: 'Select all that apply',
+    hint: 'Select all that apply',
+    errorMessages: {
+      required: 'Select at least one Research Ethics Committee'
+    },
     recBooking: true,
     recDataset: true,
-	items: [
-	{value: 'xxxxx', text: 'Sorry, no list of Research Ethics Committees is currently available'},
-	]
+    items: [
+      { value: 'xxxxx', text: 'Sorry, no list of Research Ethics Committees is currently available' },
+    ],
   },
 
   iqa0115: {
@@ -84,21 +104,28 @@ module.exports = {
     type: 'radios',
     legendSize: 'l',
     legend: 'Will any investigators receive personal payments, incentives or other benefits for working on this project?',
-	hint: 'This does not include their normal salary',
+    hint: 'This does not include their normal salary',
+    errorMessages: {
+      required: 'Select whether any investigator will receive personal payment or benefits'
+    },
     recDataset: true,
     items: [
-      { value: 'yes', text: 'Yes' revealOn: 'iqa0116'},
-      { value: 'no', text: 'No' },
+      { value: 'yes', text: 'Yes', revealOn: 'iqa0116' },
+      { value: 'no',  text: 'No' },
     ],
   },
+
   iqa0116: {
     id: 'IQA0116',
     name: 'iqa0116',
     type: 'textarea',
     legendSize: 'l',
     label: 'Give details of payments, benefits or any other incentives',
+    errorMessages: {
+      required: 'Enter details of payments, benefits or other incentives'
+    },
     recDataset: true,
     rows: 5,
-  }
+  },
 
 }

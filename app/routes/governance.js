@@ -11,7 +11,7 @@ const {
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 function isMultiNational (data) {
-  return data['UKOrMultiNation'] === 'multi_national'
+  return data['iqa0142'] === 'OPT0017'
 }
 
 function isCTIMP (data) {
@@ -24,293 +24,268 @@ function hasTreatment (data) {
 
 // ─── Page flow ───────────────────────────────────────────────────────────────
 //
-//  /project/governance/uk-or-multi-nation          UKOrMultiNation (always)
-//    → if multi: /outside-uk-countries
-//    → else:     /supplies-not-funder
-//  /project/governance/outside-uk-countries        outsideUKCountries
-//  /project/governance/supplies-not-funder         suppliesNotFunder (always)
-//    → if yes:   /materials-supplied
-//    → else:     /legal-risks
-//  /project/governance/materials-supplied          materialsSupplied
-//  /project/governance/legal-risks                 legalRisks (always)
-//  /project/governance/monitoring-auditing         monitoringAuditing (if CTIMP)
-//  /project/governance/data-efficacy               dataEfficacy (if treatment)
-//  /project/governance/insurance-indemnity         insuranceIndemnity (always)
-//  /project/governance/insurance-indemnity-collab  insuranceIndemnityCollab (always)
-//  /project/governance/justify-excluded            justifyExcluded (always)
-//  /project/governance/sponsor-compensation        sponsorCompensation (always)
-//    → if yes:   /compensation-arrangements
-//    → else:     /contract-org (if CTIMP) or check
-//  /project/governance/compensation-arrangements   compensationArrangements
-//  /project/governance/contract-org                contractOrgResponsibility (if CTIMP)
-//    → if yes:   /contract-org-name
-//    → else:     /delegated-activities
-//  /project/governance/contract-org-name           contractOrgName
-//  /project/governance/delegated-activities        delegatedActivities (if CTIMP)
-//    → if yes:   /delegate-orgs
-//    → else:     /check
-//  /project/governance/delegate-orgs               delegateOrgs
+//  /project/governance/iqa0142                     UK or multi-national (always)
+//    → if multi: /iqa0143
+//    → else:     /iqa0325
+//  /project/governance/iqa0143                     Countries outside UK
+//  /project/governance/iqa0325                     Materials supplied by non-funder (always)
+//    — iqa0139 revealed inline via revealOn
+//  /project/governance/iqa0140                     Legal risks (always)
+//  /project/governance/iqa0147                     Monitoring and auditing (if CTIMP)
+//  /project/governance/iqa0148                     Data efficacy (if treatment)
+//  /project/governance/iqa0149                     Insurance — sponsor participation liability (always)
+//  /project/governance/iqa0150                     Insurance — sponsor design liability (always)
+//  /project/governance/iqa0151                     Insurance — investigator/collaborator liability (always)
+//  /project/governance/iqa0152                     Excluded from insurance cover (always)
+//  /project/governance/iqa0153                     Sponsor compensation arrangements (always)
+//    — iqa0154 revealed inline via revealOn
+//  /project/governance/iqa0155                     Contract Research Organisation (if CTIMP)
+//    — iqa0156 revealed inline via revealOn
+//  /project/governance/iqa0157                     Delegated activities (if CTIMP)
+//    — iqa0158 revealed inline via revealOn
 
 // ─── Routes ──────────────────────────────────────────────────────────────────
 
-router.post('/project/governance/uk-or-multi-nation', function (req, res) {
+router.post('/project/governance/iqa0142', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['UKOrMultiNation']) {
-    addError(errors, 'UKOrMultiNation', 'Select whether this project is taking place in any countries other than the UK')
+  if (!data['iqa0142']) {
+    addError(errors, 'iqa0142', questions['iqa0142'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/governance/uk-or-multi-nation', errors)
+  if (errors.length) return renderWithErrors(res, 'project/governance/iqa0142', errors)
 
-  if (!isMultiNational(data)) clear(data, ['outsideUKCountries'])
+  if (!isMultiNational(data)) clear(data, ['iqa0143'])
 
-  if (isMultiNational(data)) return res.redirect('/project/governance/outside-uk-countries')
+  if (isMultiNational(data)) return res.redirect('/project/governance/iqa0143')
 
-  return res.redirect('/project/governance/supplies-not-funder')
+  return res.redirect('/project/governance/iqa0325')
 })
 
-router.post('/project/governance/outside-uk-countries', function (req, res) {
+router.post('/project/governance/iqa0143', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (asArray(data['outsideUKCountries']).length === 0) {
-    addError(errors, 'outsideUKCountries', 'Select at least one country outside the UK')
+  if (asArray(data['iqa0143']).length === 0) {
+    addError(errors, 'iqa0143', questions['iqa0143'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/governance/outside-uk-countries', errors)
+  if (errors.length) return renderWithErrors(res, 'project/governance/iqa0143', errors)
 
-  return res.redirect('/project/governance/supplies-not-funder')
+  return res.redirect('/project/governance/iqa0325')
 })
 
-router.post('/project/governance/supplies-not-funder', function (req, res) {
+router.post('/project/governance/iqa0325', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['suppliesNotFunder']) {
-    addError(errors, 'suppliesNotFunder', 'Select whether any materials are being supplied from an organisation not providing funding')
+  if (!data['iqa0325']) {
+    addError(errors, 'iqa0325', questions['iqa0325'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/governance/supplies-not-funder', errors)
-
-  if (data['suppliesNotFunder'] === 'yes') {
-    return res.redirect('/project/governance/materials-supplied')
+  // Validate revealed field if yes selected
+  if (data['iqa0325'] === 'yes' && (!data['iqa0139'] || !data['iqa0139'].trim())) {
+    addError(errors, 'iqa0139', questions['iqa0139'].errorMessages.required)
   }
 
-  clear(data, ['materialsSupplied'])
-  return res.redirect('/project/governance/legal-risks')
+  if (errors.length) {
+    clear(data, ['iqa0139'])
+    return renderWithErrors(res, 'project/governance/iqa0325', errors)
+  }
+
+  if (data['iqa0325'] === 'no') clear(data, ['iqa0139'])
+
+  return res.redirect('/project/governance/iqa0140')
 })
 
-router.post('/project/governance/materials-supplied', function (req, res) {
+router.post('/project/governance/iqa0140', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['materialsSupplied'] || !data['materialsSupplied'].trim()) {
-    addError(errors, 'materialsSupplied', 'Enter details of the source of materials supplied')
+  if (!data['iqa0140'] || !data['iqa0140'].trim()) {
+    addError(errors, 'iqa0140', questions['iqa0140'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/governance/materials-supplied', errors)
+  if (errors.length) return renderWithErrors(res, 'project/governance/iqa0140', errors)
 
-  return res.redirect('/project/governance/legal-risks')
-})
+  if (isCTIMP(data)) return res.redirect('/project/governance/iqa0147')
 
-router.post('/project/governance/legal-risks', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['legalRisks'] || !data['legalRisks'].trim()) {
-    addError(errors, 'legalRisks', 'Enter any logistical, legal, or management risks relating to your project')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/governance/legal-risks', errors)
-
-  if (isCTIMP(data)) return res.redirect('/project/governance/monitoring-auditing')
-
-  clear(data, ['monitoringAuditing'])
+  clear(data, ['iqa0147'])
   return res.redirect('/project/governance/data-efficacy-or-insurance')
 })
 
-router.post('/project/governance/monitoring-auditing', function (req, res) {
+router.post('/project/governance/iqa0147', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (asArray(data['monitoringAuditing']).length === 0) {
-    addError(errors, 'monitoringAuditing', 'Select at least one monitoring and auditing arrangement')
+  if (asArray(data['iqa0147']).length === 0) {
+    addError(errors, 'iqa0147', questions['iqa0147'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/governance/monitoring-auditing', errors)
+  if (errors.length) return renderWithErrors(res, 'project/governance/iqa0147', errors)
 
   return res.redirect('/project/governance/data-efficacy-or-insurance')
 })
 
-// Internal redirect — data efficacy only shown if treatment
+// Internal redirect — iqa0148 only shown if treatment
 router.get('/project/governance/data-efficacy-or-insurance', function (req, res) {
   const data = req.session.data
 
-  if (hasTreatment(data)) return res.redirect('/project/governance/data-efficacy')
+  if (hasTreatment(data)) return res.redirect('/project/governance/iqa0148')
 
-  clear(data, ['dataEfficacy'])
-  return res.redirect('/project/governance/insurance-indemnity')
+  clear(data, ['iqa0148'])
+  return res.redirect('/project/governance/iqa0149')
 })
 
-router.post('/project/governance/data-efficacy', function (req, res) {
+router.post('/project/governance/iqa0148', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['dataEfficacy'] || !data['dataEfficacy'].trim()) {
-    addError(errors, 'dataEfficacy', 'Enter the arrangements for reviewing interim safety and efficacy data')
+  if (!data['iqa0148'] || !data['iqa0148'].trim()) {
+    addError(errors, 'iqa0148', questions['iqa0148'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/governance/data-efficacy', errors)
+  if (errors.length) return renderWithErrors(res, 'project/governance/iqa0148', errors)
 
-  return res.redirect('/project/governance/insurance-indemnity')
+  return res.redirect('/project/governance/iqa0149')
 })
 
-router.post('/project/governance/insurance-indemnity', function (req, res) {
+router.post('/project/governance/iqa0149', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['insuranceIndemnity'] || !data['insuranceIndemnity'].trim()) {
-    addError(errors, 'insuranceIndemnity', 'Enter the insurance or indemnity arrangements for sponsors')
+  if (!data['iqa0149'] || !data['iqa0149'].trim()) {
+    addError(errors, 'iqa0149', questions['iqa0149'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/governance/insurance-indemnity', errors)
+  if (errors.length) return renderWithErrors(res, 'project/governance/iqa0149', errors)
 
-  return res.redirect('/project/governance/insurance-indemnity-collab')
+  return res.redirect('/project/governance/iqa0150')
 })
 
-router.post('/project/governance/insurance-indemnity-collab', function (req, res) {
+router.post('/project/governance/iqa0150', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['insuranceIndemnityCollab'] || !data['insuranceIndemnityCollab'].trim()) {
-    addError(errors, 'insuranceIndemnityCollab', 'Enter the insurance or indemnity arrangements for investigators and collaborators')
+  if (!data['iqa0150'] || !data['iqa0150'].trim()) {
+    addError(errors, 'iqa0150', questions['iqa0150'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/governance/insurance-indemnity-collab', errors)
+  if (errors.length) return renderWithErrors(res, 'project/governance/iqa0150', errors)
 
-  return res.redirect('/project/governance/justify-excluded')
+  return res.redirect('/project/governance/iqa0151')
 })
 
-router.post('/project/governance/justify-excluded', function (req, res) {
+router.post('/project/governance/iqa0151', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['justifyExcluded'] || !data['justifyExcluded'].trim()) {
-    addError(errors, 'justifyExcluded', 'Enter which participant groups are excluded from insurance cover and why')
+  if (!data['iqa0151'] || !data['iqa0151'].trim()) {
+    addError(errors, 'iqa0151', questions['iqa0151'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/governance/justify-excluded', errors)
+  if (errors.length) return renderWithErrors(res, 'project/governance/iqa0151', errors)
 
-  return res.redirect('/project/governance/sponsor-compensation')
+  return res.redirect('/project/governance/iqa0152')
 })
 
-router.post('/project/governance/sponsor-compensation', function (req, res) {
+router.post('/project/governance/iqa0152', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['sponsorCompensation']) {
-    addError(errors, 'sponsorCompensation', 'Select whether sponsors have made arrangements for compensation in the event of harm')
+  if (!data['iqa0152'] || !data['iqa0152'].trim()) {
+    addError(errors, 'iqa0152', questions['iqa0152'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/governance/sponsor-compensation', errors)
+  if (errors.length) return renderWithErrors(res, 'project/governance/iqa0152', errors)
 
-  if (data['sponsorCompensation'] === 'yes') {
-    return res.redirect('/project/governance/compensation-arrangements')
-  }
-
-  clear(data, ['compensationArrangements'])
-  return res.redirect('/project/governance/ctimp-delegation-next')
+  return res.redirect('/project/governance/iqa0153')
 })
 
-router.post('/project/governance/compensation-arrangements', function (req, res) {
+router.post('/project/governance/iqa0153', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['compensationArrangements'] || !data['compensationArrangements'].trim()) {
-    addError(errors, 'compensationArrangements', 'Enter details of the arrangements for compensation')
+  if (!data['iqa0153']) {
+    addError(errors, 'iqa0153', questions['iqa0153'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/governance/compensation-arrangements', errors)
+  // Validate revealed field if yes selected
+  if (data['iqa0153'] === 'yes' && (!data['iqa0154'] || !data['iqa0154'].trim())) {
+    addError(errors, 'iqa0154', questions['iqa0154'].errorMessages.required)
+  }
 
-  return res.redirect('/project/governance/ctimp-delegation-next')
+  if (errors.length) {
+    clear(data, ['iqa0154'])
+    return renderWithErrors(res, 'project/governance/iqa0153', errors)
+  }
+
+  if (data['iqa0153'] === 'no') clear(data, ['iqa0154'])
+
+  if (isCTIMP(data)) return res.redirect('/project/governance/iqa0155')
+
+  clear(data, ['iqa0155', 'iqa0156', 'iqa0157', 'iqa0158'])
+  return res.redirect('/project/governance/check-governance')
 })
 
-// Internal redirect — CTIMP delegation pages only shown if CTIMP
-router.get('/project/governance/ctimp-delegation-next', function (req, res) {
+router.post('/project/governance/iqa0155', function (req, res) {
   const data = req.session.data
-
-  if (isCTIMP(data)) return res.redirect('/project/governance/contract-org')
-
-  clear(data, [
-    'contractOrgResponsibility',
-    'contractOrgName',
-    'delegatedActivities',
-    'delegateOrgs'
-  ])
-  return res.redirect('/project/governance/check')
-})
-
-router.post('/project/governance/contract-org', function (req, res) {
-  const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['contractOrgResponsibility']) {
-    addError(errors, 'contractOrgResponsibility', 'Select whether sponsors have delegated site management to a CRO or CTU')
+  if (!data['iqa0155']) {
+    addError(errors, 'iqa0155', questions['iqa0155'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/governance/contract-org', errors)
-
-  if (data['contractOrgResponsibility'] === 'yes') {
-    return res.redirect('/project/governance/contract-org-name')
+  // Validate revealed field if yes selected
+  if (data['iqa0155'] === 'yes' && (!data['iqa0156'] || !data['iqa0156'].trim())) {
+    addError(errors, 'iqa0156', questions['iqa0156'].errorMessages.required)
   }
 
-  clear(data, ['contractOrgName'])
-  return res.redirect('/project/governance/delegated-activities')
+  if (errors.length) {
+    clear(data, ['iqa0156'])
+    return renderWithErrors(res, 'project/governance/iqa0155', errors)
+  }
+
+  if (data['iqa0155'] === 'no') clear(data, ['iqa0156'])
+
+  return res.redirect('/project/governance/iqa0157')
 })
 
-router.post('/project/governance/contract-org-name', function (req, res) {
+router.post('/project/governance/iqa0157', function (req, res) {
   const data = req.session.data
+  const questions = res.locals.questions
   const errors = []
 
-  if (!data['contractOrgName'] || !data['contractOrgName'].trim()) {
-    addError(errors, 'contractOrgName', 'Enter the name of the Contract Research Organisation or Clinical Trials Unit')
+  if (!data['iqa0157']) {
+    addError(errors, 'iqa0157', questions['iqa0157'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/governance/contract-org-name', errors)
-
-  return res.redirect('/project/governance/delegated-activities')
-})
-
-router.post('/project/governance/delegated-activities', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['delegatedActivities']) {
-    addError(errors, 'delegatedActivities', 'Select whether any research activities have been delegated to a subcontractor')
+  // Validate revealed field if yes selected
+  if (data['iqa0157'] === 'yes' && (!data['iqa0158'] || !data['iqa0158'].trim())) {
+    addError(errors, 'iqa0158', questions['iqa0158'].errorMessages.required)
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/governance/delegated-activities', errors)
-
-  if (data['delegatedActivities'] === 'yes') {
-    return res.redirect('/project/governance/delegate-orgs')
+  if (errors.length) {
+    clear(data, ['iqa0158'])
+    return renderWithErrors(res, 'project/governance/iqa0157', errors)
   }
 
-  clear(data, ['delegateOrgs'])
-  return res.redirect('/project/governance/check')
-})
+  if (data['iqa0157'] === 'no') clear(data, ['iqa0158'])
 
-router.post('/project/governance/delegate-orgs', function (req, res) {
-  const data = req.session.data
-  const errors = []
-
-  if (!data['delegateOrgs'] || !data['delegateOrgs'].trim()) {
-    addError(errors, 'delegateOrgs', 'Enter the names of subcontracted organisations and oversight arrangements')
-  }
-
-  if (errors.length) return renderWithErrors(res, 'project/governance/delegate-orgs', errors)
-
-  return res.redirect('/project/governance/check')
+  return res.redirect('/project/governance/check-governance')
 })
 
 module.exports = router

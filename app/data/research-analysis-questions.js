@@ -9,6 +9,14 @@
 //  recBooking           – needed for REC Booking
 //  recDataset           – contributes towards the REC dataset
 //  studyWideDataset     – contributes towards the Study Wide Review dataset
+//
+//  Error messages:
+//  Each question that requires validation has an errorMessages object.
+//  Reference these in route files instead of hardcoding strings:
+//    addError(errors, 'iqa0121', questions['iqa0121'].errorMessages.required)
+//
+//  Note: iqa0129 is missing from the source spreadsheet section.
+//  If it is needed, add it manually when the ID is confirmed.
 // ============================================================
 
 module.exports = {
@@ -20,15 +28,18 @@ module.exports = {
     legendSize: 'l',
     legend: 'How has the quality of the research been assessed as part of the study design process?',
     hint: 'Select all that apply',
+    errorMessages: {
+      required: 'Select at least one option'
+    },
     recDataset: true,
     items: [
       { value: 'OPT0235', text: 'Independent external review' },
       { value: 'OPT0236', text: 'Review within a company' },
-      { value: 'OPT0237', text: 'Review within a multi−centre research group' },
+      { value: 'OPT0237', text: 'Review within a multi-centre research group' },
       { value: 'OPT0238', text: 'Review within the Chief Investigator\'s institution or host organisation' },
       { value: 'OPT0239', text: 'Review within the research team' },
       { value: 'OPT0240', text: 'Review by academic colleague or educational supervisor' },
-      { value: 'OPT0033', text: 'Other' },
+      { value: 'OPT0033', text: 'Other', revealOn: 'iqa0122' },
     ],
   },
 
@@ -37,7 +48,10 @@ module.exports = {
     name: 'iqa0122',
     type: 'input',
     legendSize: 'l',
-    label: 'Give details of the other methods used to assess the quality quality of the research',
+    label: 'Give details of the other methods used to assess the quality of the research',
+    errorMessages: {
+      required: 'Enter details of how the quality of the research has been assessed'
+    },
     recDataset: true,
   },
 
@@ -46,8 +60,11 @@ module.exports = {
     name: 'iqa0123',
     type: 'textarea',
     legendSize: 'l',
-    label: 'Explain why this review process is appropriate to the nature of the project ',
-	hint: 'Include whether any issues raised by the review have not been addressed, or if the review only relates to part of the project',
+    label: 'Explain why this review process is appropriate to the nature of the project',
+    hint: 'Include whether any issues raised by the review have not been addressed, or if the review only relates to part of the project',
+    errorMessages: {
+      required: 'Enter why this review process is appropriate and how any issues have been addressed'
+    },
     recDataset: true,
     rows: 5,
   },
@@ -58,10 +75,13 @@ module.exports = {
     type: 'radios',
     legendSize: 'l',
     legend: 'What is the primary form of analysis?',
-    hint: 'Just select the primary method, if you are using both forms of analysis you can explain this at the next question',
+    hint: 'Just select the primary method. If you are using both forms of analysis you can explain this at the next question.',
+    errorMessages: {
+      required: 'Select whether the primary form of analysis will be qualitative or quantitative'
+    },
     recDataset: true,
     items: [
-      { value: 'OPT0241', text: 'Qualititative' },
+      { value: 'OPT0241', text: 'Qualitative' },
       { value: 'OPT0242', text: 'Quantitative' },
     ],
   },
@@ -71,8 +91,11 @@ module.exports = {
     name: 'iqa0125',
     type: 'textarea',
     legendSize: 'l',
-    label: 'Give details of the methods for analysing the data.',
+    label: 'Give details of the methods for analysing the data',
     hint: 'If the research is qualitative, include how you will decide there is sufficient data',
+    errorMessages: {
+      required: 'Enter details of the methods for analysing the data'
+    },
     recDataset: true,
     rows: 5,
   },
@@ -83,14 +106,17 @@ module.exports = {
     type: 'checkboxes',
     legendSize: 'l',
     legend: 'How have the statistical aspects of the project been reviewed?',
-	hint: 'Select all that apply',
+    hint: 'Select all that apply',
+    errorMessages: {
+      required: 'Select at least one option'
+    },
     recDataset: true,
     items: [
       { value: 'OPT0243', text: 'Review by independent statistician commissioned by funder or sponsor' },
       { value: 'OPT0244', text: 'Other review by independent statistician' },
       { value: 'OPT0245', text: 'Review by company statistician' },
-      { value: 'OPT0246', text: 'Review by a statistician within the Chief Investigator’s institution' },
-      { value: 'OPT0247', text: 'Review by a statistician within the research team or multi−centre group' },
+      { value: 'OPT0246', text: 'Review by a statistician within the Chief Investigator\'s institution' },
+      { value: 'OPT0247', text: 'Review by a statistician within the research team or multi-centre group' },
       { value: 'OPT0240', text: 'Review by academic colleague or educational supervisor' },
       { value: 'OPT0248', text: 'Other review by individual with relevant statistical expertise' },
       { value: 'OPT0249', text: 'No review necessary as only frequencies and associations will be assessed' },
@@ -103,6 +129,9 @@ module.exports = {
     type: 'textarea',
     legendSize: 'l',
     label: 'Give details of the person or organisation who undertook the statistical review, and how you have addressed their recommendations',
+    errorMessages: {
+      required: 'Enter details of who undertook the statistical review and how recommendations were addressed'
+    },
     recDataset: true,
     rows: 5,
   },
@@ -114,10 +143,12 @@ module.exports = {
     legendSize: 'l',
     label: 'What are the outcome measures for this project?',
     hint: 'Include the name of the outcomes, the metrics or methods of measurement used, and timepoints',
+    errorMessages: {
+      required: 'Enter the outcome measure or measures for this project'
+    },
     recDataset: true,
     rows: 5,
   },
-
 
   iqa0130: {
     id: 'IQA0130',
@@ -125,7 +156,10 @@ module.exports = {
     type: 'textarea',
     legendSize: 'l',
     label: 'How many participants, samples, or data records do you plan to study in total?',
-	hint: 'If there will be more than one group, provide details in your answer',
+    hint: 'If there will be more than one group, provide details in your answer',
+    errorMessages: {
+      required: 'Enter how many participants, samples, or data records you plan to study'
+    },
     recDataset: true,
     rows: 5,
   },
@@ -136,7 +170,10 @@ module.exports = {
     type: 'textarea',
     legendSize: 'l',
     label: 'How did you decide on the sample size?',
-	hint: 'If a sample size calculation was used, explain why this calculation method was chosen, and how it can be reproduced',
+    hint: 'If a sample size calculation was used, explain why this calculation method was chosen, and how it can be reproduced',
+    errorMessages: {
+      required: 'Enter how the sample size was decided upon'
+    },
     recDataset: true,
     rows: 5,
   },
@@ -147,6 +184,9 @@ module.exports = {
     type: 'textarea',
     legendSize: 'l',
     label: 'What are the criteria for electively stopping the project early?',
+    errorMessages: {
+      required: 'Enter the criteria for electively stopping the project early'
+    },
     recDataset: true,
     studyWideDataset: true,
     rows: 5,
