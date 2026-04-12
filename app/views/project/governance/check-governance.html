@@ -1,0 +1,54 @@
+{%- extends "layouts/main.html" -%}
+{%- from "_partials/_question.html" import renderAnswers -%}
+
+{%- block pageTitle -%}
+  Check your answers – Governance and management – {{ serviceName }} – GOV.UK Prototype Kit
+{%- endblock -%}
+
+{%- block beforeContent -%}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{%- endblock -%}
+
+{%- block content -%}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">Check your answers</h1>
+      <h2 class="govuk-heading-m">Governance and management</h2>
+
+  {{ renderAnswers([
+    questions.iqa0133,
+    questions.iqa0135,
+    questions.iqa0136,
+    questions.iqa0137,
+    questions.iqa0138,
+    questions.iqa0325,
+    questions.iqa0139,
+    questions.iqa0140,
+    questions.iqa0147,
+    questions.iqa0148,
+    questions.iqa0149,
+    questions.iqa0150,
+    questions.iqa0151,
+    questions.iqa0152,
+    questions.iqa0153,
+    questions.iqa0154,
+    questions.iqa0155,
+    questions.iqa0156,
+    questions.iqa0157,
+    questions.iqa0158,
+  ], data, "/project/governance/") }}
+
+      <form action="/project/governance/check-complete" method="post">
+        <div class="govuk-button-group">
+          {{ govukButton({ text: "Confirm and continue" }) }}
+          <a class="govuk-link" href="/project/start">Save and come back later</a>
+        </div>
+      </form>
+
+    </div>
+  </div>
+{%- endblock -%}

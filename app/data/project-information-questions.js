@@ -1,48 +1,51 @@
 // ============================================================
 //  project-information-questions.js
+//
+//  Section: Project information
+//  Generated from: Master_-_Application_Questions_v0_10_20251027_WIP__2_.xlsx (sheet B, section IQT0005)
+//
+//  Pathway flags:
+//  proportionateReview  – contributes towards Proportionate review
+//  recBooking           – needed for REC Booking
+//  recDataset           – contributes towards the REC dataset
+//  studyWideDataset     – contributes towards the Study Wide Review dataset
 // ============================================================
 
 module.exports = {
 
-  protocolRef: {
-    type: "input",
-    name: "protocolRef",
-    legendSize: "l",
-    label: "Provide protocol reference number",
-    hint: "This should be no more than 50 characters"
+  iqa0036: {
+    id: 'IQA0036',
+    name: 'iqa0036',
+    type: 'input',
+    legendSize: 'l',
+    label: 'Provide protocol reference number',
+    guidance: {
+      summary: 'Read guidance for this question',
+      html: 'guidance to be clear that we are not seeking registration numbers here (for ISRCTN etc that is requested in Project details: Transparency)'
+    },
   },
 
-  // showWhenCTIMP: true — only shown when isCTIMP == "yes"
-  euct: {
-    type: "radios",
-    name: "euct",
-    legendSize: "l",
-    legend: "Do you have an EU Clinical Trial (EUCT) number?",
-    hint: "Select one option",
-    showWhenCTIMP: true,
-    conditionalValue: "Yes",
-    items: [
-      { value: "Yes",            text: "Yes" },
-      { value: "Not applicable", text: "Not applicable" }
-    ]
-    // Note: the conditional EUCT number input field is rendered in the page template
-    // as it requires a conditional reveal with a sub-input
+  iqa0037: {
+    id: 'IQA0037',
+    name: 'iqa0037',
+    type: 'input',
+    legendSize: 'l',
+    label: 'Provide the EU Clinical Trial (EUCT) number',
+    guidance: {
+      summary: 'Read guidance for this question',
+      html: 'EUCT covers EudraCT number'
+    },
   },
 
-  euctNumber: {
-    type: "input",
-    name: "euctNumber",
-    legendSize: "m",
-    label: "Enter EUCT here"
+  iqa0040: {
+    id: 'IQA0040',
+    name: 'iqa0040',
+    type: 'textarea',
+    legendSize: 'l',
+    label: 'Research project public summary:',
+    recDataset: true,
+    studyWideDataset: true,
+    rows: 5,
   },
-
-  projectSummary: {
-    type: "textarea",
-    name: "projectSummary",
-    legendSize: "l",
-    label: "Research project public summary",
-    hint: "<ul><li>Explain why the research is being carried out, the questions it seeks to answer, its design and methodology.</li><li>Do not reproduce or refer to the protocol.</li><li>Complete this in language understandable to a member of the public (maximum 300 words).</li></ul>",
-    rows: 8
-  }
 
 }

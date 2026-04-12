@@ -1,0 +1,45 @@
+{%- extends "layouts/main.html" -%}
+{%- from "_partials/_question.html" import renderAnswers -%}
+
+{%- block pageTitle -%}
+  Check your answers – Public involvement – {{ serviceName }} – GOV.UK Prototype Kit
+{%- endblock -%}
+
+{%- block beforeContent -%}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{%- endblock -%}
+
+{%- block content -%}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">Check your answers</h1>
+      <h2 class="govuk-heading-m">Public involvement</h2>
+
+  {{ renderAnswers([
+    questions.iqa0045,
+    questions.iqa0046,
+    questions.iqa0048,
+    questions.iqa0042,
+    questions.iqa0043,
+    questions.iqa0044,
+    questions.iqa03274,
+    questions.iqa0162,
+    questions.iqa0163,
+    questions.iqa03275,
+    questions.iqa03276,
+  ], data, "/project/public-involvement/") }}
+
+      <form action="/project/public-involvement/check-complete" method="post">
+        <div class="govuk-button-group">
+          {{ govukButton({ text: "Confirm and continue" }) }}
+          <a class="govuk-link" href="/project/start">Save and come back later</a>
+        </div>
+      </form>
+
+    </div>
+  </div>
+{%- endblock -%}

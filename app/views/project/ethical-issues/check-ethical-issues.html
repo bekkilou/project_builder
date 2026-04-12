@@ -1,0 +1,41 @@
+{%- extends "layouts/main.html" -%}
+{%- from "_partials/_question.html" import renderAnswers -%}
+
+{%- block pageTitle -%}
+  Check your answers – Summary of ethical issues – {{ serviceName }} – GOV.UK Prototype Kit
+{%- endblock -%}
+
+{%- block beforeContent -%}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{%- endblock -%}
+
+{%- block content -%}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">Check your answers</h1>
+      <h2 class="govuk-heading-m">Summary of ethical issues</h2>
+
+  {{ renderAnswers([
+    questions.iqa0323,
+    questions.iqa0117,
+    questions.iqa0324,
+    questions.iqa0118,
+    questions.iqa0119,
+    questions.iqa0120,
+    questions.iqa0039,
+  ], data, "/project/ethical-issues/") }}
+
+      <form action="/project/ethical-issues/check-complete" method="post">
+        <div class="govuk-button-group">
+          {{ govukButton({ text: "Confirm and continue" }) }}
+          <a class="govuk-link" href="/project/start">Save and come back later</a>
+        </div>
+      </form>
+
+    </div>
+  </div>
+{%- endblock -%}

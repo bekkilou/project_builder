@@ -19,7 +19,6 @@ function buildApprovalsPathway(data) {
   const participantGroups = asArray(data.participantGroups)
   const researchActivities = asArray(data.researchActivities)
   const noConsent = asArray(data.noConsent)
-  const hmppsNations = lowerArray(data.hmppsNations)
   const ukNations = lowerArray(data.UKNations)
 
   const includesEngland = ukNations.includes('england')
@@ -69,9 +68,9 @@ function buildApprovalsPathway(data) {
   const needsMHRA = isCTIMP || isCombinedCTIMP || isDeviceStudy
   const needsARSAC = involvesIonising
 
-  const needsHMPPSPermission = involvesHMPPS && (hmppsNations.includes('england') || hmppsNations.includes('wales'))
-  const needsSPSPermission = involvesHMPPS && hmppsNations.includes('scotland')
-  const needsNIPSPermission = involvesHMPPS && (hmppsNations.includes('northern ireland') || hmppsNations.includes('northern_ireland'))
+  const needsHMPPSPermission = involvesHMPPS && (includesEngland || includesWales)
+const needsSPSPermission   = involvesHMPPS && includesScotland
+const needsNIPSPermission  = involvesHMPPS && includesNI
 
   const needsHFEA = hfeaMode && hfeaMode !== 'no'
 

@@ -3,26 +3,32 @@
 //  app/routes/start-routes.js
 //
 //  Route handler for the project overview / start page.
-//  Reads and clears any flash message set by section routes,
-//  calculates section statuses, and renders the page.
+//  Assembles all data needed for the two progress panels
+//  and section status cards, then renders the page.
 //
 //  Register in your main routes.js:
 //    require('./routes/start-routes')(router)
 // ============================================================
 
-const { readAndClearFlash } = require('./helpers/flash')
-const { getSectionStatuses } = require('./helpers/section-status')
+const { readAndClearFlash }    = require('./helpers/flash')
+const { getSectionStatuses }   = require('./helpers/section-status')
+const { getPathwayProgress,
+        getSubmissionReadiness } = require('./helpers/pathway-progress')
+const { buildApprovalsPathway } = require('../helpers/approvals-pathway')
 
 module.exports = function (router) {
 
-  router.get('/project/start', (req, res) => {
-    const flash = readAndClearFlash(req)
+  router.get('/project/start01', (req, res) => {
+    const data    = req.session.data
+    const flash   = readAndClearFlash(req)
 
-    res.locals.sectionStatuses = getSectionStatuses(req.session.data)
+    const sectionStatuses = getSectionStatuses(data)
+    const pathway         = buildApprovalsPathway(data)
 
-    // Pass flash type and section name separately so the
-    // template can use them without object dot notation issues
-    res.locals.flash           = flash.type
+    res.locals.sectionStatuses  = sectionStatuses
+    res.locals.pathwayProgress  = getPathwayProgress(data, pathway.flags)
+    res.locals.submissionReady  = getSubmissionReadiness(data, sectionStatuses)
+    res.locals.flash            = flash.type
     res.locals.completedSection = flash.section
 
     res.render('project/start')

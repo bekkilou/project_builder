@@ -25,6 +25,7 @@ module.exports = {
   // ----------------------------------------------------------
 
   projectTitle: {
+    id: "IQA0002",
     type: "input",
     name: "projectTitle",
     label: "Short project title",
@@ -32,6 +33,7 @@ module.exports = {
   },
 
   fullProjectTitle: {
+    id: "IQA0003",
     type: "textarea",
     name: "fullProjectTitle",
     label: "Full project title",
@@ -43,6 +45,7 @@ module.exports = {
   // ----------------------------------------------------------
 
   UKNations: {
+    id: "IQA0032",
     type: "checkboxes",
     name: "UKNations",
     legend: "Which UK nations will this project take place in?",
@@ -138,6 +141,7 @@ module.exports = {
   // ----------------------------------------------------------
 
   participantGroups: {
+    id: "IQA0005",
     type: "checkboxes",
     name: "participantGroups",
     legendSize: "l",
@@ -147,15 +151,20 @@ module.exports = {
     items: [
       { value: "carers_guardians",           text: "Carers, parents or legal guardians of patients or participants" },
       { value: "healthy_volunteers",         text: "Healthy volunteers or controls" },
-      { value: "public",                     text: "Members of the public" },
+      { value: "public",                     text: "Members of the public", hint: "Meaning those recruited outside healthcare settings" },
       { value: "nhs_patients_service_users", text: "Patients or service users of NHS or HSC provided or commissioned services", nhsOnly: true },
       { value: "care_home_residents",        text: "Patients or residents in care homes, independent health care clinics, nursing homes or residential care" },
+      { value: "prison_probation",           text: "People in prison, young offender institutions, or supervised by probation services"},
       { value: "deceased",                   text: "People who are known to be deceased prior to their inclusion in the project" },
       { value: "other_social_care_users",    text: "Service users in other social care settings" },
       { value: "nhs_hsc_staff",              text: "Staff working in NHS or HSC provided or commissioned services", nhsOnly: true },
       { value: "other_care_staff",           text: "Staff working in other care settings" },
       { value: "other",                      text: "Other" }
-    ]
+    ],
+    guidance: {
+      summary: 'Click here for more support on participant cohorts',
+      html: '<p>If you are recruitng through the prison services, follow guidance available <a href="https://www.myresearchproject.org.uk/help/hlphmpps.aspx" target="_blank">here</a>',
+    },
   },
 
   // ----------------------------------------------------------
@@ -172,12 +181,17 @@ module.exports = {
     items: [
       { value: "previously_collected_data",              text: "Use of previously collected data about people",                                                                                     showWhenDeceased: true,  showWhenStaffOnly: false, showWhenStaffExcluded: true  },
       { value: "previously_collected_biosamples",        text: "Use of previously collected human biological samples",                                                                             showWhenDeceased: true,  showWhenStaffOnly: false, showWhenStaffExcluded: true  },
-      { value: "non_clinical_staff_activities",          text: "Non-clinical activities with staff, such as interviews, questionnaires and observations",                                          showWhenDeceased: false, showWhenStaffOnly: true,  showWhenStaffExcluded: false },
-      { value: "non_clinical_people_interviews_surveys", text: "Non-clinical activities with people, such as interviews or surveys",                                                               showWhenDeceased: false, showWhenStaffOnly: true,  showWhenStaffExcluded: true  },
-      { value: "non_clinical_people_procedures",         text: "Non-clinical activities with people, such as non-clinical assessments, observations or care procedures",                           showWhenDeceased: false, showWhenStaffOnly: false, showWhenStaffExcluded: true  },
+      { value: "non_clinical_staff_activities",          text: "Collecting information from staff", hint: "such as interviews, questionnaires and observations",                                          showWhenDeceased: false, showWhenStaffOnly: true,  showWhenStaffExcluded: false },
+      { value: "non_clinical_people_interviews_surveys", text: "Collecting information from people", hint: "such as interviews or surveys",                                                               showWhenDeceased: false, showWhenStaffOnly: true,  showWhenStaffExcluded: true  },
+      { value: "non_clinical_people_procedures",         text: "Non-clinical contact with people", hint: "such as non-clinical assessments, observations or care procedures",                           showWhenDeceased: false, showWhenStaffOnly: false, showWhenStaffExcluded: true  },
       { value: "clinical_people_activities",             text: "Clinical activities with people, such as collecting human biological samples, imaging investigations or diagnostics",              showWhenDeceased: false, showWhenStaffOnly: false, showWhenStaffExcluded: true  },
-      { value: "treatment",                              text: "Treatment, such as medicines, devices, surgery, vaccines or therapies",                                                            showWhenDeceased: false, showWhenStaffOnly: false, showWhenStaffExcluded: true  }
-    ]
+      { value: "treatment",                              text: "Treatment, such as medicines, devices, surgery, vaccines or therapies",                                                            showWhenDeceased: false, showWhenStaffOnly: false, showWhenStaffExcluded: true  },
+      { value: "ivd", text: "Using or evaluating an in vitro diagnostic (IVD) test or device", hint: "For example, a blood test, genetic test, or other laboratory test that analyses a sample taken from a participant" }
+    ],
+    guidance: {
+      summary: 'Click here for more support on research activities',
+      html: '<a href="https://www.myresearchproject.org.uk/help/hlpivdresearch.aspx" target="_blank">In vitro diagnostic support</a>',
+    },
   },
 
   // ----------------------------------------------------------

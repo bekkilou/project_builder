@@ -1,0 +1,46 @@
+{%- extends "layouts/main.html" -%}
+{%- from "_partials/_question.html" import renderAnswers -%}
+
+{%- block pageTitle -%}
+  Check your answers – Research analysis – {{ serviceName }} – GOV.UK Prototype Kit
+{%- endblock -%}
+
+{%- block beforeContent -%}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{%- endblock -%}
+
+{%- block content -%}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">Check your answers</h1>
+      <h2 class="govuk-heading-m">Research analysis</h2>
+
+  {{ renderAnswers([
+    questions.iqa0121,
+    questions.iqa0122,
+    questions.iqa0123,
+    questions.iqa0124,
+    questions.iqa0125,
+    questions.iqa0126,
+    questions.iqa0127,
+    questions.iqa0128,
+    questions.iqa0129,
+    questions.iqa0130,
+    questions.iqa0131,
+    questions.iqa0132,
+  ], data, "/project/research-analysis/") }}
+
+      <form action="/project/research-analysis/check-complete" method="post">
+        <div class="govuk-button-group">
+          {{ govukButton({ text: "Confirm and continue" }) }}
+          <a class="govuk-link" href="/project/start">Save and come back later</a>
+        </div>
+      </form>
+
+    </div>
+  </div>
+{%- endblock -%}

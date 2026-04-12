@@ -1,221 +1,282 @@
 // ============================================================
 //  research-design-questions.js
 //
-//  Visibility flags:
-//  alwaysShow:              true  = always shown
-//  showWhenMethodOther:     true  = show when methodologies includes "other"
-//  showWhenTrial:           true  = show when methodologies includes "randomised_controlled_trial" or "controlled_trial_without_randomisation"
-//  showWhenTrialOther:      true  = show when trialMethodologies includes "other_complex_or_innovative_design"
-//  showWhenDesignAI:        true  = show when useAI includes "designing_developing_testing_ai"
-//  showWhenExistingAI:      true  = show when useAI includes "using_existing_ai"
-//  showWhenDesignAIOther:   true  = show when designAI includes "other"
-//  showWhenExistingAIOther: true  = show when existingAI includes "other"
+//  Section: Research design and methodology
+//  Generated from: Master_-_Application_Questions_v0_10_20251027_WIP__2_.xlsx (sheet B, section IQT0007)
+//
+//  Pathway flags:
+//  proportionateReview  – contributes towards Proportionate review
+//  recBooking           – needed for REC Booking
+//  recDataset           – contributes towards the REC dataset
+//  studyWideDataset     – contributes towards the Study Wide Review dataset
 // ============================================================
 
 module.exports = {
 
-  methodologies: {
-    type: "checkboxes",
-    name: "methodologies",
-    legendSize: "l",
-    legend: "Select the methodology or methodologies you will be using for this project",
-    hint: "Select all that apply",
-    alwaysShow: true,
+  iqa0049: {
+    id: 'IQA0049',
+    name: 'iqa0049',
+    type: 'checkboxes',
+    legendSize: 'l',
+    legend: 'Select the methodology or methodologies you will be using for this project:',
+    recDataset: true,
+    studyWideDataset: true,
     items: [
-      { value: "case_series_or_case_note_review",       text: "Case series or case note review" },
-      { value: "case_control",                          text: "Case control" },
-      { value: "cohort_observation",                    text: "Cohort observation" },
-      { value: "controlled_trial_without_randomisation",text: "Controlled trial without randomisation" },
-      { value: "cross_sectional_study",                 text: "Cross-sectional study" },
-      { value: "database_analysis",                     text: "Database analysis" },
-      { value: "epidemiology",                          text: "Epidemiology" },
-      { value: "feasibility_or_pilot_study",            text: "Feasibility or pilot study" },
-      { value: "laboratory_study",                      text: "Laboratory study" },
-      { value: "meta_analysis",                         text: "Meta-analysis" },
-      { value: "qualitative_research",                  text: "Qualitative research" },
-      { value: "questionnaire_interview_or_observation",text: "Questionnaire, interview or observation study" },
-      { value: "randomised_controlled_trial",           text: "Randomised controlled trial" },
-      { value: "other",                                 text: "Other" }
-    ]
+      { value: 'OPT0062', text: 'case series or case note review' },
+      { value: 'OPT0063', text: 'case control' },
+      { value: 'OPT0064', text: 'cohort observation' },
+      { value: 'OPT0065', text: 'controlled trial without randomisation' },
+      { value: 'OPT0066', text: 'cross-sectional study' },
+      { value: 'OPT0067', text: 'database analysis' },
+      { value: 'OPT0068', text: 'epidemiology' },
+      { value: 'OPT0069', text: 'feasibility or pilot study' },
+      { value: 'OPT0070', text: 'laboratory study' },
+      { value: 'OPT0071', text: 'metanalysis' },
+      { value: 'OPT0072', text: 'qualitative research' },
+      { value: 'OPT0073', text: 'questionnaire, interview or observation study' },
+      { value: 'OPT0074', text: 'randomised controlled trial' },
+      { value: 'OPT0033', text: 'other' },
+    ],
   },
 
-  methodologiesOther: {
-    type: "textarea",
-    name: "methodologiesOther",
-    legendSize: "l",
-    label: "Give details of the methodologies you will be using",
-    showWhenMethodOther: true,
-    rows: 3
+  iqa0050: {
+    id: 'IQA0050',
+    name: 'iqa0050',
+    type: 'input',
+    legendSize: 'l',
+    label: 'Give details of the methodologies you will be using',
+    recDataset: true,
   },
 
-  trialMethodologies: {
-    type: "checkboxes",
-    name: "trialMethodologies",
-    legendSize: "l",
-    legend: "Select the trial methodology",
-    hint: "Select all that apply",
-    showWhenTrial: true,
+  iqa0051: {
+    id: 'IQA0051',
+    name: 'iqa0051',
+    type: 'checkboxes',
+    legendSize: 'l',
+    legend: 'Select the trial methodology',
+    guidance: {
+      summary: 'Read guidance for this question',
+      html: 'replace existing CTIMP  * guidance for different methodologies'
+    },
+    recDataset: true,
+    studyWideDataset: true,
     items: [
-      { value: "basket_trial",                      text: "Basket trial" },
-      { value: "bayesian",                          text: "Bayesian" },
-      { value: "blinded",                           text: "Blinded" },
-      { value: "cluster_randomised",                text: "Cluster-randomised" },
-      { value: "comparative",                       text: "Comparative" },
-      { value: "cross_over",                        text: "Cross-over" },
-      { value: "double_blinded",                    text: "Double-blinded" },
-      { value: "open",                              text: "Open" },
-      { value: "other_complex_or_innovative_design",text: "Other complex or innovative design" },
-      { value: "parallel_arms",                     text: "Parallel arms" },
-      { value: "platform_trial",                    text: "Platform trial" },
-      { value: "real_world",                        text: "Real-world" },
-      { value: "targeted_or_stratified",            text: "Targeted or stratified" },
-      { value: "umbrella_trial",                    text: "Umbrella trial" }
-    ]
+      { value: 'OPT0075', text: 'basket trial' },
+      { value: 'OPT0076', text: 'bayesian' },
+      { value: 'OPT0077', text: 'blinded' },
+      { value: 'OPT0078', text: 'cluster-randomised' },
+      { value: 'OPT0079', text: 'comparative' },
+      { value: 'OPT0080', text: 'cross-over' },
+      { value: 'OPT0081', text: 'double-blinded' },
+      { value: 'OPT0082', text: 'open' },
+      { value: 'OPT0083', text: 'other complex or innovative design' },
+      { value: 'OPT0084', text: 'parallel arms' },
+      { value: 'OPT0085', text: 'platform trial' },
+      { value: 'OPT0086', text: 'real-world' },
+      { value: 'OPT0087', text: 'targeted or stratified' },
+      { value: 'OPT0088', text: 'umbrella trial' },
+    ],
   },
 
-  trialMethodologiesOther: {
-    type: "textarea",
-    name: "trialMethodologiesOther",
-    legendSize: "l",
-    label: "Give details of the other complex or innovative design you will be using",
-    showWhenTrialOther: true,
-    rows: 3
+  iqa0052: {
+    id: 'IQA0052',
+    name: 'iqa0052',
+    type: 'input',
+    legendSize: 'l',
+    label: 'Specify the methodology',
+    guidance: {
+      summary: 'Read guidance for this question',
+      html: 'existing CTIMP'
+    },
+    recDataset: true,
   },
 
-  methodologiesDetails: {
-    type: "textarea",
-    name: "methodologiesDetails",
-    legendSize: "l",
-    label: "Give details of the methodologies you will be using",
-    alwaysShow: true,
-    rows: 8
+  iqa0053: {
+    id: 'IQA0053',
+    name: 'iqa0053',
+    type: 'textarea',
+    legendSize: 'l',
+    label: 'Give more details of the methodology',
+    guidance: {
+      summary: 'Read guidance for this question',
+      html: 'WHO guidance - Study type consists of: Type of study (interventional or observational) Study design including: Method of allocation (randomized/non-randomized) Masking (is masking used and, if so, who is masked) Assignment (single arm, parallel, crossover or factorial) Purpose Phase (if applicable)  For randomized trials: the allocation concealment mechanism and sequence generation will be documented.'
+    },
+    recDataset: true,
+    studyWideDataset: true,
+    rows: 5,
   },
 
-  novelIntervention: {
-    type: "radios",
-    name: "novelIntervention",
-    inline: true,
-    legendSize: "l",
-    legend: "Is your project a clinical trial to study a novel intervention?",
-    showWhenTrial: true,
+  iqa0054: {
+    id: 'IQA0054',
+    name: 'iqa0054',
+    type: 'radios',
+    legendSize: 'l',
+    legend: 'Is your project a clinical trial to study a novel intervention?',
+    guidance: {
+      summary: 'Read guidance for this question',
+      html: 'used to determine PR  * guidance on \'novel intervention\''
+    },
+    proportionateReview: true,
+    recBooking: true,
+    recDataset: true,
     items: [
-      { value: "yes", text: "Yes" },
-      { value: "no",  text: "No" }
-    ]
+      { value: 'yes', text: 'Yes' },
+      { value: 'no', text: 'No' },
+    ],
   },
 
-  // showWhenTrialNotNovel: show when trial AND novelIntervention == "no"
-  compareIntervention: {
-    type: "radios",
-    name: "compareIntervention",
-    inline: true,
-    legendSize: "l",
-    legend: "Is your project a randomised clinical trial to compare any interventions in clinical practice?",
-    showWhenTrialNotNovel: true,
+  iqa0055: {
+    id: 'IQA0055',
+    name: 'iqa0055',
+    type: 'radios',
+    legendSize: 'l',
+    legend: 'Is your project a randomised clinical trial to compare any interventions in clinical practice?',
+    guidance: {
+      summary: 'Read guidance for this question',
+      html: 'used to determine PR * how to answer if IMP tested against placebo'
+    },
+    proportionateReview: true,
+    recBooking: true,
+    recDataset: true,
+    studyWideDataset: true,
     items: [
-      { value: "yes", text: "Yes" },
-      { value: "no",  text: "No" }
-    ]
+      { value: 'yes', text: 'Yes' },
+      { value: 'no', text: 'No' },
+    ],
   },
 
-  // showWhenTrialNotNovelNotComparison: show when trial AND novelIntervention == "no" AND compareIntervention == "no"
-  goldIntervention: {
-    type: "radios",
-    name: "goldIntervention",
-    inline: true,
-    legendSize: "l",
-    legend: "Are all the interventions that you are comparing routine 'gold standard' care options in clinical practice?",
-    showWhenTrialNotNovelNotComparison: true,
+  iqa0056: {
+    id: 'IQA0056',
+    name: 'iqa0056',
+    type: 'radios',
+    legendSize: 'l',
+    legend: 'Are all the interventions that you are comparing routine \'gold standard\' care options in clinical practice?',
+    guidance: {
+      summary: 'Read guidance for this question',
+      html: 'used to determine PR  guidance to explain gold standard'
+    },
+    recDataset: true,
     items: [
-      { value: "yes", text: "Yes" },
-      { value: "no",  text: "No" }
-    ]
+      { value: 'yes', text: 'Yes' },
+      { value: 'no', text: 'No' },
+    ],
   },
 
-  researchQuestion: {
-    type: "textarea",
-    name: "researchQuestion",
-    legendSize: "l",
-    label: "What is the principal research question or objective? Describe this in language understandable to a member of the public.",
-    alwaysShow: true,
-    rows: 5
-    // Note: this field uses moj-add-another in the template for multiple entries
+  iqa0057: {
+    id: 'IQA0057',
+    name: 'iqa0057',
+    type: 'textarea',
+    legendSize: 'l',
+    label: 'What is the principal research question or objective? Describe this in language understandable to a member of the public.',
+    guidance: {
+      summary: 'Read guidance for this question',
+      html: 'State you may copy information from PIS but not from protocol as this should be information understandable to member of public'
+    },
+    recDataset: true,
+    studyWideDataset: true,
+    rows: 5,
   },
 
-  useAI: {
-    type: "checkboxes",
-    name: "useAI",
-    legendSize: "l",
-    legend: "Does your project use AI (artificial intelligence)?",
-    hint: "Select all that apply",
-    alwaysShow: true,
+  iqa0058: {
+    id: 'IQA0058',
+    name: 'iqa0058',
+    type: 'textarea',
+    legendSize: 'l',
+    label: 'What are the secondary research question or objectives if applicable? Describe this in language understandable to a member of the public.',
+    recDataset: true,
+    rows: 5,
+  },
+
+  iqa03277: {
+    id: 'IQA03277',
+    name: 'iqa03277',
+    type: 'checkboxes',
+    legendSize: 'l',
+    legend: 'Does your project use AI (artificial intelligence)?',
+    guidance: {
+      summary: 'Read guidance for this question',
+      html: 'Artificial Intelligence - the use of digital technology to create systems capable of performing tasks commonly thought to require human intelligence (provided by data/AI team - see below)'
+    },
+    recDataset: true,
+    studyWideDataset: true,
     items: [
-      { value: "designing_developing_testing_ai", text: "Designing, developing or testing an AI product or tool" },
-      { value: "using_existing_ai",               text: "Using an existing AI product or tool for its intended purpose" },
-      { value: "no_ai",                           text: "The project does not involve the use of AI" }
-    ]
+      { value: 'OPT0089', text: 'designing, developing or testing an AI product or tool' },
+      { value: 'OPT0090', text: 'using an existing AI product or tool for its intended purpose' },
+      { value: 'OPT0091', text: 'the project does not involve the use of AI' },
+    ],
   },
 
-  designAI: {
-    type: "checkboxes",
-    name: "designAI",
-    legendSize: "l",
-    legend: "In relation to designing, developing or testing an AI product or tool, what best describes the type of AI?",
-    hint: "Select all that apply",
-    showWhenDesignAI: true,
+  iqa03278: {
+    id: 'IQA03278',
+    name: 'iqa03278',
+    type: 'checkboxes',
+    legendSize: 'l',
+    legend: 'In relation to designing, developing or testing an AI product or tool, what best describes the type of AI? Select all that apply:',
+    guidance: {
+      summary: 'Read guidance for this question',
+      html: 'Data/AI team have provided brief descriptions of each type to help understand these different bits (saved to SharePoint)'
+    },
+    recDataset: true,
+    studyWideDataset: true,
     items: [
-      { value: "image_analysis",                    text: "Image analysis" },
-      { value: "other_machine_learning",            text: "Other machine learning applications" },
-      { value: "natural_language_processing",       text: "Natural language processing" },
-      { value: "generative_ai_or_llm",              text: "Generative AI or large language models" },
-      { value: "robotics",                          text: "Robotics" },
-      { value: "other",                             text: "Other" }
-    ]
+      { value: 'OPT0092', text: 'image analysis' },
+      { value: 'OPT0093', text: 'other machine learning applications' },
+      { value: 'OPT0094', text: 'natural language processing' },
+      { value: 'OPT0095', text: 'generative AI or large language models' },
+      { value: 'OPT0096', text: 'robotics' },
+      { value: 'OPT0033', text: 'other' },
+    ],
   },
 
-  otherAI: {
-    type: "textarea",
-    name: "otherAI",
-    legendSize: "l",
-    label: "Describe the type of AI being used in your project",
-    showWhenDesignAIOther: true,
-    rows: 3
+  iqa03279: {
+    id: 'IQA03279',
+    name: 'iqa03279',
+    type: 'textarea',
+    legendSize: 'l',
+    label: 'Describe the type of AI being used in your project.',
+    recDataset: true,
+    studyWideDataset: true,
+    rows: 5,
   },
 
-  existingAI: {
-    type: "checkboxes",
-    name: "existingAI",
-    legendSize: "l",
-    legend: "In relation to using an existing AI product or tool for its intended purpose, what best describes the type of AI?",
-    hint: "Select all that apply",
-    showWhenExistingAI: true,
+  iqa03280: {
+    id: 'IQA03280',
+    name: 'iqa03280',
+    type: 'checkboxes',
+    legendSize: 'l',
+    legend: 'In relation to using an existing AI product or tool for its intended purpose, what best describes the type of AI? Select all that apply:',
+    recDataset: true,
+    studyWideDataset: true,
     items: [
-      { value: "image_analysis",                    text: "Image analysis" },
-      { value: "other_machine_learning",            text: "Other machine learning applications" },
-      { value: "natural_language_processing",       text: "Natural language processing" },
-      { value: "generative_ai_or_llm",              text: "Generative AI or large language models" },
-      { value: "robotics",                          text: "Robotics" },
-      { value: "other",                             text: "Other" }
-    ]
+      { value: 'OPT0092', text: 'image analysis' },
+      { value: 'OPT0093', text: 'other machine learning applications' },
+      { value: 'OPT0094', text: 'natural language processing' },
+      { value: 'OPT0095', text: 'generative AI or large language models' },
+      { value: 'OPT0096', text: 'robotics' },
+      { value: 'OPT0033', text: 'other' },
+    ],
   },
 
-  otherExistingAI: {
-    type: "textarea",
-    name: "otherExistingAI",
-    legendSize: "l",
-    label: "Describe the type of AI being used in your project",
-    showWhenExistingAIOther: true,
-    rows: 3
+  iqa03281: {
+    id: 'IQA03281',
+    name: 'iqa03281',
+    type: 'textarea',
+    legendSize: 'l',
+    label: 'Describe the type of AI being used in your project.',
+    recDataset: true,
+    studyWideDataset: true,
+    rows: 5,
   },
 
-  willHappen: {
-    type: "textarea",
-    name: "willHappen",
-    legendSize: "l",
-    label: "State exactly what will happen to participants, their tissue or data, how many times and in what order",
-    hint: "Complete this in language understandable to a member of the public",
-    alwaysShow: true,
-    rows: 10
-  }
+  iqa0060: {
+    id: 'IQA0060',
+    name: 'iqa0060',
+    type: 'textarea',
+    legendSize: 'l',
+    label: 'State exactly what will happen to participants, their tissue or data, how many times and in what order:',
+    recDataset: true,
+    studyWideDataset: true,
+    rows: 5,
+  },
 
 }

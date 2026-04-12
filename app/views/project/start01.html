@@ -9,7 +9,6 @@
   {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
   {# ── Flash notification banner ───────────────────────────── #}
-  {# Set by routes when saving for later or completing a section #}
   {% if flash === "saved" %}
     {{ govukNotificationBanner({
       html: "<p class='govuk-body'>Your progress has been saved. You can return to complete your application at any time.</p>"
@@ -35,19 +34,83 @@
         <strong>Project phase:</strong> Preparing project for submission<br />
         <strong>Status:</strong> Draft'
       }) }}
-
       <a href="/admin/export.csv" class="govuk-button govuk-button--secondary">
         Download your answers (CSV)
       </a>
     </div>
     <div class="govuk-grid-column-one-third" style="text-align: right;">
-      <strong class="govuk-tag">
-        Draft
-      </strong>
+      <strong class="govuk-tag">Draft</strong>
     </div>
   </div>
 
-  {# ── Macro to reduce repetition in the card list ── #}
+  {# ── Progress panels ─────────────────────────────────────── #}
+  <div class="govuk-grid-row">
+
+    {# ── Panel 1: Approvals pathway progress ─────────────────── #}
+    <div class="govuk-grid-column-one-half">
+      <div class="govuk-inset-text" style="margin-top: 0;">
+        <h2 class="govuk-heading-s">Progress towards approvals</h2>
+        <p class="govuk-body-s govuk-!-colour-secondary">
+          Based on your project details. This may change as you complete more sections.
+        </p>
+
+        {% if pathwayProgress and pathwayProgress.length %}
+          <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-0">
+            {% for pathway in pathwayProgress %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key govuk-!-font-size-16">
+                  {{ pathway.label }}
+                </dt>
+                <dd class="govuk-summary-list__value" style="text-align: right;">
+                  <strong class="govuk-tag govuk-tag--{{ pathway.light.colour }} govuk-!-font-size-14">
+                    {{ pathway.light.label }}
+                  </strong>
+                </dd>
+              </div>
+            {% endfor %}
+          </dl>
+        {% else %}
+          <p class="govuk-body-s">Complete the project filter to see your approvals pathways.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    {# ── Panel 2: Submission readiness checklist ──────────────── #}
+    <div class="govuk-grid-column-one-half">
+      <div class="govuk-inset-text" style="margin-top: 0;">
+        <h2 class="govuk-heading-s">Ready to submit?</h2>
+        <p class="govuk-body-s govuk-!-colour-secondary">
+          Complete the following before you can submit your application.
+        </p>
+
+        {% if submissionReady %}
+          <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-0">
+            {% for item in submissionReady.items %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key govuk-!-font-size-16">
+                  {{ item.label }}
+                </dt>
+                <dd class="govuk-summary-list__value" style="text-align: right;">
+                  <strong class="govuk-tag govuk-tag--{{ item.colour }} govuk-!-font-size-14">
+                    {{ item.statusLabel }}
+                  </strong>
+                </dd>
+              </div>
+            {% endfor %}
+          </dl>
+
+          {% if submissionReady.allDone %}
+            <p class="govuk-body-s govuk-!-margin-top-3 govuk-!-margin-bottom-0">
+              <a href="/project/submit" class="govuk-link">Submit your application</a>
+            </p>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+
+  {# ── Card macros ─────────────────────────────────────────── #}
   {% macro sectionCard(title, href, status, description) %}
     <li class="govuk-grid-column-full card-group__item">
       <div class="card card--clickable">
@@ -85,23 +148,28 @@
       </div>
     </li>
   {% endmacro %}
-  <ul class="govuk-grid-row card-group">
-    {{ sectionCardThird("Project team",        "/project/project-team/start",     sectionStatuses.projectTeam,     "The members of the research team and their roles and responsibilities.") }}
-    {{ sectionCardThird("Project sponsors",    "/project/project-sponsors/start", sectionStatuses.projectSponsors, "The organisations or individuals sponsoring and taking responsibility for the research.") }}
-    {{ sectionCardThird("Research locations",  "/project/research-locations/start", sectionStatuses.researchLocations, "The sites and settings where the research will be carried out.") }}
-  </ul>
+
+  {# ── Section cards ───────────────────────────────────────── #}
+
+    <ul class="govuk-grid-row card-group">
+      {{ sectionCardThird("Project team",       "/project/project-team/start",       sectionStatuses.projectTeam,       "The members of the research team and their roles and responsibilities.") }}
+      {{ sectionCardThird("Project sponsors",   "/project/project-sponsors/start",   sectionStatuses.projectSponsors,   "The organisations or individuals sponsoring and taking responsibility for the research.") }}
+      {{ sectionCardThird("Research locations", "/project/research-locations/start", sectionStatuses.researchLocations, "The sites and settings where the research will be carried out.") }}
+    </ul>
+
   <ul class="govuk-grid-row card-group">
     {{ sectionCard("Public involvement",              "/project/public-involvement/start",   sectionStatuses.publicInvolvement,  "Whether and how patients, carers, service users or members of the public have been or will be involved in your research.") }}
     {{ sectionCard("Research design and methodology", "/project/research-design/start",      sectionStatuses.researchDesign,     "The overall design, objectives and methodology of your research project.") }}
     {{ sectionCard("Participants",                    "/project/participants/start",          sectionStatuses.participants,       "Who will take part in your research, how they will be recruited and what will be asked of them.") }}
-    {{ sectionCard("Research activities",             "/project/research-activities/start",   sectionStatuses.researchActivities, "The specific activities and procedures that participants will undergo as part of the research.") }}
-    {{ sectionCard("Consent",                         "/project/consent/start",               sectionStatuses.consent,            "How you will obtain and document informed consent from participants or their representatives.") }}
-    {{ sectionCard("Risks and conflicts of interest", "/project/risks-and-conflicts/start",   sectionStatuses.risksAndConflicts,  "Potential risks to participants and any conflicts of interest relevant to the research team.") }}
-    {{ sectionCard("Summary of ethical issues",       "/project/ethical-issues/start",        sectionStatuses.ethicalIssues,      "A summary of the key ethical considerations raised by your research and how you will address them.") }}
-    {{ sectionCard("Research analysis",               "/project/research-analysis/start",     sectionStatuses.researchAnalysis,   "How you will analyse the data collected, including statistical methods and handling of results.") }}
-    {{ sectionCard("Governance and management",       "/project/governance/start",            sectionStatuses.governance,         "How the research will be overseen, managed and monitored throughout its duration.") }}
-    {{ sectionCard("Transparency",                    "/project/transparency/start",          sectionStatuses.transparency,       "How you will make the research and its findings available to participants, the public and the research community.") }}
-    {{ sectionCard("Confidentiality",                 "/project/confidentiality/start",       sectionStatuses.confidentiality,    "How you will protect the confidentiality of participant data and comply with data protection requirements.") }}
+    {{ sectionCard("Research activities",             "/project/research-activities/start",  sectionStatuses.researchActivities, "The specific activities and procedures that participants will undergo as part of the research.") }}
+    {{ sectionCard("Consent",                         "/project/consent/start",              sectionStatuses.consent,            "How you will obtain and document informed consent from participants or their representatives.") }}
+    {{ sectionCard("Risks and conflicts of interest", "/project/risks-and-conflicts/start",  sectionStatuses.risksAndConflicts,  "Potential risks to participants and any conflicts of interest relevant to the research team.") }}
+    {{ sectionCard("Summary of ethical issues",       "/project/ethical-issues/start",       sectionStatuses.ethicalIssues,      "A summary of the key ethical considerations raised by your research and how you will address them.") }}
+    {{ sectionCard("Research analysis",               "/project/research-analysis/start",    sectionStatuses.researchAnalysis,   "How you will analyse the data collected, including statistical methods and handling of results.") }}
+    {{ sectionCard("Governance and management",       "/project/governance/start",           sectionStatuses.governance,         "How the research will be overseen, managed and monitored throughout its duration.") }}
+    {{ sectionCard("Transparency",                    "/project/transparency/start",         sectionStatuses.transparency,       "How you will make the research and its findings available to participants, the public and the research community.") }}
+    {{ sectionCard("Confidentiality",                 "/project/confidentiality/start",      sectionStatuses.confidentiality,    "How you will protect the confidentiality of participant data and comply with data protection requirements.") }}
   </ul>
+
 
 {% endblock %}
