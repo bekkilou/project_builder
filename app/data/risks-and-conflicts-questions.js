@@ -18,7 +18,8 @@ module.exports = {
     name: 'iqa0110',
     type: 'textarea',
     legendSize: 'l',
-    label: 'Describe potential risks to the research team in conducting the project and state how these will be managed',
+    label: 'Describe any risks to the research team and how you will manage them',
+	hint: 'For example, potential risks to researchers visiting participants in their homes ',
     recDataset: true,
     rows: 5,
   },
@@ -28,11 +29,8 @@ module.exports = {
     name: 'iqa0111',
     type: 'radios',
     legendSize: 'l',
-    legend: 'Does the Chief Investigator or any other investigator or collaborator have any direct personal involvement (for example, financial, share-holding, personal relationship) in the organisations sponsoring or funding the project that may give rise to a possible conflict of interest?',
-    guidance: {
-      summary: 'Read guidance for this question',
-      html: 'a. Personal financial interests  b. Organisational financial interests  c. Non-financial interests'
-    },
+    legend: 'Do any investigators have a personal interest in a sponsor or funder that could be a conflict of interest?',
+    hint: 'For example, financial interests, share-holding, or a personal relationship',
     recDataset: true,
     studyWideDataset: true,
     items: [
@@ -46,11 +44,8 @@ module.exports = {
     name: 'iqa0112',
     type: 'textarea',
     legendSize: 'l',
-    label: 'Give details of any potential relevant conflict of interest.',
-    guidance: {
-      summary: 'Read guidance for this question',
-      html: 'include details of the individuals and the potential conflict of interest  if application is also for MoD, details of who these people are need to be included'
-    },
+    label: 'Give details of any potential conflict of interest',
+    hint: 'Include details of the individuals and the nature of the conflict',
     recDataset: true,
     rows: 5,
   },
@@ -61,6 +56,7 @@ module.exports = {
     type: 'radios',
     legendSize: 'l',
     legend: 'Is the Chief Investigator a member of any NHS Research Ethics Committee?',
+	hint: 'select one option',
     recDataset: true,
     items: [
       { value: 'yes', text: 'Yes' },
@@ -73,9 +69,13 @@ module.exports = {
     name: 'iqa0114',
     type: 'checkboxes',
     legendSize: 'l',
-    legend: 'Select all Research Ethics Committees (REC) the Chief Investigator or any other investigators are a member of.  Select all that apply.',
+    legend: 'Which Research Ethics Committees are they a member of?',
+	hint: 'Select all that apply',
     recBooking: true,
     recDataset: true,
+	items: [
+	{value: 'xxxxx', text: 'Sorry, no list of Research Ethics Committees is currently available'},
+	]
   },
 
   iqa0115: {
@@ -83,12 +83,22 @@ module.exports = {
     name: 'iqa0115',
     type: 'radios',
     legendSize: 'l',
-    legend: 'Will the Chief Investigator or any other investigator receive any personal payment over and above normal salary, or any other benefits or incentives, for taking part in this project?',
+    legend: 'Will any investigators receive personal payments, incentives or other benefits for working on this project?',
+	hint: 'This does not include their normal salary',
     recDataset: true,
     items: [
-      { value: 'yes', text: 'Yes' },
+      { value: 'yes', text: 'Yes' revealOn: 'iqa0116'},
       { value: 'no', text: 'No' },
     ],
   },
+  iqa0116: {
+    id: 'IQA0116',
+    name: 'iqa0116',
+    type: 'textarea',
+    legendSize: 'l',
+    label: 'Give details of payments, benefits or any other incentives',
+    recDataset: true,
+    rows: 5,
+  }
 
 }

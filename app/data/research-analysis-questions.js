@@ -18,11 +18,8 @@ module.exports = {
     name: 'iqa0121',
     type: 'checkboxes',
     legendSize: 'l',
-    legend: 'How has the quality of the research been assessed?  Select all that apply.',
-    guidance: {
-      summary: 'Read guidance for this question',
-      html: '* guidance : geared towards commercial and how it relates to them (not interested in other regulatory reviews - this Q is more about pre-reg review)'
-    },
+    legend: 'How has the quality of the research been assessed as part of the study design process?',
+    hint: 'Select all that apply',
     recDataset: true,
     items: [
       { value: 'OPT0235', text: 'Independent external review' },
@@ -40,7 +37,7 @@ module.exports = {
     name: 'iqa0122',
     type: 'input',
     legendSize: 'l',
-    label: 'Give details of how the quality of the research has been assessed',
+    label: 'Give details of the other methods used to assess the quality quality of the research',
     recDataset: true,
   },
 
@@ -49,7 +46,8 @@ module.exports = {
     name: 'iqa0123',
     type: 'textarea',
     legendSize: 'l',
-    label: 'Explain why this review process is appropriate to the nature of the project and if any issues raised by the review have not been addressed.  Give details if the review only relates to part of the project.',
+    label: 'Explain why this review process is appropriate to the nature of the project ',
+	hint: 'Include whether any issues raised by the review have not been addressed, or if the review only relates to part of the project',
     recDataset: true,
     rows: 5,
   },
@@ -59,11 +57,8 @@ module.exports = {
     name: 'iqa0124',
     type: 'radios',
     legendSize: 'l',
-    legend: 'What will the primary form of analysis be?',
-    guidance: {
-      summary: 'Read guidance for this question',
-      html: 'if analysis involves both, this is to be described in 3a - we are looking for primary form of analysis'
-    },
+    legend: 'What is the primary form of analysis?',
+    hint: 'Just select the primary method, if you are using both forms of analysis you can explain this at the next question',
     recDataset: true,
     items: [
       { value: 'OPT0241', text: 'Qualititative' },
@@ -77,10 +72,7 @@ module.exports = {
     type: 'textarea',
     legendSize: 'l',
     label: 'Give details of the methods for analysing the data.',
-    guidance: {
-      summary: 'Read guidance for this question',
-      html: 'If the research is qualitative we want to know how it will be decided that there is sufficient data'
-    },
+    hint: 'If the research is qualitative, include how you will decide there is sufficient data',
     recDataset: true,
     rows: 5,
   },
@@ -90,7 +82,8 @@ module.exports = {
     name: 'iqa0126',
     type: 'checkboxes',
     legendSize: 'l',
-    legend: 'How have the statistical aspects of the project been reviewed?  Select all that apply.',
+    legend: 'How have the statistical aspects of the project been reviewed?',
+	hint: 'Select all that apply',
     recDataset: true,
     items: [
       { value: 'OPT0243', text: 'Review by independent statistician commissioned by funder or sponsor' },
@@ -109,7 +102,7 @@ module.exports = {
     name: 'iqa0127',
     type: 'textarea',
     legendSize: 'l',
-    label: 'Give details of the person or organisation who undertook the statistical review, and how you have addressed their recommendations.',
+    label: 'Give details of the person or organisation who undertook the statistical review, and how you have addressed their recommendations',
     recDataset: true,
     rows: 5,
   },
@@ -119,35 +112,20 @@ module.exports = {
     name: 'iqa0128',
     type: 'textarea',
     legendSize: 'l',
-    label: 'What is the primary outcome measure for the project?',
-    guidance: {
-      summary: 'Read guidance for this question',
-      html: 'Include: The name of the outcome (do not use abbreviations) The metric or method of measurement used (be as specific as possible) The timepoint(s) of interest'
-    },
+    label: 'What are the outcome measures for this project?',
+    hint: 'Include the name of the outcomes, the metrics or methods of measurement used, and timepoints',
     recDataset: true,
     rows: 5,
   },
 
-  iqa0129: {
-    id: 'IQA0129',
-    name: 'iqa0129',
-    type: 'textarea',
-    legendSize: 'l',
-    label: 'What are the secondary outcome measures (if any)?',
-    guidance: {
-      summary: 'Read guidance for this question',
-      html: 'For each outcome include: The name of the outcome (do not use abbreviations) The metric or method of measurement used (be as specific as possible) The timepoint(s) of interest'
-    },
-    recDataset: true,
-    rows: 5,
-  },
 
   iqa0130: {
     id: 'IQA0130',
     name: 'iqa0130',
     type: 'textarea',
     legendSize: 'l',
-    label: 'How many participants, samples, or data records do you plan to study in total? Describe why you chose this number. If there is more than one group, give further details.',
+    label: 'How many participants, samples, or data records do you plan to study in total?',
+	hint: 'If there will be more than one group, provide details in your answer',
     recDataset: true,
     rows: 5,
   },
@@ -157,7 +135,8 @@ module.exports = {
     name: 'iqa0131',
     type: 'textarea',
     legendSize: 'l',
-    label: 'How was the sample size decided upon? If a formal sample size calculation was used, indicate how this was done, giving sufficient information to justify and reproduce the calculation.',
+    label: 'How did you decide on the sample size?',
+	hint: 'If a sample size calculation was used, explain why this calculation method was chosen, and how it can be reproduced',
     recDataset: true,
     rows: 5,
   },

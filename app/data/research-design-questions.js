@@ -18,7 +18,8 @@ module.exports = {
     name: 'iqa0049',
     type: 'checkboxes',
     legendSize: 'l',
-    legend: 'Select the methodology or methodologies you will be using for this project:',
+    legend: 'Which research methods will you use?',
+	hint: 'Select all that apply',
     recDataset: true,
     studyWideDataset: true,
     items: [
@@ -35,29 +36,25 @@ module.exports = {
       { value: 'OPT0072', text: 'qualitative research' },
       { value: 'OPT0073', text: 'questionnaire, interview or observation study' },
       { value: 'OPT0074', text: 'randomised controlled trial' },
-      { value: 'OPT0033', text: 'other' },
+      { value: 'OPT0033', text: 'other', revealOn: 'iqa0050' },
     ],
   },
-
-  iqa0050: {
-    id: 'IQA0050',
-    name: 'iqa0050',
-    type: 'input',
-    legendSize: 'l',
-    label: 'Give details of the methodologies you will be using',
-    recDataset: true,
-  },
+	  iqa0050: {
+		id: 'IQA0050',
+		name: 'iqa0050',
+		type: 'input',
+		legendSize: 'l',
+		label: 'Give details of the methods you will use',
+		recDataset: true,
+	  },
 
   iqa0051: {
     id: 'IQA0051',
     name: 'iqa0051',
     type: 'checkboxes',
     legendSize: 'l',
-    legend: 'Select the trial methodology',
-    guidance: {
-      summary: 'Read guidance for this question',
-      html: 'replace existing CTIMP  * guidance for different methodologies'
-    },
+    legend: 'Which trial methods will you use?',
+    hint: 'Select all that apply',
     recDataset: true,
     studyWideDataset: true,
     items: [
@@ -69,27 +66,22 @@ module.exports = {
       { value: 'OPT0080', text: 'cross-over' },
       { value: 'OPT0081', text: 'double-blinded' },
       { value: 'OPT0082', text: 'open' },
-      { value: 'OPT0083', text: 'other complex or innovative design' },
       { value: 'OPT0084', text: 'parallel arms' },
       { value: 'OPT0085', text: 'platform trial' },
       { value: 'OPT0086', text: 'real-world' },
       { value: 'OPT0087', text: 'targeted or stratified' },
       { value: 'OPT0088', text: 'umbrella trial' },
+	  { value: 'OPT0083', text: 'other complex or innovative design', revealOn: 'iqa0052' },
     ],
   },
-
-  iqa0052: {
-    id: 'IQA0052',
-    name: 'iqa0052',
-    type: 'input',
-    legendSize: 'l',
-    label: 'Specify the methodology',
-    guidance: {
-      summary: 'Read guidance for this question',
-      html: 'existing CTIMP'
-    },
-    recDataset: true,
-  },
+	  iqa0052: {
+		id: 'IQA0052',
+		name: 'iqa0052',
+		type: 'input',
+		legendSize: 'l',
+		label: 'Specify the methodology',
+		recDataset: true,
+	  },
 
   iqa0053: {
     id: 'IQA0053',
@@ -111,11 +103,8 @@ module.exports = {
     name: 'iqa0054',
     type: 'radios',
     legendSize: 'l',
-    legend: 'Is your project a clinical trial to study a novel intervention?',
-    guidance: {
-      summary: 'Read guidance for this question',
-      html: 'used to determine PR  * guidance on \'novel intervention\''
-    },
+    legend: 'Is this a clinical trial of a novel intervention?',
+    hint: 'Select one option',
     proportionateReview: true,
     recBooking: true,
     recDataset: true,
@@ -130,11 +119,8 @@ module.exports = {
     name: 'iqa0055',
     type: 'radios',
     legendSize: 'l',
-    legend: 'Is your project a randomised clinical trial to compare any interventions in clinical practice?',
-    guidance: {
-      summary: 'Read guidance for this question',
-      html: 'used to determine PR * how to answer if IMP tested against placebo'
-    },
+    legend: 'Is this a randomised clinical trial comparing interventions in clinical practice?',
+    hint: 'Select one option',
     proportionateReview: true,
     recBooking: true,
     recDataset: true,
@@ -150,11 +136,8 @@ module.exports = {
     name: 'iqa0056',
     type: 'radios',
     legendSize: 'l',
-    legend: 'Are all the interventions that you are comparing routine \'gold standard\' care options in clinical practice?',
-    guidance: {
-      summary: 'Read guidance for this question',
-      html: 'used to determine PR  guidance to explain gold standard'
-    },
+    legend: 'Are all the interventions you are comparing routine or \'gold standard\'’ clinical care?',
+    hint: 'Select one option',
     recDataset: true,
     items: [
       { value: 'yes', text: 'Yes' },
@@ -167,11 +150,8 @@ module.exports = {
     name: 'iqa0057',
     type: 'textarea',
     legendSize: 'l',
-    label: 'What is the principal research question or objective? Describe this in language understandable to a member of the public.',
-    guidance: {
-      summary: 'Read guidance for this question',
-      html: 'State you may copy information from PIS but not from protocol as this should be information understandable to member of public'
-    },
+    label: 'What is the main research question or objective?',
+    hint: 'Use language understandable to a member of the public',
     recDataset: true,
     studyWideDataset: true,
     rows: 5,
@@ -182,7 +162,8 @@ module.exports = {
     name: 'iqa0058',
     type: 'textarea',
     legendSize: 'l',
-    label: 'What are the secondary research question or objectives if applicable? Describe this in language understandable to a member of the public.',
+    label: 'What is the secondary research question or objective, if applicable',
+	hint: 'Use language understandable to a member of the public',
     recDataset: true,
     rows: 5,
   },
@@ -192,17 +173,15 @@ module.exports = {
     name: 'iqa03277',
     type: 'checkboxes',
     legendSize: 'l',
-    legend: 'Does your project use AI (artificial intelligence)?',
-    guidance: {
-      summary: 'Read guidance for this question',
-      html: 'Artificial Intelligence - the use of digital technology to create systems capable of performing tasks commonly thought to require human intelligence (provided by data/AI team - see below)'
-    },
+    legend: 'Does your project use artificial intelligence (AI)?',
     recDataset: true,
     studyWideDataset: true,
     items: [
       { value: 'OPT0089', text: 'designing, developing or testing an AI product or tool' },
       { value: 'OPT0090', text: 'using an existing AI product or tool for its intended purpose' },
       { value: 'OPT0091', text: 'the project does not involve the use of AI' },
+	  { divider: 'or'},
+	  { value: 'OPT0092', text: 'AI is not used in this project' },
     ],
   },
 
@@ -211,11 +190,8 @@ module.exports = {
     name: 'iqa03278',
     type: 'checkboxes',
     legendSize: 'l',
-    legend: 'In relation to designing, developing or testing an AI product or tool, what best describes the type of AI? Select all that apply:',
-    guidance: {
-      summary: 'Read guidance for this question',
-      html: 'Data/AI team have provided brief descriptions of each type to help understand these different bits (saved to SharePoint)'
-    },
+    legend: 'If you are designing, developing or testing AI, what type is it?',
+    hint: 'Select all that apply',
     recDataset: true,
     studyWideDataset: true,
     items: [
@@ -224,7 +200,7 @@ module.exports = {
       { value: 'OPT0094', text: 'natural language processing' },
       { value: 'OPT0095', text: 'generative AI or large language models' },
       { value: 'OPT0096', text: 'robotics' },
-      { value: 'OPT0033', text: 'other' },
+      { value: 'OPT0033', text: 'other', revealOn:'iqa03279' },
     ],
   },
 
@@ -233,7 +209,7 @@ module.exports = {
     name: 'iqa03279',
     type: 'textarea',
     legendSize: 'l',
-    label: 'Describe the type of AI being used in your project.',
+    label: 'Describe the type of AI you will use',
     recDataset: true,
     studyWideDataset: true,
     rows: 5,
@@ -244,7 +220,7 @@ module.exports = {
     name: 'iqa03280',
     type: 'checkboxes',
     legendSize: 'l',
-    legend: 'In relation to using an existing AI product or tool for its intended purpose, what best describes the type of AI? Select all that apply:',
+    legend: 'If you are using existing AI for its intended purpose, what type is it?',
     recDataset: true,
     studyWideDataset: true,
     items: [
@@ -253,7 +229,7 @@ module.exports = {
       { value: 'OPT0094', text: 'natural language processing' },
       { value: 'OPT0095', text: 'generative AI or large language models' },
       { value: 'OPT0096', text: 'robotics' },
-      { value: 'OPT0033', text: 'other' },
+      { value: 'OPT0033', text: 'other', revealOn: 'iqa03281' },
     ],
   },
 
@@ -273,7 +249,8 @@ module.exports = {
     name: 'iqa0060',
     type: 'textarea',
     legendSize: 'l',
-    label: 'State exactly what will happen to participants, their tissue or data, how many times and in what order:',
+    label: 'Explain what will happen to participants, their tissue or data - how many times and in what order',
+	hint: 'Use language understandable to a member of the public',
     recDataset: true,
     studyWideDataset: true,
     rows: 5,

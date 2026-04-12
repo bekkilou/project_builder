@@ -13,154 +13,76 @@
 
 module.exports = {
 
-  iqa0045: {
-    id: 'IQA0045',
-    name: 'iqa0045',
-    type: 'checkboxes',
-    legendSize: 'l',
-    legend: 'In which aspects of the project have you already actively involved patients or their carers, service users or members of the public?',
-    hint: 'Select all that apply',
-    recDataset: true,
-    items: [
-      { value: 'OPT0035', text: 'identifying, developing, or prioritising the research question' },
-      { value: 'OPT0036', text: 'being a member of a research advisory or reference group' },
-      { value: 'OPT0037', text: 'being a member of the Trial Management Group or Data Monitoring Committee' },
-      { value: 'OPT0038', text: 'developing the research methods (for example, designing questionnaires, or defining endpoints or outcome measures)' },
-      { value: 'OPT0039', text: 'ensuring that the design of the research is feasible from the perspective of the participants (for example, identifying potential emotional or practical obstacles for research participants)' },
-      { value: 'OPT0040', text: 'designing the inclusion and exclusion criteria including consideration of the demographic diversity of the study population' },
-      { value: 'OPT0041', text: 'developing the risk or benefit analysis (for example, identifying and evaluating the probable risks and burden involved for research participants)' },
-      { value: 'OPT0042', text: 'developing the recruitment and consent process (for example, how and when to approach potential participants)' },
-      { value: 'OPT0043', text: 'developing participant information sheets, the consent forms, and other documents which are used to communicate with potential research participants' },
-      { value: 'OPT0044', text: 'developing plain language research summaries' },
-      { value: 'OPT0045', text: 'developing or delivering training to staff' },
-      { value: 'OPT0046', text: 'developing the dissemination plan for the research' },
-      { value: 'OPT0047', text: 'preparing regulatory submissions' },
-      { value: 'OPT0048', text: 'planning to attend the Research Ethics Committee meetings to help explain how and why the research design is likely to be acceptable to research participants' },
-      { value: 'OPT0033', text: 'other' },
-      { value: 'OPT0049', text: 'patients, service users or their carers, or members of the public have not been involved' },
-    ],
+  tbc001: {
+	  id: 'TBC001',
+	  name: 'tbc001',
+	  type: 'Checkbox',
+	  legendSize: 'l',
+	  legend: 'How have people with lived experience been actively involved in your research to date?',
+	  hint: 'Select all that apply',
+	  recDataset: true,
+	  items: [
+		{value: 'tbcq01', text: 'Identifying and prioritising the research question(s)', hint: 'For example, talking to the people with lived experience to explore issues/needs and developing a research question together around that topic'},
+		{value: 'tbcq02', text: 'Developing an application for funding or ethics review ', hint: 'For example, having a patient and public involvement member as a co-applicant and contributing to a review panel or agreeing on the patient and public involvement plan for the future'},
+		{value: 'tbcq03', text: 'Design of the research', hint: 'For example, defining the outcome measures, agreeing on a recruitment strategy, or designing participant information'},
+	  ]
   },
-
-  iqa0046: {
-    id: 'IQA0046',
-    name: 'iqa0046',
+  tbc002: {
+    id: 'TBC002',
+    name: 'tbc002',
     type: 'textarea',
     legendSize: 'l',
-    label: 'Give details of how you involved public contributors',
+    label: 'Provide further details on your answers above',
+	hint: 'Using the UK standards for Public Involvement, explain how people with lived experience—especially from underserved groups—have shaped this application. Please provide sufficient detail, including any training and support provided. You should describe who has been involved, how you found them, why this is appropriate, and what role(s) they have played. Include any challenges faced and how you would like to improve in future. If you have not involved people with lived experience at any one stage, please explain why not.',
     recDataset: true,
     rows: 5,
   },
-
-  iqa0048: {
-    id: 'IQA0048',
-    name: 'iqa0048',
+  
+  tbc003: {
+    id: 'TBC003',
+    name: 'tbc003',
     type: 'textarea',
     legendSize: 'l',
-    label: 'Insights from patients, carers, services users or members of the public could have helped to ensure that this research reflects the priorities, needs and concerns of both the intended participant population, and of the people the research is intended to benefit. What are your reasons for not involving these people?',
-    guidance: {
-      summary: 'Read guidance for this question',
-      html: 'guidance to refer to quality standards of PIS and wider programme of activity (eg pharma may do PPI on disease area in general to feed into this project but the PPI was not done specifically for this project)'
-    },
+    label: 'How have people with lived experience shaped the development and design of your research?',
+	hint: 'Please explain what you have learnt or changed, for example, a different hypothesis, a better perspective on lived experience challenges or cemented the current approach. Has working with people with lived experience had an impact so far? If so, how? This could be in areas such as identifying and prioritising the research question, designing the study protocols - including the outcomes, contributing to patient materials, or the application itself. ',
     recDataset: true,
     rows: 5,
   },
-
-  iqa0042: {
-    id: 'IQA0042',
-    name: 'iqa0042',
-    type: 'checkboxes',
-    legendSize: 'l',
-    legend: 'How did you identify the public contributors that you involved?  Select all that apply',
-    recDataset: true,
-    items: [
-      { value: 'OPT0050', text: 'we have existing arrangements in our organisation or team for involving patients, carers, service users or members of the public' },
-      { value: 'OPT0051', text: 'we asked an existing patient and public involvement group external to our organisation or team (for example, run by an NHS Trust, university, charity, local councils)' },
-      { value: 'OPT0052', text: 'we set up a new arrangement to involve patients, carers, service users or members of the public in our project (for example, posted the opportunity on the People in Research website, local noticeboards, or through a community organisation)' },
-      { value: 'OPT0053', text: 'we were approached by some patients, carers, service users, a patient group, or a charity with a suggestion for this research and we have worked with them to develop it' },
-      { value: 'OPT0033', text: 'other' },
-    ],
+  
+  tbc004: {
+	  id: 'TBC004',
+	  name: 'tbc004',
+	  type: 'Checkbox',
+	  legendSize: 'l',
+	  legend: 'How will people with lived experience be actively involved throughout the various stages of your project?',
+	  hint: 'Select all that apply',
+	  recDataset: true,
+	  items: [
+		{value: 'tbcq04', text: 'Management of the research', hint: 'For example, part of a committee that makes key decisions'},
+		{value: 'tbcq05', text: 'Undertaking the research', hint: 'For example, carrying out interviews or co-facilitating groups'},
+		{value: 'tbcq06', text: 'Writing up the research', hint: 'For example, co-authoring publications or helping with lay summaries'},
+		{value: 'tbcq07', text: 'Dissemination of outputs, including research findings', hint: 'For example, co-presenting or designing the communications plan'},
+		{value: 'tbcq08', text: 'Implementing research findings or recommendations to change policy and practice', hint: 'For example, sharing and advocating for findings with key stakeholders, or sharing involvement practice'},
+		{value: 'tbcq09', text: 'Developing future applications or research'},
+	  ]
   },
-
-  iqa0043: {
-    id: 'IQA0043',
-    name: 'iqa0043',
+  tbc005: {
+    id: 'TBC005',
+    name: 'tbc005',
     type: 'textarea',
     legendSize: 'l',
-    label: 'Give details how you identified the public contributors to that you involved.',
+    label: 'Provide further details on your answers above',
+	hint: 'Using the UK standards for Public Involvement, describe how people with relevant lived experience—especially from underserved groups—will be involved in the research. Explain the aims of your involvement activity, and how you plan to measure your impact against them, for example, how you will listen to people with lived experience and how this will drive your decision-making. Share how you’ll build equitable partnerships with people and communities, who and how many you plan to involve, and how you’ll identify them. Justify your approach and level of involvement over the lifetime of the project and at specific timepoints. Outline how you’ll engage, support, reward, and provide feedback to those involved. Please include how you plan to manage and coordinate this activity, showing how this is proportionate to your budget and resources. It is important to give as much detail as you can in this section to ensure that the reviewers are able to accurately score your application. If you do not plan to involve people with lived experience at any one stage, please explain why not.',
     recDataset: true,
     rows: 5,
   },
-
-  iqa0044: {
-    id: 'IQA0044',
-    name: 'iqa0044',
+  tbc006: {
+    id: 'TBC006',
+    name: 'tbc006',
     type: 'textarea',
     legendSize: 'l',
-    label: 'Tell us about the public contributors you worked with:',
+    label: 'Please describe how you will try to involve people with lived experience who reflect the communities that your research seeks to directly benefit. ',
+	hint: 'Please share what you know about the communities your research is seeking to benefit, and how you plan to reach and involve them in the activities set out above. Consider equity, diversity and inclusion and how they individually relate to your research and involvement plans across their lifecycle. Outline some challenges or barriers you and people with lived experience may face and any plans you have to mitigate against them. Detail how you plan to improve the accessibility of your involvement activities throughout. ',
     recDataset: true,
     rows: 5,
   },
-
-  iqa03274: {
-    id: 'IQA03274',
-    name: 'iqa03274',
-    type: 'textarea',
-    legendSize: 'l',
-    label: 'What did your public contributors say was important to them about how this research is done?',
-    recDataset: true,
-    rows: 5,
-  },
-
-  iqa0162: {
-    id: 'IQA0162',
-    name: 'iqa0162',
-    type: 'checkboxes',
-    legendSize: 'l',
-    legend: 'How do you plan to involve public contributors in the remaining stages of the research process?  Select all that apply:',
-    recDataset: true,
-    items: [
-      { value: 'OPT0036', text: 'being a member of research advisory or reference group' },
-      { value: 'OPT0037', text: 'being a member of the Trial Management Group or Data Monitoring Committee' },
-      { value: 'OPT0045', text: 'developing or delivering training to staff' },
-      { value: 'OPT0055', text: 'helping to promote this research' },
-      { value: 'OPT0056', text: 'carrying out research activities (for example, facilitating focus groups, interviewing or administering questionnaires)' },
-      { value: 'OPT0057', text: 'analysing the research findings' },
-      { value: 'OPT0058', text: 'contributing to further regulatory submissions (such as amendments)' },
-      { value: 'OPT0059', text: 'sharing research results (for example, by presenting at conferences or disseminating the research findings via social media)' },
-      { value: 'OPT0060', text: 'developing plain language summaries of the results' },
-      { value: 'OPT0061', text: 'there is no plan to involve public contributors in the remaining stages of the research process' },
-      { value: 'OPT0033', text: 'other' },
-    ],
-  },
-
-  iqa0163: {
-    id: 'IQA0163',
-    name: 'iqa0163',
-    type: 'textarea',
-    legendSize: 'l',
-    label: 'Give details of other aspects public contributors will advise on or contribute to',
-    recDataset: true,
-    rows: 5,
-  },
-
-  iqa03275: {
-    id: 'IQA03275',
-    name: 'iqa03275',
-    type: 'textarea',
-    legendSize: 'l',
-    label: 'Justify your approach and describe the benefits and challenges of involving public contributors',
-    recDataset: true,
-    rows: 5,
-  },
-
-  iqa03276: {
-    id: 'IQA03276',
-    name: 'iqa03276',
-    type: 'textarea',
-    legendSize: 'l',
-    label: 'Justify the approach and absence of public involvement',
-    recDataset: true,
-    rows: 5,
-  },
-
-}

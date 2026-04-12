@@ -18,7 +18,7 @@ module.exports = {
     name: 'iqa0169',
     type: 'radios',
     legendSize: 'l',
-    legend: 'Is the project already registered elsewhere?',
+    legend: 'Is the project already registered?',
     recDataset: true,
     items: [
       { value: 'yes', text: 'Yes' },
@@ -31,16 +31,14 @@ module.exports = {
     name: 'iqa0165',
     type: 'radios',
     legendSize: 'l',
-    legend: 'Registration and research project public summary publication deferral request',
-    guidance: {
-      summary: 'Read guidance for this question',
-      html: 'Include contextual help which initially needs to indicate that publication is currently on HRA website – and then update to IRAS website in due course. Also explain arrangements for automatic registration'
-    },
+    legend: 'Do you want to defer registration and publishing the public summary?',
+    hint: 'Deferral will only be agreed where a strong justification is provided',
     recDataset: true,
     items: [
       { value: 'OPT0253', text: 'No deferral requested' },
-      { value: 'OPT0254', text: 'I request a deferral of registration and research summary publication – for protection of commercially confidential information' },
-      { value: 'OPT0255', text: 'I request a deferral of registration and research summary publication – other reason' },
+	  { divider: 'or'},
+      { value: 'OPT0254', text: 'I request a deferral of registration and research summary publication – for protection of commercially confidential information', revealOn: 'iqa0166'},
+      { value: 'OPT0255', text: 'I request a deferral of registration and research summary publication – other reason', revealOn: 'iqa0166' },
     ],
   },
 
@@ -49,11 +47,7 @@ module.exports = {
     name: 'iqa0166',
     type: 'textarea',
     legendSize: 'l',
-    label: 'Provide clear justification for the deferral request.',
-    guidance: {
-      summary: 'Read guidance for this question',
-      html: 'Guidance needs to say already having registered is not a reason for deferral as not asking for a deferral.'
-    },
+    label: 'Explain why you are asking for a deferral',
     recDataset: true,
     rows: 5,
   },
@@ -63,19 +57,19 @@ module.exports = {
     name: 'iqa0167',
     type: 'checkboxes',
     legendSize: 'l',
-    legend: 'Confirm the arrangements for registration of this project. Select all that apply:',
+    legend: 'How will you register this project?',
+	hint: 'Select all that apply',
     items: [
       { value: 'OPT0256', text: 'The project will be registered in a registry' },
-      { value: 'OPT0257', text: 'Other arrangements are in place' },
+      { value: 'OPT0257', text: 'Other arrangements are in place', revealOn: 'iqa0168' }
     ],
   },
-
   iqa0168: {
     id: 'IQA0168',
     name: 'iqa0168',
     type: 'textarea',
     legendSize: 'l',
-    label: 'Provide details of other arrangements for project registration.',
+    label: 'Describe any other registration arrangements',
     rows: 5,
   },
 
@@ -84,15 +78,14 @@ module.exports = {
     name: 'iqa0169',
     type: 'checkboxes',
     legendSize: 'l',
-    legend: 'Confirm the arrangements for registration of this project. Select all that apply.',
+    legend: 'How will you register this project?',
     recDataset: true,
     items: [
-      { value: 'OPT0258', text: 'ISRCTN' },
-      { value: 'OPT0259', text: 'Clinicaltrials.gov' },
-      { value: 'OPT0033', text: 'Other' },
+      { value: 'OPT0258', text: 'ISRCTN', revealOn: 'iqa0170' },
+      { value: 'OPT0259', text: 'Clinicaltrials.gov', revealOn: 'iqa0171' },
+      { value: 'OPT0033', text: 'Other', revealOn: 'iqa0172' },
     ],
   },
-
   iqa0170: {
     id: 'IQA0170',
     name: 'iqa0170',
@@ -125,11 +118,12 @@ module.exports = {
     name: 'iqa0173',
     type: 'checkboxes',
     legendSize: 'l',
-    legend: 'Project public summary publication deferral request',
+    legend: 'Do you want to defer publishing the public summary?',
     items: [
       { value: 'OPT0253', text: 'No deferral requested' },
-      { value: 'OPT0260', text: 'I request a deferral of research summary publication – for protection of commercially confidential information' },
-      { value: 'OPT0261', text: 'I request deferral of research summary publication – other reason' },
+	  { divider: 'or'},
+      { value: 'OPT0260', text: 'I request a deferral of research summary publication – for protection of commercially confidential information', revealOn: 'iqa0174' },
+      { value: 'OPT0261', text: 'I request deferral of research summary publication – other reason', revealOn: 'iqa0174' },
     ],
   },
 
@@ -147,11 +141,8 @@ module.exports = {
     name: 'iqa0175',
     type: 'date',
     legendSize: 'l',
-    legend: 'You should define the end of your project and notify relevant bodies at the end of the project.  What is the planned end date?',
-    guidance: {
-      summary: 'Read guidance for this question',
-      html: 'rephrased existing CTIMP'
-    },
+    legend: 'When is the planned project end date?',
+    hint: 'For example, 27 March 2007',
     recDataset: true,
     studyWideDataset: true,
   },
@@ -161,11 +152,8 @@ module.exports = {
     name: 'iqa0176',
     type: 'checkboxes',
     legendSize: 'l',
-    legend: 'A final report should be submitted to the Research Ethics Committee (REC) within 12 months of the end of the project, including a public summary of results. How else do you intend to report and disseminate the results of the project? Select all that apply:',
-    guidance: {
-      summary: 'Read guidance for this question',
-      html: 'cover expectations for public reporting'
-    },
+    legend: 'How will you report and share the project results?',
+    hint: 'This is in addition to the final report which should be submitted to the Research Ethics Committee (REC) within 12 months of the end of the project and include a public summary of results',
     recDataset: true,
     items: [
       { value: 'OPT0262', text: 'Peer reviewed scientific journals' },
@@ -176,10 +164,9 @@ module.exports = {
       { value: 'OPT0267', text: 'Submission to regulatory authorities' },
       { value: 'OPT0268', text: 'Access to raw data and right to publish freely by all investigators in study or by Independent Steering Committee on behalf of all investigators' },
       { value: 'OPT0269', text: 'No plans to report or disseminate the results' },
-      { value: 'OPT0033', text: 'Other' },
+      { value: 'OPT0033', text: 'Other', revealOn: 'iqa0177' },
     ],
   },
-
   iqa0177: {
     id: 'IQA0177',
     name: 'iqa0177',
@@ -195,7 +182,8 @@ module.exports = {
     name: 'iqa0178',
     type: 'textarea',
     legendSize: 'l',
-    label: 'Results of the research provide feedback to participants on the outcome and how they have contributed.  This information should be accessible and easy to understand.',
+    label: 'Explain how and when you will inform participants of the results, or why you will not',
+	hint: 'Where possible, participants should receive accessible and easy to understand information on the outcome of the research and how they contributed',
     recDataset: true,
     rows: 5,
   },
@@ -205,7 +193,8 @@ module.exports = {
     name: 'iqa0179',
     type: 'radios',
     legendSize: 'l',
-    legend: 'You should enable the sharing of study data, with appropriate safeguards in place, to other interested groups and communities. Sharing data maximises and respects the contribution of participants and enables and supports further re-use. Do you plan to share de-identified individual participant-level data?',
+    legend: 'Will you share de‑identified individual participant‑level data?',
+	hint: 'Where possible you should enable the sharing of study data, with appropriate safeguards in place, to other interested groups and communities',
     recDataset: true,
     items: [
       { value: 'yes', text: 'Yes' },
@@ -218,11 +207,7 @@ module.exports = {
     name: 'iqa0180',
     type: 'textarea',
     legendSize: 'l',
-    label: 'Give details of your plans for sharing de-identified individual participant-level data, or describe your alternative plans for making data available for scrutiny or re-use.',
-    guidance: {
-      summary: 'Read guidance for this question',
-      html: 'rephrased existing CTIMP'
-    },
+    label: 'Describe your plans for sharing de‑identified participant‑level data, or how you will make data available for scrutiny or re‑use',
     recDataset: true,
     rows: 5,
   },
@@ -232,7 +217,7 @@ module.exports = {
     name: 'iqa0181',
     type: 'radios',
     legendSize: 'l',
-    legend: 'Will you have any remaining human biological material at the end of the project?',
+    legend: 'Will any human biological material remain at the end of the project?',
     recDataset: true,
     studyWideDataset: true,
     items: [
@@ -246,7 +231,8 @@ module.exports = {
     name: 'iqa0182',
     type: 'radios',
     legendSize: 'l',
-    legend: 'The UK Clinical Research Collaboration (UKCRC) Tissue Directory and Coordination Centre advises researchers to register sample collections with them, to maximise the use of the samples. Will you be registering any remaining samples with them?',
+    legend: 'Will you register any remaining samples with the UKCRC Tissue Directory and Coordination Centre?',
+	hint: 'The UKCRC advises researchers to register sample collections with them, to maximise the use of the samples',
     recDataset: true,
     studyWideDataset: true,
     items: [
@@ -260,74 +246,11 @@ module.exports = {
     name: 'iqa0183',
     type: 'textarea',
     legendSize: 'l',
-    label: 'The Human Tissue Authority and Medical Research Council advise researchers to consider options for maximising use before disposal. You should enable the sharing of tissue samples, with appropriate safeguards in place, to other interested groups and communities. Sharing tissue maximises and respects the contribution of participants and enables and supports further research. Justify the post-study arrangements or destruction of the material.',
+    label: 'Explain the post‑study arrangements for destruction of the material and why',
+	hint: 'The Human Tissue Authority and Medical Research Council advise researchers to consider options for maximising use before disposal, such as sharing of tissue samples to other interested groups and communities',
     recDataset: true,
     studyWideDataset: true,
     rows: 5,
-  },
-
-  iqa0184: {
-    id: 'IQA0184',
-    name: 'iqa0184',
-    type: 'input',
-    legendSize: 'l',
-    label: 'What is the contact point for public queries about this project? This information will be made public so you should use generic contact details rather than naming an individual person.',
-  },
-
-  iqa0185: {
-    id: 'IQA0185',
-    name: 'iqa0185',
-    type: 'input',
-    legendSize: 'l',
-    label: 'Email',
-  },
-
-  iqa0186: {
-    id: 'IQA0186',
-    name: 'iqa0186',
-    type: 'input',
-    legendSize: 'l',
-    label: 'Telephone',
-  },
-
-  iqa0187: {
-    id: 'IQA0187',
-    name: 'iqa0187',
-    type: 'input',
-    legendSize: 'l',
-    label: 'Postal address',
-  },
-
-  iqa0188: {
-    id: 'IQA0188',
-    name: 'iqa0188',
-    type: 'input',
-    legendSize: 'l',
-    label: 'What is the contact point for scientific queries about this project? This information will be made public so you should use generic contact details rather than naming an individual person.',
-  },
-
-  iqa0189: {
-    id: 'IQA0189',
-    name: 'iqa0189',
-    type: 'input',
-    legendSize: 'l',
-    label: 'Email',
-  },
-
-  iqa0190: {
-    id: 'IQA0190',
-    name: 'iqa0190',
-    type: 'input',
-    legendSize: 'l',
-    label: 'Telephone',
-  },
-
-  iqa0191: {
-    id: 'IQA0191',
-    name: 'iqa0191',
-    type: 'input',
-    legendSize: 'l',
-    label: 'Postal address',
   },
 
 }

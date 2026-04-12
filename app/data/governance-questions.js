@@ -31,7 +31,7 @@ module.exports = {
     name: 'iqa0143',
     type: 'checkboxes',
     legendSize: 'l',
-    legend: 'Select countries outside the UK participating in this project.',
+    legend: 'Select the countries outside the UK where this project will run.',
     items: [
       { value: 'OPTxxxx', text: 'No list available at the moment'},
     ],
@@ -114,7 +114,8 @@ module.exports = {
     name: 'iqa0150',
     type: 'textarea',
     legendSize: 'l',
-    label: 'What arrangements will be made for insurance or indemnity to meet the potential legal liability of the sponsors or employers for harm to participants arising from the design of the project?  Provide any Upload all applicable insurance certificates as part of your project submission.',
+    label: 'What arrangements will be made for insurance or indemnity to meet the potential legal liability of the sponsors or employers for harm to participants arising from the design of the project?',
+	hint: 'For example, include cover limits and what happens if cover ends',
     recDataset: true,
     studyWideDataset: true,
     rows: 5,
