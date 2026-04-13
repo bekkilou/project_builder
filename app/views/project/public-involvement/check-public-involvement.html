@@ -1,4 +1,5 @@
 {%- extends "layouts/main.html" -%}
+
 {%- from "_partials/_question.html" import renderAnswers -%}
 
 {%- block pageTitle -%}
@@ -12,25 +13,29 @@
   }) }}
 {%- endblock -%}
 
-{%- block content -%}
+{% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">Check your answers</h1>
       <h2 class="govuk-heading-m">Public involvement</h2>
 
-  {{ renderAnswers([
-    questions.tbc001,
-    questions.tbc002,
-    questions.tbc003,
-    questions.tbc004,
-    questions.tbc005,
-    questions.tbc006
-  ], data, "/project/public-involvement/") }}
+      {{ renderAnswers([
+        questions.tbc001,
+        questions.tbc002,
+        questions.tbc003,
+        questions.tbc004,
+        questions.tbc005,
+        questions.tbc006
+      ], data, "/project/public-involvement/") }}
 
-      <form action="/project/start01" method="post">
+      <form action="/project/public-involvement/check-complete" method="post">
         <div class="govuk-button-group">
+          <h3 class="govuk-heading-m">Before you move on</h3>
+          <p>Please <a class="govuk-link" href="/admin/export/public-involvement.csv">Download your answers (CSV)</a> and complete the <a href="https://forms.office.com/e/Wpd3ZuySgC" target=_blank">evaluation survey (opens in a new tab)</a> before continuing
+          </p>
           {{ govukButton({ text: "Confirm and continue" }) }}
+
         </div>
       </form>
 

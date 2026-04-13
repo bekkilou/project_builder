@@ -2,21 +2,42 @@
 //  export-routes.js
 //  app/routes/export-routes.js
 //
-//  Provides a CSV download of all questions, the participant's
-//  responses from session data, and which approvals pathways
-//  each question contributes towards.
+//  Provides per-section CSV downloads of application data.
 //
 //  Add this single line anywhere in your routes.js to register:
 //    require('./routes/export-routes')(router)
 //
-//  Participant downloads their data by visiting (or clicking
-//  a button that links to): /admin/export.csv
+//  Each section's check answers page links to:
+//    /admin/export/:section.csv
+//  e.g. /admin/export/transparency.csv
+//
+//  The original all-in-one export is still available at:
+//    /admin/export.csv
 // ============================================================
+
+const path = require('path')
+
+// ── Section registry ─────────────────────────────────────────
+// Maps URL slug to questions filename (without -questions.js).
+// Slug must match the filename in app/data/.
+
+const SECTIONS = [
+  'project-information',
+  'research-design',
+  'research-activities',
+  'participants',
+  'consent',
+  'confidentiality',
+  'public-involvement',
+  'risks-and-conflicts',
+  'ethical-issues',
+  'research-analysis',
+  'governance',
+  'transparency',
+]
 
 // ── Helpers ─────────────────────────────────────────────────
 
-// Safely escape a value for CSV:
-// wrap in double quotes and escape any internal double quotes by doubling them
 function csvCell (value) {
   if (value === null || value === undefined) return ''
   const str = Array.isArray(value) ? value.join('; ') : String(value)
@@ -27,14 +48,10 @@ function csvRow (cells) {
   return cells.map(csvCell).join(',')
 }
 
-// Resolve a human-readable label for a question.
-// Questions use either `legend` (fieldset types) or `label` (input/textarea).
 function questionLabel (q) {
   return q.legend || q.label || ''
 }
 
-// Resolve a human-readable response for a question.
-// For checkboxes/radios, map stored values back to item text where possible.
 function resolveResponse (q, sessionData) {
   const raw = sessionData[q.name]
 
@@ -50,7 +67,6 @@ function resolveResponse (q, sessionData) {
     return labels.join('; ')
   }
 
-  // For date inputs, reassemble day/month/year parts
   if (q.type === 'date') {
     const day   = sessionData[q.name + '-day']   || ''
     const month = sessionData[q.name + '-month'] || ''
@@ -62,10 +78,65 @@ function resolveResponse (q, sessionData) {
   return Array.isArray(raw) ? raw.join('; ') : raw
 }
 
-// ── Route ───────────────────────────────────────────────────
+function buildCsv (questions, sessionData) {
+  const headers = [
+    'Question ID',
+    'Question',
+    'Response',
+    'Proportionate review',
+    'REC booking',
+    'REC dataset',
+    'Study wide dataset'
+  ]
+
+  const rows = [headers]
+
+  for (const q of Object.values(questions)) {
+    if (!q || typeof q !== 'object' || !q.name || !q.type) continue
+
+    rows.push([
+      q.id || '',
+      questionLabel(q),
+      resolveResponse(q, sessionData),
+      q.proportionateReview ? 'Yes' : '',
+      q.recBooking          ? 'Yes' : '',
+      q.recDataset          ? 'Yes' : '',
+      q.studyWideDataset    ? 'Yes' : ''
+    ])
+  }
+
+  return rows.map(csvRow).join('\r\n')
+}
+
+// ── Routes ───────────────────────────────────────────────────
 
 module.exports = function (router) {
 
+  // Per-section CSV — linked from each check answers page
+  // e.g. /admin/export/transparency.csv
+  router.get('/admin/export/:section.csv', (req, res) => {
+    const slug = req.params.section
+
+    if (!SECTIONS.includes(slug)) {
+      return res.status(404).send('Section not found')
+    }
+
+    let questions
+    try {
+      questions = require(path.join(process.cwd(), 'app', 'data', slug + '-questions.js'))
+    } catch (e) {
+      return res.status(500).send('Could not load questions for section: ' + slug)
+    }
+
+    const sessionData = req.session.data || {}
+    const csv = buildCsv(questions, sessionData)
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8')
+    res.setHeader('Content-Disposition', 'attachment; filename="iras-' + slug + '.csv"')
+    res.send(csv)
+  })
+
+  // Original all-in-one export — kept for backwards compatibility
   router.get('/admin/export.csv', (req, res) => {
     const sessionData = req.session.data || {}
     const questions   = res.locals.questions || {}
@@ -82,7 +153,6 @@ module.exports = function (router) {
     const rows = [headers]
 
     for (const q of Object.values(questions)) {
-      // Skip non-question entries (e.g. any non-objects that crept into the spread)
       if (!q || typeof q !== 'object' || !q.name || !q.type) continue
 
       rows.push([
