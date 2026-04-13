@@ -1,8 +1,6 @@
 {
   "tbc001": [
-    "tbcq01",
-    "tbcq02",
-    "tbcq03"
+    "tbcq01"
   ],
   "tbc002": "Lalalalalala",
   "tbc003": "Lalalalalala",
@@ -15,5 +13,10 @@
     "tbcq09"
   ],
   "tbc005": "Lalalalala",
-  "tbc006": "Lalalalala"
+  "tbc006": "Lalalalala",
+  "iqa0323": "no",
+  "iqa0324": "Llalalalala",
+  "iqa0118": [
+    "OPT0234"
+  ]
 }

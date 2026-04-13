@@ -1,5 +1,6 @@
 const govukPrototypeKit = require('govuk-prototype-kit')
 const router = govukPrototypeKit.requests.setupRouter()
+const { setFlash } = require('./helpers/flash')
 
 const {
   asArray,
@@ -459,7 +460,13 @@ router.post('/project/transparency/scientific-contact', function (req, res) {
 
   if (errors.length) return renderWithErrors(res, 'project/transparency/scientific-contact', errors)
 
-  return res.redirect('/project/transparency/check')
+  return res.redirect('/project/transparency/check-transparency')
+})
+
+router.post('/project/transparency/check-complete', (req, res) => {
+  req.session.data['completed-transparency'] = 'true'
+  setFlash(req, 'completed', 'Transparency')
+  res.redirect('/project/start01')
 })
 
 module.exports = router

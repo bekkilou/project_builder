@@ -1,5 +1,6 @@
 const govukPrototypeKit = require('govuk-prototype-kit')
 const router = govukPrototypeKit.requests.setupRouter()
+const { setFlash } = require('./helpers/flash')
 
 const {
   asArray,
@@ -237,6 +238,12 @@ router.post('/project/ethical-issues/iqa0039', function (req, res) {
   if (errors.length) return renderWithErrors(res, 'project/ethical-issues/iqa0039', errors)
 
   return res.redirect('/project/ethical-issues/check-ethical-issues')
+})
+
+router.post('/project/ethical-issues/check-complete', (req, res) => {
+  req.session.data['completed-ethicalIssues'] = 'true'
+  setFlash(req, 'completed', 'Summary of ethical issues')
+  res.redirect('/project/start01')
 })
 
 module.exports = router

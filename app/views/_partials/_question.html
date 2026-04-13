@@ -409,7 +409,7 @@
     baseChangeUrl – base URL string for change links; question name is appended,
                     e.g. "/public-involvement/" produces "/public-involvement/involvedContributors"
 #}
-{% macro renderAnswers(questionList, data, baseChangeUrl) %}
+{% macro renderAnswers(questionList, answers, baseChangeUrl) %}
 
   {% set rows = [] %}
 
@@ -420,9 +420,9 @@
     {% if q.type === "date" %}
 
       {# Reassemble date from its three parts #}
-      {% set day   = data[q.name + "-day"]   %}
-      {% set month = data[q.name + "-month"] %}
-      {% set year  = data[q.name + "-year"]  %}
+      {% set day   = answers[q.name + "-day"]   %}
+      {% set month = answers[q.name + "-month"] %}
+      {% set year  = answers[q.name + "-year"]  %}
       {% if day or month or year %}
         {% set resolvedHtml = (day if day else "") + "/" + (month if month else "") + "/" + (year if year else "") %}
       {% else %}
@@ -434,7 +434,7 @@
       {# Map stored values back to item labels, render each on its own line.  #}
       {# Coerce to array — when only one checkbox is selected the kit may     #}
       {# store the value as a plain string rather than a single-item array.   #}
-      {% set rawData = data[q.name] %}
+      {% set rawData = answers[q.name] %}
       {% if rawData is string %}
         {% set rawValues = [rawData] %}
       {% elif rawData %}
@@ -444,13 +444,13 @@
       {% endif %}
       {% set lines = [] %}
       {% for val in rawValues %}
-        {% set matchedItem = undefined %}
+        {% set matchedText = val %}
         {% for item in q.items %}
-          {% if item.value and item.value === val %}
-            {% set matchedItem = item %}
+          {% if item.value and item.value == val %}
+            {% set matchedText = item.text %}
           {% endif %}
         {% endfor %}
-        {% set lines = lines.concat([ matchedItem.text if matchedItem else val ]) %}
+        {% set lines = lines.concat([matchedText]) %}
       {% endfor %}
 
       {# Join lines with a <br> so each selection appears on its own line #}
@@ -468,11 +468,11 @@
 
       {# Map stored value back to item label.                                 #}
       {# Guard against divider items which have no value property.            #}
-      {% set rawValue = data[q.name] %}
+      {% set rawValue = answers[q.name] %}
       {% set resolvedHtml = "" %}
       {% if rawValue %}
         {% for item in q.items %}
-          {% if item.value and item.value === rawValue %}
+          {% if item.value and item.value == rawValue %}
             {% set resolvedHtml = item.text %}
           {% endif %}
         {% endfor %}
@@ -484,13 +484,13 @@
 
     {% elif q.type === "select" %}
 
-      {% set rawValue = data[q.name] %}
+      {% set rawValue = answers[q.name] %}
       {% set resolvedHtml = rawValue if rawValue else "" %}
 
     {% else %}
 
       {# input, textarea #}
-      {% set resolvedHtml = data[q.name] if data[q.name] else "" %}
+      {% set resolvedHtml = answers[q.name] if answers[q.name] else "" %}
 
     {% endif %}
 

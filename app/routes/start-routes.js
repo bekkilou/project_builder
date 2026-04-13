@@ -18,9 +18,9 @@ const { buildApprovalsPathway } = require('../helpers/approvals-pathway')
 
 module.exports = function (router) {
 
-  router.get('/project/start01', (req, res) => {
-    const data    = req.session.data
-    const flash   = readAndClearFlash(req)
+  function handleStart (req, res, template) {
+    const data  = req.session.data
+    const flash = readAndClearFlash(req)
 
     const sectionStatuses = getSectionStatuses(data)
     const pathway         = buildApprovalsPathway(data)
@@ -31,7 +31,16 @@ module.exports = function (router) {
     res.locals.flash            = flash.type
     res.locals.completedSection = flash.section
 
-    res.render('project/start')
+    res.render(template)
+  }
+
+  router.get('/project/start', (req, res) => {
+    handleStart(req, res, 'project/start')
   })
+
+  router.get('/project/start01', (req, res) => {
+  console.log('start01 hit, flash data:', req.session.data._flash, req.session.data._flashSection)
+  handleStart(req, res, 'project/start01')
+})
 
 }

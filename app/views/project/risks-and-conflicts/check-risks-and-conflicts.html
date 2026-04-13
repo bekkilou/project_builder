@@ -28,8 +28,11 @@
     questions.iqa0115
   ], data, "/project/risks-and-conflicts/") }}
 
-      <form action="/project/start01" method="post">
+      <form action="/project/risks-and-conflicts/check-complete" method="post">
         <div class="govuk-button-group">
+          <h3 class="govuk-heading-m">Before you move on</h3>
+          <p>Please <a class="govuk-link" href="/admin/export/risks-and-conflicts.csv">Download your answers (CSV)</a> and complete the <a href="https://forms.office.com/e/Wpd3ZuySgC" target=_blank">evaluation survey (opens in a new tab)</a> before continuing
+          </p>
           {{ govukButton({ text: "Confirm and continue" }) }}
         </div>
       </form>

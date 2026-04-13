@@ -100,7 +100,7 @@ const PATHWAY_MAP = [
   {
     flag:         null,  // Always shown — proportionate review eligibility
     questionFlag: 'proportionateReview',
-    label:        'Proportionate review eligibility'
+    label:        'Proportionate review'
   },
   {
     flag:         'needsMHRA',
