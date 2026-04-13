@@ -18,6 +18,10 @@
 
       <h1 class="govuk-heading-l">Check your answers</h1>
       <h2 class="govuk-heading-m">Research analysis</h2>
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
 
   {{ renderAnswers([
     questions.iqa0121,
@@ -33,6 +37,10 @@
     questions.iqa0131,
     questions.iqa0132
   ], data, "/project/research-analysis/") }}
+</div>
+</div>
+<div class="govuk-grid-row">
+<div class="govuk-grid-column-two-thirds">
 
       <form action="/project/research-analysis/check-complete" method="post">
         <div class="govuk-button-group">

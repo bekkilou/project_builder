@@ -19,7 +19,10 @@
 
       <h1 class="govuk-heading-l">Check your answers</h1>
       <h2 class="govuk-heading-m">Public involvement</h2>
-
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
       {{ renderAnswers([
         questions.tbc001,
         questions.tbc002,
@@ -28,6 +31,10 @@
         questions.tbc005,
         questions.tbc006
       ], data, "/project/public-involvement/") }}
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
 
       <form action="/project/public-involvement/check-complete" method="post">
         <div class="govuk-button-group">

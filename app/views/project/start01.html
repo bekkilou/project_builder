@@ -98,7 +98,7 @@
   {# ── Progress panels ─────────────────────────────────────── #}
   <div class="govuk-grid-row">
     {# ── Panel 1: Approvals pathway progress ─────────────────── #}
-    <div class="govuk-grid-column-one-half">
+    <div class="govuk-grid-column-two-thirds">
       <div class="govuk-inset-text" style="margin-top: 0;">
         <h2 class="govuk-heading-s">Progress towards approvals</h2>
         <p class="govuk-body-s govuk-!-colour-secondary">
@@ -109,11 +109,11 @@
           <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-0">
             {% for pathway in pathwayProgress %}
               <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key govuk-!-font-size-16">
+                <dt class="govuk-summary-list__key govuk-!-font-size-16" style="width: 55%;">
                   {{ pathway.label }}
                 </dt>
                 <dd class="govuk-summary-list__value" style="text-align: right;">
-                  <strong class="govuk-tag govuk-tag--{{ pathway.light.colour }} govuk-!-font-size-14">
+                  <strong class="govuk-tag govuk-tag--{{ pathway.light.colour }}">
                     {{ pathway.light.label }}
                   </strong>
                 </dd>
@@ -127,38 +127,6 @@
     </div>
 
     {# ── Panel 2: Submission readiness checklist ──────────────── #}
-    <div class="govuk-grid-column-one-half">
-      <div class="govuk-inset-text" style="margin-top: 0;">
-        <h2 class="govuk-heading-s">Ready to submit?</h2>
-        <p class="govuk-body-s govuk-!-colour-secondary">
-          Complete the following before you can submit your application.
-        </p>
-
-        {% if submissionReady %}
-          <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-0">
-            {% for item in submissionReady.items %}
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key govuk-!-font-size-16">
-                  {{ item.label }}
-                </dt>
-                <dd class="govuk-summary-list__value" style="text-align: right;">
-                  <strong class="govuk-tag govuk-tag--{{ item.colour }} govuk-!-font-size-14">
-                    {{ item.statusLabel }}
-                  </strong>
-                </dd>
-              </div>
-            {% endfor %}
-          </dl>
-
-          {% if submissionReady.allDone %}
-            <p class="govuk-body-s govuk-!-margin-top-3 govuk-!-margin-bottom-0">
-              <a href="/project/submit" class="govuk-link">Submit your application</a>
-            </p>
-          {% endif %}
-        {% endif %}
-      </div>
-    </div>
-
   </div>
 
   {# ── Card macros ─────────────────────────────────────────── #}
@@ -167,7 +135,7 @@
       <div class="card card--clickable">
         <div class="govuk-grid-row">
           <div class="govuk-grid-column-two-thirds">
-            <h3 class="govuk-heading-s card__heading">
+            <h3 class="govuk-heading-m card__heading">
               <a class="govuk-link card__link govuk-link--no-visited-state" href="{{ href }}">{{ title }}</a>
             </h3>
             {% if description %}

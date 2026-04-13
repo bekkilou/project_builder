@@ -18,6 +18,10 @@
 
       <h1 class="govuk-heading-l">Check your answers</h1>
       <h2 class="govuk-heading-m">Summary of ethical issues</h2>
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
 
   {{ renderAnswers([
     questions.iqa0323,
@@ -28,8 +32,10 @@
     questions.iqa0120,
     questions.iqa0039
   ], data, "/project/ethical-issues/") }}
-
-  <a class="govuk-link" href="/admin/export/ethical-issues.csv">Download your answers (CSV)</a>
+</div>
+</div>
+<div class="govuk-grid-row">
+<div class="govuk-grid-column-two-thirds">
 
       <form action="/project/ethical-issues/check-complete" method="post">
         <div class="govuk-button-group">
