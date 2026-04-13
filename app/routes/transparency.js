@@ -101,10 +101,7 @@ router.post('/project/transparency/iqa0165', function (req, res) {
     addError(errors, 'iqa0165', questions['iqa0165'].errorMessages.required)
   }
 
-  if (errors.length) {
-    clear(data, ['iqa0166'])
-    return renderWithErrors(res, 'project/transparency/iqa0165', errors)
-  }
+  if (errors.length) return renderWithErrors(res, 'project/transparency/iqa0165', errors)
 
   if (deferralRequested('iqa0165', data)) {
     return res.redirect('/project/transparency/iqa0166')
@@ -209,10 +206,7 @@ router.post('/project/transparency/iqa0169b', function (req, res) {
     addError(errors, 'iqa0172', questions['iqa0172'].errorMessages.required)
   }
 
-  if (errors.length) {
-    clear(data, ['iqa0170', 'iqa0171', 'iqa0172'])
-    return renderWithErrors(res, 'project/transparency/iqa0169b', errors)
-  }
+  if (errors.length) return renderWithErrors(res, 'project/transparency/iqa0169b', errors)
 
   if (!asArray(data['iqa0169b']).includes('OPT0258')) clear(data, ['iqa0170'])
   if (!asArray(data['iqa0169b']).includes('OPT0259')) clear(data, ['iqa0171'])
@@ -230,10 +224,7 @@ router.post('/project/transparency/iqa0173', function (req, res) {
     addError(errors, 'iqa0173', questions['iqa0173'].errorMessages.required)
   }
 
-  if (errors.length) {
-    clear(data, ['iqa0174'])
-    return renderWithErrors(res, 'project/transparency/iqa0173', errors)
-  }
+  if (errors.length) return renderWithErrors(res, 'project/transparency/iqa0173', errors)
 
   if (deferralRequested('iqa0173', data)) {
     return res.redirect('/project/transparency/iqa0174')
@@ -371,7 +362,7 @@ router.post('/project/transparency/iqa0180', function (req, res) {
   if (hasBioResource(data)) return res.redirect('/project/transparency/iqa0181')
 
   clear(data, ['iqa0181', 'iqa0182', 'iqa0183'])
-  return res.redirect('/project/transparency/public-contact')
+  return res.redirect('/project/transparency/check-transparency')
 })
 
 router.post('/project/transparency/iqa0181', function (req, res) {
@@ -390,7 +381,7 @@ router.post('/project/transparency/iqa0181', function (req, res) {
   }
 
   clear(data, ['iqa0182', 'iqa0183'])
-  return res.redirect('/project/transparency/public-contact')
+  return res.redirect('/project/transparency/check-transparency')
 })
 
 router.post('/project/transparency/iqa0182', function (req, res) {
@@ -409,7 +400,7 @@ router.post('/project/transparency/iqa0182', function (req, res) {
   }
 
   clear(data, ['iqa0183'])
-  return res.redirect('/project/transparency/public-contact')
+  return res.redirect('/project/transparency/check-transparency')
 })
 
 router.post('/project/transparency/iqa0183', function (req, res) {
@@ -423,12 +414,12 @@ router.post('/project/transparency/iqa0183', function (req, res) {
 
   if (errors.length) return renderWithErrors(res, 'project/transparency/iqa0183', errors)
 
-  return res.redirect('/project/transparency/public-contact')
+  return res.redirect('/project/transparency/check-transparency')
 })
 
 // public-contact and scientific-contact keep descriptive paths as they
 // cover multiple fields not yet assigned individual IQA IDs
-router.post('/project/transparency/public-contact', function (req, res) {
+router.post('/project/transparency/check-transparency', function (req, res) {
   const data = req.session.data
   const errors = []
 
@@ -440,7 +431,7 @@ router.post('/project/transparency/public-contact', function (req, res) {
     addError(errors, 'iqa0187', 'Enter a postal address for the public contact')
   }
 
-  if (errors.length) return renderWithErrors(res, 'project/transparency/public-contact', errors)
+  if (errors.length) return renderWithErrors(res, 'project/transparency/check-transparency', errors)
 
   return res.redirect('/project/transparency/scientific-contact')
 })

@@ -1,31 +1,5 @@
 const govukPrototypeKit = require('govuk-prototype-kit')
 const router = govukPrototypeKit.requests.setupRouter()
-const fs   = require('fs')
-const path = require('path')
-
-const DATA_FILE = path.join(__dirname, '..', 'session-data.json')
-
-// Load persisted data into session on every request
-router.use((req, res, next) => {
-  if (!req.session.data || Object.keys(req.session.data).length === 0) {
-    if (fs.existsSync(DATA_FILE)) {
-      try {
-        req.session.data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'))
-      } catch (e) {}
-    }
-  }
-  next()
-})
-
-// Save session data to disk after every request
-router.use((req, res, next) => {
-  res.on('finish', () => {
-    if (req.session && req.session.data) {
-      fs.writeFileSync(DATA_FILE, JSON.stringify(req.session.data, null, 2), 'utf8')
-    }
-  })
-  next()
-})
 
 
 const scopingQuestions = require('./data/scoping-questions')
