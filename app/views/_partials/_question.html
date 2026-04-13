@@ -431,13 +431,22 @@
 
     {% elif q.type === "checkboxes" %}
 
-      {# Map stored values back to item labels, render each on its own line #}
-      {% set rawValues = data[q.name] if data[q.name] else [] %}
+      {# Map stored values back to item labels, render each on its own line.  #}
+      {# Coerce to array — when only one checkbox is selected the kit may     #}
+      {# store the value as a plain string rather than a single-item array.   #}
+      {% set rawData = data[q.name] %}
+      {% if rawData is string %}
+        {% set rawValues = [rawData] %}
+      {% elif rawData %}
+        {% set rawValues = rawData %}
+      {% else %}
+        {% set rawValues = [] %}
+      {% endif %}
       {% set lines = [] %}
       {% for val in rawValues %}
         {% set matchedItem = undefined %}
         {% for item in q.items %}
-          {% if item.value === val %}
+          {% if item.value and item.value === val %}
             {% set matchedItem = item %}
           {% endif %}
         {% endfor %}
@@ -457,12 +466,13 @@
 
     {% elif q.type === "radios" or q.type === "radios-conditional" %}
 
-      {# Map stored value back to item label #}
+      {# Map stored value back to item label.                                 #}
+      {# Guard against divider items which have no value property.            #}
       {% set rawValue = data[q.name] %}
       {% set resolvedHtml = "" %}
       {% if rawValue %}
         {% for item in q.items %}
-          {% if item.value === rawValue %}
+          {% if item.value and item.value === rawValue %}
             {% set resolvedHtml = item.text %}
           {% endif %}
         {% endfor %}

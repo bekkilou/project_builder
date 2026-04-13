@@ -114,7 +114,7 @@ module.exports = {
       { value: 'OPT0232', text: 'Previously received an unfavourable opinion from a REC in another country' },
       { value: 'OPT0233', text: 'Linked to another project' },
       { divider: 'or' },
-      { value: 'OPT0234', text: 'None of these' },
+      { value: 'OPT0234', text: 'None of these', behaviour: 'exclusive' },
     ],
   },
 
