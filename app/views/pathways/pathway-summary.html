@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your approvals pathway — IRAS</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gov-blue: #333;
+    --gov-dark: #111;
+    --gov-mid: #666;
+    --gov-border: #aaa;
+    --gov-light: #eee;
+    --gov-green: #222;
+    --gov-red: #444;
+    --gov-yellow: #ccc;
+    --gov-orange: #888;
+    --parallel: #444;
+    --seq: #333;
+    --bg: #fff;
+    --panel: #f5f5f5;
+    --ink: #111;
+    --accent: #333;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: var(--gov-dark);
+    padding: 10px 0;
+    border-bottom: 4px solid var(--gov-yellow);
+  }
+  .header-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .crown {
+    width: 36px;
+    opacity: 0.9;
+  }
+  .header-label {
+    color: #fff;
+    font-family: monospace;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+  }
+
+  /* ── Phase banner ── */
+  .phase-banner {
+    background: var(--gov-blue);
+    color: white;
+    padding: 8px 0;
+  }
+  .phase-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 20px;
+    font-family: monospace;
+    font-size: 12px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .phase-tag {
+    background: white;
+    color: var(--gov-blue);
+    padding: 2px 8px;
+    font-weight: 500;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── Main ── */
+  .main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+
+  /* ── Breadcrumb ── */
+  .breadcrumb {
+    font-family: monospace;
+    font-size: 12px;
+    color: var(--gov-mid);
+    margin-bottom: 32px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .breadcrumb a { color: var(--gov-blue); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb-sep { color: var(--gov-border); }
+
+  /* ── Page title ── */
+  .page-title {
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+  .page-subtitle {
+    font-size: 18px;
+    color: var(--gov-mid);
+    font-weight: 400;
+    margin-bottom: 40px;
+  }
+
+  /* ── Study card ── */
+  .study-card {
+    background: var(--panel);
+    border-left: 5px solid var(--gov-blue);
+    padding: 20px 24px;
+    margin-bottom: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+  .study-field-label {
+    font-family: monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gov-mid);
+    margin-bottom: 4px;
+  }
+  .study-field-value {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .study-tag {
+    display: inline-block;
+    font-family: monospace;
+    font-size: 11px;
+    padding: 2px 8px;
+    margin-top: 2px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .tag-nhs { background: #e8e8e8; color: #333; }
+  .tag-england { background: #e8e8e8; color: #333; }
+  .tag-obs { background: #e8e8e8; color: #333; }
+
+  /* ── Section heading ── */
+  .section-heading {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--gov-border);
+    margin-top: 48px;
+  }
+  .section-sub {
+    font-size: 15px;
+    color: var(--gov-mid);
+    margin-bottom: 24px;
+  }
+
+  /* ── Approval cards ── */
+  .approvals-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 640px) { .approvals-grid { grid-template-columns: 1fr; } }
+
+  .approval-card {
+    border: 2px solid var(--gov-border);
+    background: white;
+    padding: 20px;
+    position: relative;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .approval-card:hover {
+    border-color: var(--gov-blue);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+  }
+  .approval-card.required {
+    border-color: var(--gov-dark);
+    border-left: 5px solid var(--gov-green);
+  }
+  .approval-card.not-required {
+    opacity: 0.55;
+    border-style: dashed;
+    border-color: var(--gov-border);
+  }
+  .approval-card.not-required:hover {
+    opacity: 0.75;
+    border-color: var(--gov-border);
+    box-shadow: none;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    gap: 12px;
+  }
+  .card-body-name {
+    font-size: 12px;
+    font-family: monospace;
+    font-weight: 500;
+    color: var(--gov-mid);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+  .card-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .status-pill {
+    font-family: monospace;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .pill-required { background: #111; color: white; }
+  .pill-not-required { background: var(--gov-light); color: var(--gov-mid); }
+
+  .card-reason {
+    font-size: 14px;
+    color: var(--gov-mid);
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #e8e8e8;
+    line-height: 1.5;
+  }
+  .card-reason strong { color: var(--ink); font-weight: 600; }
+
+  .card-timing {
+    margin-top: 10px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .timing-badge {
+    font-family: monospace;
+    font-size: 11px;
+    padding: 2px 8px;
+    letter-spacing: 0.04em;
+  }
+  .badge-parallel { background: #e8e8e8; color: #333; }
+  .badge-sequential { background: #e8e8e8; color: #333; }
+  .badge-independent { background: #e8e8e8; color: #333; }
+  .badge-prerequisite { background: #e8e8e8; color: #333; }
+
+  /* ── Timeline / sequence diagram ── */
+  .timeline-section {
+    margin-top: 48px;
+  }
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 24px;
+    position: relative;
+    padding-left: 28px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 12px;
+    bottom: 12px;
+    width: 2px;
+    background: var(--gov-border);
+  }
+  .timeline-step {
+    position: relative;
+    padding: 16px 0 16px 24px;
+  }
+  .timeline-dot {
+    position: absolute;
+    left: -17px;
+    top: 20px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px var(--gov-border);
+    background: white;
+  }
+  .timeline-dot.active {
+    background: var(--gov-green);
+    box-shadow: 0 0 0 2px var(--gov-green);
+  }
+  .timeline-dot.parallel-dot {
+    background: var(--parallel);
+    box-shadow: 0 0 0 2px var(--parallel);
+  }
+  .step-label {
+    font-family: monospace;
+    font-size: 11px;
+    color: var(--gov-mid);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+  .step-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .step-desc {
+    font-size: 14px;
+    color: var(--gov-mid);
+    line-height: 1.5;
+  }
+  .parallel-block {
+    background: #f0f0f0;
+    border-left: 3px solid #888;
+    padding: 12px 16px;
+    margin: 8px 0;
+  }
+  .parallel-label {
+    font-family: monospace;
+    font-size: 11px;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .parallel-items {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .parallel-item {
+    background: white;
+    border: 1px solid #aaa;
+    padding: 4px 12px;
+    font-size: 13px;
+    font-family: monospace;
+    color: #333;
+    font-weight: 500;
+  }
+
+  /* ── What this means panel ── */
+  .inset-text {
+    border-left: 5px solid var(--gov-border);
+    padding: 16px 20px;
+    margin: 32px 0;
+    background: var(--panel);
+  }
+  .inset-text p { font-size: 15px; color: var(--gov-mid); margin-bottom: 8px; }
+  .inset-text p:last-child { margin-bottom: 0; }
+  .inset-text strong { color: var(--ink); }
+
+  /* ── Developer accordion ── */
+  .dev-section {
+    margin-top: 48px;
+    border: 2px solid #e8e8e8;
+  }
+  .dev-toggle {
+    background: #1a1a2e;
+    color: #a8d8ea;
+    padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-family: monospace;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    border: none;
+    width: 100%;
+    text-align: left;
+  }
+  .dev-toggle:hover { background: #16213e; }
+  .dev-toggle-icon {
+    transition: transform 0.2s;
+    font-size: 16px;
+  }
+  .dev-toggle.open .dev-toggle-icon { transform: rotate(90deg); }
+  .dev-content {
+    display: none;
+    background: #0f0f23;
+    padding: 20px;
+  }
+  .dev-content.open { display: block; }
+  .code-block {
+    font-family: monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #e2e8f0;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .code-comment { color: #718096; }
+  .code-key { color: #68d391; }
+  .code-val { color: #fbd38d; }
+  .code-fn { color: #90cdf4; }
+  .code-str { color: #fc8181; }
+
+  /* ── Actions ── */
+  .actions {
+    margin-top: 48px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .btn-primary {
+    background: #111;
+    color: white;
+    padding: 14px 24px;
+    font-family: monospace;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    border: 2px solid #111;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.15s;
+  }
+  .btn-primary:hover { background: #333; border-color: #333; }
+  .btn-secondary {
+    background: transparent;
+    color: #333;
+    padding: 14px 24px;
+    font-family: monospace;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    border: 2px solid #aaa;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.15s;
+  }
+  .btn-secondary:hover { background: #f0f0f0; }
+
+  /* ── Warning ── */
+  .warning-box {
+    background: #fff4e5;
+    border-left: 5px solid var(--gov-orange);
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    font-size: 15px;
+  }
+  .warning-box strong { display: block; margin-bottom: 4px; font-size: 16px; }
+
+  /* ── Filter toggle (demo) ── */
+  .filter-demo {
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+  }
+  .filter-demo-title {
+    font-family: monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #555;
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .filter-toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .toggle-btn {
+    font-family: monospace;
+    font-size: 12px;
+    padding: 6px 14px;
+    border: 2px solid #aaa;
+    background: white;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: all 0.15s;
+    color: #555;
+  }
+  .toggle-btn.on {
+    background: #111;
+    border-color: #111;
+    color: white;
+  }
+  .toggle-btn:hover { border-color: #333; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <svg class="crown" viewBox="0 0 132 97" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M26.4 50.7l6.8-38.4 19.3 21.3L66 0l13.5 33.6 19.3-21.3 6.8 38.4H26.4z" fill="#fff"/>
+      <path d="M10.5 57.8h111l5.5 38.4H5l5.5-38.4z" fill="#fff"/>
+      <circle cx="66" cy="8" r="6" fill="#fff"/>
+      <circle cx="10.5" cy="50" r="6" fill="#fff"/>
+      <circle cx="121.5" cy="50" r="6" fill="#fff"/>
+    </svg>
+    <span class="header-label">IRAS — Integrated Research Application System</span>
+  </div>
+</div>
+
+<div class="phase-banner">
+  <div class="phase-inner">
+    <span class="phase-tag">PROTOTYPE</span>
+    <span>This is a design prototype. Do not use for real research applications.</span>
+  </div>
+</div>
+
+<main class="main">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="#">Home</a>
+    <span class="breadcrumb-sep">›</span>
+    <a href="#">My projects</a>
+    <span class="breadcrumb-sep">›</span>
+    <span>Approvals pathway</span>
+  </nav>
+
+  <h1 class="page-title">Your approvals pathway</h1>
+  <p class="page-subtitle">Based on your project filter answers</p>
+
+  <!-- Demo filter controls -->
+  <div class="filter-demo">
+    <div class="filter-demo-title">⚙ Demo: toggle study attributes to see routing change</div>
+    <div class="filter-toggles">
+      <button class="toggle-btn on" data-attr="involvesNHS" onclick="toggleAttr(this)">NHS involvement</button>
+      <button class="toggle-btn" data-attr="isCTIMP" onclick="toggleAttr(this)">CTIMP</button>
+      <button class="toggle-btn" data-attr="usesIdentifiablePatientData" onclick="toggleAttr(this)">Identifiable patient data (no consent)</button>
+      <button class="toggle-btn" data-attr="involvesIonisingRadiation" onclick="toggleAttr(this)">Ionising radiation</button>
+      <button class="toggle-btn" data-attr="involvesLackCapacity" onclick="toggleAttr(this)">Adults lacking capacity</button>
+      <button class="toggle-btn on" data-attr="requiresREC" onclick="toggleAttr(this)">Requires REC review</button>
+    </div>
+  </div>
+
+  <!-- Study summary card -->
+  <div class="study-card">
+    <div>
+      <div class="study-field-label">Project title</div>
+      <div class="study-field-value" style="font-size:14px;">Patient experience in community rehabilitation services</div>
+    </div>
+    <div>
+      <div class="study-field-label">Study type</div>
+      <div class="study-field-value">Observational</div>
+      <span class="study-tag tag-obs">Non-interventional</span>
+    </div>
+    <div>
+      <div class="study-field-label">Lead setting</div>
+      <div class="study-field-value">NHS England</div>
+      <span class="study-tag tag-nhs">NHS</span>
+      <span class="study-tag tag-england" style="margin-left:4px;">England</span>
+    </div>
+  </div>
+
+  <!-- Required approvals -->
+  <h2 class="section-heading">Approvals required for this study</h2>
+  <p class="section-sub">Your filter answers determine which review bodies must approve your research before it can start.</p>
+
+  <div id="approvals-grid" class="approvals-grid"></div>
+
+  <div class="inset-text">
+    <p><strong>You cannot start your research</strong> until all required approvals are in place — including NHS Research and Development (R&amp;D) capacity and capability confirmation at each participating site.</p>
+    <p>Submitting one application through IRAS shares the relevant information with each review body. You do not need to complete separate forms.</p>
+  </div>
+
+  <!-- Timeline -->
+  <div class="timeline-section">
+    <h2 class="section-heading">Review sequence</h2>
+    <p class="section-sub">Some reviews happen at the same time. Others must wait for a previous step to complete.</p>
+
+    <div id="timeline" class="timeline"></div>
+  </div>
+
+  <!-- Developer logic accordion -->
+  <div class="dev-section">
+    <button class="dev-toggle" onclick="toggleDev(this)">
+      <span>▸ Developer view — routing logic for this study</span>
+      <span class="dev-toggle-icon">›</span>
+    </button>
+    <div class="dev-content" id="dev-content">
+      <div class="code-block" id="code-output"></div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions">
+    <button class="btn-primary">Continue to application →</button>
+    <button class="btn-secondary">← Amend filter answers</button>
+  </div>
+
+</main>
+
+<script>
+// ── Data model ──────────────────────────────────────────────────
+
+let studyProfile = {
+  isCTIMP: false,
+  involvesNHS: true,
+  leadNation: 'england',
+  requiresREC: true,
+  usesIdentifiablePatientData: false,
+  involvesIonisingRadiation: false,
+  involvesLackCapacity: false,
+  isSocialCareResearch: false,
+  isDeviceTrialCombined: false,
+}
+
+// Pure routing function — fully testable, no side effects
+function getRequiredApprovals(p) {
+  const required = []
+  if (p.requiresREC || p.isCTIMP || p.involvesLackCapacity || p.isSocialCareResearch) required.push('REC')
+  if (p.involvesNHS && (p.leadNation === 'england' || p.leadNation === 'wales')) required.push('HRA')
+  if (p.isCTIMP || p.isDeviceTrialCombined) required.push('MHRA')
+  if (p.usesIdentifiablePatientData) required.push('CAG')
+  if (p.involvesIonisingRadiation) required.push('ARSAC')
+  return required
+}
+
+function getReviewTrack(p) {
+  return (p.isCTIMP || p.isDeviceTrialCombined) ? 'combined-review' : 'standard'
+}
+
+// ── Approval body metadata ──────────────────────────────────────
+
+const APPROVAL_BODIES = [
+  {
+    id: 'REC',
+    abbr: 'REC',
+    name: 'Research Ethics Committee',
+    org: 'Health Research Authority',
+    timing: 'parallel',
+    timingLabel: 'Parallel with HRA',
+    timingBadge: 'badge-parallel',
+    reason: (p) => {
+      if (p.isCTIMP) return 'Required for all CTIMPs. Part of Combined Review with MHRA.'
+      if (p.involvesLackCapacity) return 'Required where adults lack capacity to consent, regardless of NHS involvement.'
+      if (p.isSocialCareResearch) return 'Required for social care research under GAfREC.'
+      return 'Your study falls under the scope of NHS REC review under GAfREC.'
+    },
+    notRequiredReason: 'Your study does not meet the criteria for mandatory REC review (e.g. NHS staff recruited by professional role only).',
+  },
+  {
+    id: 'HRA',
+    abbr: 'HRA',
+    name: 'Health Research Authority',
+    org: 'Study-wide governance review',
+    timing: 'parallel',
+    timingLabel: 'Parallel with REC',
+    timingBadge: 'badge-parallel',
+    reason: (p) => {
+      if (p.leadNation === 'wales') return 'Your study involves NHS Wales. HCRW approval is required alongside HRA.'
+      return 'Your study involves the NHS and is led from England. HRA study-wide governance review is required.'
+    },
+    notRequiredReason: 'HRA approval is not required — your study is either outside the NHS, or led from Scotland or Northern Ireland (use the nation-specific HSC process instead).',
+  },
+  {
+    id: 'MHRA',
+    abbr: 'MHRA',
+    name: 'Medicines and Healthcare Products Regulatory Agency',
+    org: 'Clinical trial authorisation',
+    timing: 'parallel',
+    timingLabel: 'Parallel with REC (Combined Review)',
+    timingBadge: 'badge-parallel',
+    reason: () => 'Your study is a CTIMP (Clinical Trial of an Investigational Medicinal Product). A Clinical Trial Authorisation is legally required. Use Combined Review in IRAS.',
+    notRequiredReason: 'MHRA authorisation is not required — your study is not a CTIMP or combined IMP/device trial.',
+  },
+  {
+    id: 'CAG',
+    abbr: 'CAG',
+    name: 'Confidentiality Advisory Group',
+    org: 'Health Research Authority',
+    timing: 'independent',
+    timingLabel: 'Independent — can run alongside',
+    timingBadge: 'badge-independent',
+    reason: () => 'Your study accesses identifiable patient data without consent. Section 251 support (CAG approval) is required under the NHS Act 2006.',
+    notRequiredReason: 'CAG approval is not required — your study either uses anonymised data or obtains consent from all participants for data use.',
+  },
+  {
+    id: 'ARSAC',
+    abbr: 'ARSAC',
+    name: 'Administration of Radioactive Substances Advisory Committee',
+    org: 'UK Health Security Agency',
+    timing: 'prerequisite',
+    timingLabel: 'Prerequisite — must be in place before study-wide review completes',
+    timingBadge: 'badge-prerequisite',
+    reason: () => 'Your study administers radioactive substances to participants for research purposes. ARSAC research approval is required before the study can commence.',
+    notRequiredReason: 'ARSAC approval is not required — your study does not administer radioactive substances beyond standard care.',
+  },
+]
+
+// ── Render ──────────────────────────────────────────────────────
+
+function render() {
+  const required = getRequiredApprovals(studyProfile)
+  renderApprovalCards(required)
+  renderTimeline(required)
+  renderCode(required)
+}
+
+function renderApprovalCards(required) {
+  const grid = document.getElementById('approvals-grid')
+  grid.innerHTML = APPROVAL_BODIES.map(body => {
+    const isRequired = required.includes(body.id)
+    const reason = isRequired ? body.reason(studyProfile) : body.notRequiredReason
+    const timingHtml = isRequired
+      ? `<div class="card-timing">
+          <span class="timing-badge ${body.timingBadge}">${body.timingLabel}</span>
+         </div>`
+      : ''
+    return `
+      <div class="approval-card ${isRequired ? 'required' : 'not-required'}">
+        <div class="card-header">
+          <div>
+            <div class="card-body-name">${body.abbr}</div>
+            <div class="card-title">${isRequired ? body.name : body.name}</div>
+          </div>
+          <span class="status-pill ${isRequired ? 'pill-required' : 'pill-not-required'}">
+            ${isRequired ? 'Required' : 'Not required'}
+          </span>
+        </div>
+        <div class="card-reason">${reason}</div>
+        ${timingHtml}
+      </div>
+    `
+  }).join('')
+}
+
+function renderTimeline(required) {
+  const tl = document.getElementById('timeline')
+
+  if (required.length === 0) {
+    tl.innerHTML = '<p style="color:var(--gov-mid);font-style:italic;font-size:15px;">No approvals required based on current filter answers.</p>'
+    return
+  }
+
+  const track = getReviewTrack(studyProfile)
+  const steps = []
+
+  // Step 1: Prepare application
+  steps.push({
+    label: 'Step 1',
+    title: 'Prepare and submit your application',
+    desc: track === 'combined-review'
+      ? 'Complete your application in IRAS using the Combined Review pathway. Your submission will go simultaneously to both the MHRA and a Research Ethics Committee.'
+      : 'Complete your IRAS application form. Your submission will go to all required review bodies.',
+    dot: 'active',
+  })
+
+  // Step 2: parallel reviews
+  const parallelBodies = required.filter(id => {
+    const b = APPROVAL_BODIES.find(x => x.id === id)
+    return b.timing === 'parallel'
+  })
+  if (parallelBodies.length > 0) {
+    steps.push({
+      label: parallelBodies.length > 1 ? 'Steps 2–' + (1 + parallelBodies.length) : 'Step 2',
+      title: 'Parallel reviews',
+      desc: parallelBodies.length > 1
+        ? 'These reviews happen at the same time. You will not need to submit additional information to each separately.'
+        : 'This review begins after your submission.',
+      dot: 'parallel-dot',
+      parallel: parallelBodies,
+    })
+  }
+
+  // CAG (independent)
+  if (required.includes('CAG')) {
+    steps.push({
+      label: 'Alongside main review',
+      title: 'CAG review runs independently',
+      desc: 'The Confidentiality Advisory Group review can be submitted and processed at the same time as your main application. It does not block your REC or HRA review.',
+      dot: 'active',
+    })
+  }
+
+  // ARSAC (prerequisite)
+  if (required.includes('ARSAC')) {
+    steps.push({
+      label: 'Prerequisite',
+      title: 'ARSAC approval must be in place',
+      desc: 'Study-wide review (HRA) will not complete until your ARSAC research approval is confirmed. Apply for this as early as possible.',
+      dot: 'active',
+    })
+  }
+
+  // Final step
+  steps.push({
+    label: 'Final step',
+    title: 'R&D Capacity & Capability at each NHS site',
+    desc: 'After HRA Approval is issued, each participating NHS site must confirm local capacity and capability before research activity can begin at that site.',
+    dot: '',
+  })
+
+  tl.innerHTML = steps.map(step => `
+    <div class="timeline-step">
+      <div class="timeline-dot ${step.dot}"></div>
+      <div class="step-label">${step.label}</div>
+      <div class="step-title">${step.title}</div>
+      ${step.parallel ? `
+        <div class="parallel-block">
+          <div class="parallel-label">Running in parallel</div>
+          <div class="parallel-items">
+            ${step.parallel.map(id => {
+              const b = APPROVAL_BODIES.find(x => x.id === id)
+              return `<span class="parallel-item">${b.abbr} — ${b.org}</span>`
+            }).join('')}
+          </div>
+        </div>
+      ` : ''}
+      <div class="step-desc">${step.desc}</div>
+    </div>
+  `).join('')
+}
+
+function renderCode(required) {
+  const track = getReviewTrack(studyProfile)
+  const profileStr = JSON.stringify(studyProfile, null, 2)
+    .replace(/"([^"]+)":/g, (_, k) => `<span class="code-key">"${k}"</span>:`)
+    .replace(/: (true|false)/g, (_, v) => `: <span class="code-val">${v}</span>`)
+    .replace(/: "([^"]+)"/g, (_, v) => `: <span class="code-str">"${v}"</span>`)
+
+  const requiredStr = JSON.stringify(required)
+    .replace(/"/g, '').replace(/\[/, '[').replace(/\]/, ']')
+
+  document.getElementById('code-output').innerHTML =
+`<span class="code-comment">// Current study profile (from filter answers)</span>
+const studyProfile = ${profileStr}
+
+<span class="code-comment">// Derived approvals — output of getRequiredApprovals()</span>
+const approvalsRequired = [<span class="code-val">${required.map(r => `"${r}"`).join(', ')}</span>]
+
+<span class="code-comment">// Review track</span>
+const reviewTrack = <span class="code-str">"${track}"</span>
+
+<span class="code-comment">// These values gate form sections and generate the task list</span>
+<span class="code-comment">// e.g. show MHRA section only if approvalsRequired.includes('MHRA')</span>`
+}
+
+// ── Interactions ────────────────────────────────────────────────
+
+function toggleAttr(btn) {
+  const attr = btn.dataset.attr
+  studyProfile[attr] = !studyProfile[attr]
+  btn.classList.toggle('on', studyProfile[attr])
+  render()
+}
+
+function toggleDev(btn) {
+  btn.classList.toggle('open')
+  document.getElementById('dev-content').classList.toggle('open')
+}
+
+// Initial render
+render()
+</script>
+</body>
+</html>
