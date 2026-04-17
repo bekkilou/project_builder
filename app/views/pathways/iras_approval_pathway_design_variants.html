@@ -1,0 +1,500 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=Azeret+Mono:wght@400;500&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--color-background-tertiary);color:var(--color-text-primary);padding:0}
+
+/* --- VARIANT SELECTOR --- */
+.variant-bar{display:flex;gap:0;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);padding:0 16px;position:sticky;top:0;z-index:100}
+.vtab{padding:11px 18px;font-size:12px;font-weight:500;color:var(--color-text-secondary);cursor:pointer;border-bottom:2px solid transparent;letter-spacing:.03em;user-select:none;transition:color .15s}
+.vtab:hover{color:var(--color-text-primary)}
+.vtab.active{color:var(--color-text-primary);border-bottom-color:var(--color-text-primary)}
+.variant{display:none;padding:24px 20px 40px}
+.variant.active{display:block}
+.v-label{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--color-text-tertiary);margin-bottom:4px}
+.v-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--color-text-primary);margin-bottom:4px;line-height:1.2}
+.v-rationale{font-size:12px;color:var(--color-text-secondary);line-height:1.6;max-width:560px;margin-bottom:20px;padding-bottom:16px;border-bottom:0.5px solid var(--color-border-tertiary)}
+
+/* =====================
+   VARIANT A: ROUTE MAP
+   ===================== */
+.route-map{max-width:680px}
+.rm-intro{font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:24px;max-width:520px}
+
+.rm-always{margin-bottom:20px}
+.rm-always-hdr{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--color-text-secondary);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.rm-always-hdr::after{content:'';flex:1;height:0.5px;background:var(--color-border-tertiary)}
+.rm-pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.rm-pill{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);font-size:12px;font-weight:500;cursor:default}
+.rm-pill .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.rm-pill.always .dot{background:#1a7f5a}
+.rm-pill.always{border-color:#1a7f5a30;background:#f0faf5}
+.rm-pill.maybe .dot{background:#b05c00}
+.rm-pill.maybe{border-color:#b05c0030;background:#fff8f0}
+.rm-pill.never{border-color:var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary)}
+
+.rm-conditional{margin-bottom:20px}
+.rm-trigger-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:500px){.rm-trigger-grid{grid-template-columns:1fr}}
+
+.rm-card{border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:12px 14px;background:var(--color-background-primary);position:relative;overflow:hidden;cursor:pointer;transition:border-color .15s}
+.rm-card:hover{border-color:var(--color-border-secondary)}
+.rm-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.rm-card.mhra::before{background:#c94a1c}
+.rm-card.arsac::before{background:#7c4db5}
+.rm-card.cag::before{background:#0d6b9e}
+.rm-card.hmpps::before{background:#5c7a3e}
+.rm-card.hfea::before{background:#a34d6b}
+.rm-card.hta::before{background:#6b5c3e}
+.rm-card.modrec::before{background:#4a5568}
+.rm-card-name{font-size:12px;font-weight:500;margin-bottom:3px}
+.rm-card-trigger{font-size:11px;color:var(--color-text-secondary);line-height:1.4}
+.rm-card-never{display:inline-block;font-size:10px;padding:1px 5px;border-radius:3px;background:#fff0f0;color:#c0392b;font-weight:500;margin-top:4px}
+.rm-never-box{background:#fff8f5;border:0.5px solid #e8c4b8;border-radius:10px;padding:12px 14px;margin-top:16px}
+.rm-never-box-hdr{font-size:11px;font-weight:500;color:#c0392b;letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px}
+.rm-never-item{font-size:12px;color:var(--color-text-primary);padding:4px 0;border-bottom:0.5px solid #e8c4b820;display:flex;align-items:flex-start;gap:8px;line-height:1.4}
+.rm-never-item:last-child{border:none;padding-bottom:0}
+.rm-never-item::before{content:'×';color:#c0392b;font-weight:500;flex-shrink:0;margin-top:1px}
+
+/* ==========================
+   VARIANT B: DIAGNOSTIC
+   ========================== */
+.diag{max-width:620px}
+.diag-intro{font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:20px}
+
+.diag-progress{height:3px;background:var(--color-border-tertiary);border-radius:2px;margin-bottom:20px;overflow:hidden}
+.diag-progress-fill{height:100%;background:#0d6b9e;border-radius:2px;transition:width .4s ease}
+.diag-step{display:none}
+.diag-step.active{display:block}
+
+.diag-q{font-family:'DM Serif Display',serif;font-size:18px;line-height:1.3;margin-bottom:6px;color:var(--color-text-primary)}
+.diag-hint{font-size:12px;color:var(--color-text-secondary);margin-bottom:16px;line-height:1.5}
+.diag-options{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.diag-option{padding:11px 14px;border:0.5px solid var(--color-border-secondary);border-radius:8px;font-size:13px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary);text-align:left;transition:border-color .12s,background .12s;line-height:1.4}
+.diag-option:hover{border-color:var(--color-border-primary);background:var(--color-background-secondary)}
+.diag-option.selected{border-color:#0d6b9e;background:#f0f7ff;color:#0d3d5c}
+.diag-check-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.diag-check{padding:7px 11px;border:0.5px solid var(--color-border-secondary);border-radius:6px;font-size:12px;cursor:pointer;background:var(--color-background-primary);transition:border-color .12s,background .12s;user-select:none}
+.diag-check:hover{border-color:var(--color-border-primary)}
+.diag-check.checked{border-color:#0d6b9e;background:#f0f7ff;color:#0d3d5c;font-weight:500}
+.diag-nav{display:flex;gap:8px;align-items:center;margin-top:4px}
+.diag-btn{padding:8px 18px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);transition:background .12s}
+.diag-btn:hover{background:var(--color-background-secondary)}
+.diag-btn.primary{background:#0d3d5c;color:#fff;border-color:#0d3d5c}
+.diag-btn.primary:hover{background:#0d5275}
+.diag-step-count{font-size:11px;color:var(--color-text-tertiary);margin-left:auto}
+
+.diag-result{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:16px 18px;margin-top:4px}
+.diag-result-hdr{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--color-text-secondary);margin-bottom:12px}
+.diag-approval-list{display:flex;flex-direction:column;gap:6px}
+.diag-approval{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border-radius:8px;font-size:12px;line-height:1.4}
+.diag-approval.required{background:#f0faf5;border:0.5px solid #1a7f5a30}
+.diag-approval.triggered{background:#fff8f0;border:0.5px solid #b05c0030}
+.diag-approval.never{background:#fff0f0;border:0.5px solid #c0392b30}
+.diag-approval .icon{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:1px}
+.diag-approval.required .icon{background:#1a7f5a;color:#fff}
+.diag-approval.triggered .icon{background:#b05c00;color:#fff}
+.diag-approval.never .icon{background:#c0392b;color:#fff}
+.diag-approval-name{font-weight:500;display:block;margin-bottom:1px}
+.diag-approval-note{color:var(--color-text-secondary);font-size:11px}
+.diag-reset{font-size:11px;color:var(--color-text-secondary);cursor:pointer;text-decoration:underline;text-underline-offset:2px;margin-top:12px;display:inline-block}
+.diag-reset:hover{color:var(--color-text-primary)}
+
+/* ==========================
+   VARIANT C: REFERENCE CARD
+   ========================== */
+.refcard{max-width:640px}
+.refcard-intro{font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:20px}
+.refcard-table-wrap{border:0.5px solid var(--color-border-tertiary);border-radius:10px;overflow:hidden;background:var(--color-background-primary)}
+.rct{width:100%;border-collapse:collapse;font-size:12px}
+.rct th{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-secondary);padding:9px 14px;background:var(--color-background-secondary);border-bottom:0.5px solid var(--color-border-tertiary);text-align:left;white-space:nowrap}
+.rct td{padding:9px 14px;border-bottom:0.5px solid var(--color-border-tertiary);vertical-align:top;line-height:1.45}
+.rct tr:last-child td{border-bottom:none}
+.rct-body{font-weight:500;font-size:12px;margin-bottom:1px}
+.rct-sub{font-size:11px;color:var(--color-text-secondary);line-height:1.4}
+.rct-trigger{font-size:11px;color:var(--color-text-secondary);line-height:1.5}
+.rct-seq{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:500;padding:2px 7px;border-radius:3px;white-space:nowrap}
+.seq-before{background:#fff0e0;color:#804000}
+.seq-after{background:#e0f0ff;color:#003880}
+.seq-parallel{background:#e8f0e8;color:#1a4a1a}
+.seq-out{background:var(--color-background-secondary);color:var(--color-text-secondary)}
+.rct-never{display:inline-block;font-size:10px;padding:1px 5px;border-radius:3px;background:#fff0f0;color:#c0392b;font-weight:500}
+.rct-acc{font-size:11px;color:var(--color-text-secondary);padding:0 14px;cursor:pointer;display:flex;align-items:center;gap:6px;background:none;border:none;width:100%;text-align:left;margin-top:6px}
+.filter-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.ftab{font-size:11px;padding:3px 9px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:pointer;user-select:none}
+.ftab.active{background:var(--color-background-primary);color:var(--color-text-primary);border-color:var(--color-border-primary);font-weight:500}
+</style>
+</head>
+<body>
+
+<div class="variant-bar">
+  <div class="vtab active" onclick="showV('a',this)">A — Route map</div>
+  <div class="vtab" onclick="showV('b',this)">B — Diagnostic</div>
+  <div class="vtab" onclick="showV('c',this)">C — Reference card</div>
+</div>
+
+<!-- ===================== VARIANT A ===================== -->
+<div id="v-a" class="variant active">
+  <div class="v-label">Design variant A</div>
+  <div class="v-title">The approval landscape</div>
+  <div class="v-rationale">Spatial overview shown before the application begins. Applicants see the whole territory — what is always required, what they may trigger, and what automatically disqualifies Proportionate Review. Suited to new applicants who need orientation. Not interactive beyond hover.</div>
+  
+  <div class="route-map">
+    <p class="rm-intro">Your application will need to go through a Research Ethics Committee. Depending on your answers, it may also need approval from one or more additional bodies. Some answers will prevent you from using the faster Proportionate Review route.</p>
+    
+    <div class="rm-always">
+      <div class="rm-always-hdr">Always required</div>
+      <div class="rm-pill-row">
+        <div class="rm-pill always">
+          <span class="dot"></span>
+          Research Ethics Committee (REC) review
+        </div>
+        <div class="rm-pill always">
+          <span class="dot"></span>
+          HRA / HCRW assessment
+        </div>
+      </div>
+    </div>
+    
+    <div class="rm-conditional">
+      <div class="rm-always-hdr">Triggered by your answers</div>
+      <div class="rm-trigger-grid">
+        <div class="rm-card mhra" onclick="toggleCard(this)">
+          <div class="rm-card-name">MHRA</div>
+          <div class="rm-card-trigger">If your project is a CTIMP, or a clinical investigation of a medical device, you will need to apply to the Medicines and Healthcare products Regulatory Agency.</div>
+          <div class="rm-card-never">CTIMP = never Proportionate Review</div>
+        </div>
+        <div class="rm-card arsac">
+          <div class="rm-card-name">ARSAC</div>
+          <div class="rm-card-trigger">If your project exposes participants to ionising radiation — particularly diagnostic or therapeutic administration of radioactive substances — you will need Administration of Radioactive Substances Advisory Committee approval.</div>
+        </div>
+        <div class="rm-card cag">
+          <div class="rm-card-name">CAG / Section 251</div>
+          <div class="rm-card-trigger">If you will access identifiable patient data without consent and without an existing legal basis, you may need approval from the Confidentiality Advisory Group.</div>
+        </div>
+        <div class="rm-card hmpps">
+          <div class="rm-card-name">HMPPS / NIPS / SPS RAEC</div>
+          <div class="rm-card-trigger">If your project includes prisoners or young offenders in custody, the relevant prison service authority for that UK nation must approve your research.</div>
+          <div class="rm-card-never">Prisoners = never Proportionate Review</div>
+        </div>
+        <div class="rm-card hfea">
+          <div class="rm-card-name">HFEA</div>
+          <div class="rm-card-trigger">If your project involves HFEA-regulated activities (embryo storage, gamete use to create embryos) or accesses the HFEA Register, you will need a Human Fertilisation and Embryology Authority licence or approval.</div>
+        </div>
+        <div class="rm-card hta">
+          <div class="rm-card-name">HTA licence</div>
+          <div class="rm-card-trigger">If your project involves collection or use of human tissue, your institution will need a relevant Human Tissue Authority licence. You will be asked to provide licence details in your application.</div>
+        </div>
+        <div class="rm-card modrec" style="grid-column:span 2">
+          <div class="rm-card-name">MODREC (Ministry of Defence)</div>
+          <div class="rm-card-trigger">If your project involves MOD-regulated activity, IRAS will signpost you to the MOD's own review process. This is not managed within IRAS.</div>
+          <span style="font-size:10px;color:var(--color-text-tertiary)">External to IRAS workflow</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="rm-never-box">
+      <div class="rm-never-box-hdr">Answers that prevent Proportionate Review</div>
+      <div class="rm-never-item">Your project is a CTIMP (clinical trial of an investigational medicinal product)</div>
+      <div class="rm-never-item">You are establishing a research bioresource</div>
+      <div class="rm-never-item">You are using medical devices that are not marketed in the EU or UK</div>
+      <div class="rm-never-item">Adults lacking capacity will be included as participants</div>
+      <div class="rm-never-item">Consent will not be obtained and the reason includes adults lacking capacity</div>
+      <div class="rm-never-item">Your project includes prisoners or young offenders in custody</div>
+      <div class="rm-never-item">Certain NHS care setting participant types (nursing homes in Northern Ireland, other social care settings)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== VARIANT B ===================== -->
+<div id="v-b" class="variant">
+  <div class="v-label">Design variant B</div>
+  <div class="v-title">Your approval pathways</div>
+  <div class="v-rationale">Applicants answer four key questions drawn from the filter logic. The system derives which approval routes apply to them specifically. Reduces noise — only shows what is relevant. Suited to return applicants or those with a clear project type.</div>
+  
+  <div class="diag">
+    <p class="diag-intro">Answer a few questions about your project and we will show you which approvals and review routes will apply to you.</p>
+    
+    <div class="diag-progress"><div class="diag-progress-fill" id="d-prog" style="width:0%"></div></div>
+    
+    <!-- Step 1 -->
+    <div class="diag-step active" id="ds-1">
+      <div class="diag-q">What type of research will you be conducting?</div>
+      <div class="diag-hint">Select all that apply to your project.</div>
+      <div class="diag-check-grid">
+        <div class="diag-check" data-val="ctimp" onclick="toggleCheck(this)">Clinical trial of an IMP (CTIMP)</div>
+        <div class="diag-check" data-val="device" onclick="toggleCheck(this)">Clinical investigation of a medical device</div>
+        <div class="diag-check" data-val="ir" onclick="toggleCheck(this)">Involves ionising radiation</div>
+        <div class="diag-check" data-val="bioresource" onclick="toggleCheck(this)">Establishing a research bioresource</div>
+        <div class="diag-check" data-val="hfea" onclick="toggleCheck(this)">HFEA-regulated activity or HFEA Register data</div>
+        <div class="diag-check" data-val="mod" onclick="toggleCheck(this)">Activity under MOD responsibility</div>
+        <div class="diag-check" data-val="none" onclick="toggleCheck(this)">None of these</div>
+      </div>
+      <div class="diag-nav">
+        <button class="diag-btn primary" onclick="nextStep(2)">Continue</button>
+        <span class="diag-step-count">Question 1 of 4</span>
+      </div>
+    </div>
+    
+    <!-- Step 2 -->
+    <div class="diag-step" id="ds-2">
+      <div class="diag-q">Who will participate in your research?</div>
+      <div class="diag-hint">Select all groups that will be involved.</div>
+      <div class="diag-check-grid">
+        <div class="diag-check" data-val="alc" onclick="toggleCheck(this)">Adults who may lack capacity to consent</div>
+        <div class="diag-check" data-val="children" onclick="toggleCheck(this)">Children</div>
+        <div class="diag-check" data-val="prisoners" onclick="toggleCheck(this)">Prisoners or young offenders in custody</div>
+        <div class="diag-check" data-val="patients" onclick="toggleCheck(this)">Patients or service users of NHS/HSC services</div>
+        <div class="diag-check" data-val="tissue" onclick="toggleCheck(this)">Human tissue or biological samples will be used</div>
+        <div class="diag-check" data-val="none2" onclick="toggleCheck(this)">None of these</div>
+      </div>
+      <div class="diag-nav">
+        <button class="diag-btn" onclick="prevStep(1)">Back</button>
+        <button class="diag-btn primary" onclick="nextStep(3)">Continue</button>
+        <span class="diag-step-count">Question 2 of 4</span>
+      </div>
+    </div>
+    
+    <!-- Step 3 -->
+    <div class="diag-step" id="ds-3">
+      <div class="diag-q">Will consent be obtained from all participants?</div>
+      <div class="diag-hint">Select the option that best describes your project.</div>
+      <div class="diag-options">
+        <button class="diag-option" data-val="all" onclick="selectOption(this,'consent')">Yes — consent will be obtained from or on behalf of all participants</button>
+        <button class="diag-option" data-val="some" onclick="selectOption(this,'consent')">Consent will be obtained in some situations but not others</button>
+        <button class="diag-option" data-val="none_id" onclick="selectOption(this,'consent')">No — we will access identifiable data without consent</button>
+        <button class="diag-option" data-val="none_anon" onclick="selectOption(this,'consent')">No — we will only use anonymised data or samples with prior consent</button>
+      </div>
+      <div class="diag-nav">
+        <button class="diag-btn" onclick="prevStep(2)">Back</button>
+        <button class="diag-btn primary" onclick="nextStep(4)">Continue</button>
+        <span class="diag-step-count">Question 3 of 4</span>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="diag-step" id="ds-4">
+      <div class="diag-q">In which UK nations will your research take place?</div>
+      <div class="diag-hint">Select all that apply.</div>
+      <div class="diag-check-grid">
+        <div class="diag-check" data-val="eng" onclick="toggleCheck(this)">England</div>
+        <div class="diag-check" data-val="wales" onclick="toggleCheck(this)">Wales</div>
+        <div class="diag-check" data-val="scotland" onclick="toggleCheck(this)">Scotland</div>
+        <div class="diag-check" data-val="ni" onclick="toggleCheck(this)">Northern Ireland</div>
+      </div>
+      <div class="diag-nav">
+        <button class="diag-btn" onclick="prevStep(3)">Back</button>
+        <button class="diag-btn primary" onclick="showResult()">Show my approval routes</button>
+        <span class="diag-step-count">Question 4 of 4</span>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div class="diag-step" id="ds-result">
+      <div class="diag-result">
+        <div class="diag-result-hdr">Your approval routes</div>
+        <div class="diag-approval-list" id="d-results"></div>
+      </div>
+      <span class="diag-reset" onclick="resetDiag()">Start again</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== VARIANT C ===================== -->
+<div id="v-c" class="variant">
+  <div class="v-label">Design variant C</div>
+  <div class="v-title">Approval routes at a glance</div>
+  <div class="v-rationale">A structured reference table, shown at the start of an application or in a help panel. Organises all approval routes by trigger, sequencing relative to REC, and PR impact. Suited to experienced applicants, coordinators, and those reviewing applications.</div>
+  
+  <div class="refcard">
+    <p class="refcard-intro">The table below shows every approval route you might encounter. Use the filters to focus on your project type.</p>
+    
+    <div class="filter-tabs">
+      <div class="ftab active" data-cf="all" onclick="setFTab(this)">All routes</div>
+      <div class="ftab" data-cf="always" onclick="setFTab(this)">Always required</div>
+      <div class="ftab" data-cf="never-pr" onclick="setFTab(this)">Affects PR</div>
+      <div class="ftab" data-cf="mhra" onclick="setFTab(this)">Medicines &amp; devices</div>
+      <div class="ftab" data-cf="rad" onclick="setFTab(this)">Radiation</div>
+      <div class="ftab" data-cf="people" onclick="setFTab(this)">Participant type</div>
+    </div>
+
+    <div class="refcard-table-wrap">
+    <table class="rct">
+      <thead><tr>
+        <th>Body / route</th>
+        <th>Triggered by</th>
+        <th>Sequence</th>
+        <th>PR impact</th>
+      </tr></thead>
+      <tbody id="rct-body">
+      </tbody>
+    </table>
+    </div>
+    
+    <div style="margin-top:12px;font-size:11px;color:var(--color-text-tertiary);line-height:1.5">
+      <strong>Sequence key</strong> — Before REC: get this approval before submitting to REC &nbsp;·&nbsp; Parallel: apply simultaneously &nbsp;·&nbsp; After REC: submit to this body once REC approval is in place &nbsp;·&nbsp; External: outside IRAS; IRAS will signpost you
+    </div>
+  </div>
+</div>
+
+<script>
+// --- VARIANT SWITCHER ---
+function showV(id,el){
+  document.querySelectorAll('.variant').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.vtab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('v-'+id).classList.add('active');
+  el.classList.add('active');
+}
+
+// --- VARIANT B: DIAGNOSTIC ---
+const state = {checks:{},consent:null,nations:{}};
+let currentStep=1;
+
+function toggleCheck(el){
+  const val=el.dataset.val;
+  if(val==='none'||val==='none2'){
+    const parent=el.parentElement;
+    parent.querySelectorAll('.diag-check').forEach(c=>{if(c!==el)c.classList.remove('checked');});
+    el.classList.toggle('checked');
+  } else {
+    const noneEl=el.parentElement.querySelector('[data-val="none"],[data-val="none2"]');
+    if(noneEl) noneEl.classList.remove('checked');
+    el.classList.toggle('checked');
+  }
+  const step=el.closest('.diag-step').id.replace('ds-','');
+  if(step==='4'){
+    el.classList.contains('checked')?state.nations[val]=true:delete state.nations[val];
+  } else {
+    el.classList.contains('checked')?state.checks[val]=true:delete state.checks[val];
+  }
+}
+
+function selectOption(el,key){
+  el.closest('.diag-options').querySelectorAll('.diag-option').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  state[key]=el.dataset.val;
+}
+
+function nextStep(n){currentStep=n;showStep(n);}
+function prevStep(n){currentStep=n;showStep(n);}
+
+function showStep(n){
+  document.querySelectorAll('.diag-step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('ds-'+n).classList.add('active');
+  document.getElementById('d-prog').style.width=(n==='result'?100:(n/4*100))+'%';
+}
+
+function showResult(){
+  const approvals=[];
+  
+  approvals.push({type:'required',name:'Research Ethics Committee (REC)',note:'All research applications require REC review.'});
+  approvals.push({type:'required',name:'HRA / HCRW assessment',note:'All UK research requires Health Research Authority or Health and Care Research Wales assessment.'});
+  
+  if(state.checks.ctimp){
+    approvals.push({type:'never',name:'Proportionate Review not available',note:'CTIMP projects must go to full REC review.'});
+    approvals.push({type:'triggered',name:'MHRA Clinical Trials Authorisation',note:'You will need to apply for a Clinical Trials Authorisation from the MHRA before or alongside your REC application.'});
+  }
+  if(state.checks.device){
+    approvals.push({type:'triggered',name:'MHRA device review',note:'Clinical investigations of medical devices may require MHRA notification or authorisation, depending on device status.'});
+  }
+  if(state.checks.ir){
+    approvals.push({type:'triggered',name:'ARSAC approval',note:'Projects involving administration of radioactive substances need Administration of Radioactive Substances Advisory Committee approval.'});
+  }
+  if(state.checks.bioresource){
+    approvals.push({type:'never',name:'Proportionate Review not available',note:'Research bioresource applications always require full REC review.'});
+  }
+  if(state.checks.hfea){
+    approvals.push({type:'triggered',name:'HFEA licence or approval',note:'HFEA-regulated activities require a Human Fertilisation and Embryology Authority licence. Access to the HFEA Register requires REC review as a minimum.'});
+  }
+  if(state.checks.mod){
+    approvals.push({type:'triggered',name:'MODREC (external to IRAS)',note:'Ministry of Defence research requires separate MODREC approval. IRAS will signpost you but does not manage this process.'});
+  }
+  if(state.checks.alc){
+    approvals.push({type:'never',name:'Proportionate Review not available',note:'Projects including adults who lack capacity to consent must go to full REC review.'});
+  }
+  if(state.checks.prisoners){
+    approvals.push({type:'never',name:'Proportionate Review not available',note:'Projects including prisoners or young offenders in custody must go to full REC review.'});
+    if(state.nations.eng||state.nations.wales) approvals.push({type:'triggered',name:'HMPPS approval (England and Wales)',note:'His Majesty\'s Prison and Probation Service must approve research in prisons in England and Wales.'});
+    if(state.nations.ni) approvals.push({type:'triggered',name:'NIPS approval (Northern Ireland)',note:'Northern Ireland Prison Service approval is required after REC approval is in place.'});
+    if(state.nations.scotland) approvals.push({type:'triggered',name:'SPS RAEC approval (Scotland)',note:'Scottish Prison Service Research Access and Ethics Committee approval is recommended before applying to REC.'});
+  }
+  if(state.checks.tissue){
+    approvals.push({type:'triggered',name:'HTA licence (institutional)',note:'Your institution will need a Human Tissue Authority licence covering this activity. You will provide licence details in your application.'});
+  }
+  if(state.consent==='none_id'||state.consent==='some'){
+    approvals.push({type:'triggered',name:'CAG / Section 251 support (possible)',note:'If you will access identifiable patient data without consent and without an existing legal basis, you may need Confidentiality Advisory Group approval.'});
+  }
+  
+  // Deduplicate
+  const seen=new Set();
+  const uniq=approvals.filter(a=>{const k=a.name;if(seen.has(k))return false;seen.add(k);return true;});
+  
+  const list=document.getElementById('d-results');
+  list.innerHTML=uniq.map(a=>`
+    <div class="diag-approval ${a.type}">
+      <div class="icon">${a.type==='required'?'✓':a.type==='never'?'×':'!'}</div>
+      <div><span class="diag-approval-name">${a.name}</span><span class="diag-approval-note">${a.note}</span></div>
+    </div>`).join('');
+  
+  showStep('result');
+  document.getElementById('d-prog').style.width='100%';
+}
+
+function resetDiag(){
+  Object.keys(state.checks).forEach(k=>delete state.checks[k]);
+  Object.keys(state.nations).forEach(k=>delete state.nations[k]);
+  state.consent=null;
+  document.querySelectorAll('.diag-check,.diag-option').forEach(el=>{el.classList.remove('checked','selected')});
+  currentStep=1;
+  showStep(1);
+  document.getElementById('d-prog').style.width='0%';
+}
+
+// --- VARIANT C: REFERENCE TABLE ---
+const tableData = [
+  {name:'Research Ethics Committee (REC)',sub:'Full review or Proportionate Review',trigger:'All applications',seq:'parallel',pr:'Determines PR eligibility based on answers',cats:['always']},
+  {name:'HRA / HCRW assessment',sub:'Health Research Authority or Health and Care Research Wales',trigger:'All UK applications',seq:'parallel',pr:'No direct impact',cats:['always']},
+  {name:'MHRA Clinical Trials Authorisation',sub:'Medicines and Healthcare products Regulatory Agency',trigger:'Project is a CTIMP',seq:'before',pr:'CTIMP = never PR',cats:['mhra','never-pr']},
+  {name:'MHRA device authorisation / notification',sub:'Medical device investigations',trigger:'Clinical investigation of a medical device (unmarketted or CE/UKCA-marking purpose)',seq:'before',pr:'Unmarketted devices = never PR',cats:['mhra','never-pr']},
+  {name:'ARSAC',sub:'Administration of Radioactive Substances Advisory Committee',trigger:'Project involves administration of radioactive substances (diagnostic or therapeutic)',seq:'parallel',pr:'No direct impact — SoC radiation may still be PR eligible',cats:['rad']},
+  {name:'CAG / Section 251',sub:'Confidentiality Advisory Group',trigger:'Identifiable patient data accessed without consent and without existing legal basis',seq:'parallel',pr:'No direct impact',cats:['people']},
+  {name:'HFEA licence',sub:'Human Fertilisation and Embryology Authority',trigger:'HFEA-regulated activities (embryo storage, gamete use to create embryos)',seq:'before',pr:'HFEA activities = never PR',cats:['never-pr']},
+  {name:'HFEA Register access approval',sub:'Human Fertilisation and Embryology Authority',trigger:'Accessing data from the HFEA Register',seq:'parallel',pr:'No direct impact (requires full REC)',cats:[]},
+  {name:'HTA licence (institutional)',sub:'Human Tissue Authority',trigger:'Collection or use of human tissue under HTA scope',seq:'parallel',pr:'No direct impact',cats:['people']},
+  {name:'HMPPS',sub:'His Majesty\'s Prison and Probation Service (England and Wales)',trigger:'Research including prisoners or young offenders in custody — England or Wales',seq:'parallel',pr:'Prisoners = never PR',cats:['people','never-pr']},
+  {name:'NIPS',sub:'Northern Ireland Prison Service',trigger:'Research including prisoners in custody — Northern Ireland',seq:'after',pr:'Prisoners = never PR',cats:['people','never-pr']},
+  {name:'SPS RAEC',sub:'Scottish Prison Service Research Access and Ethics Committee',trigger:'Research including prisoners in custody — Scotland',seq:'before',pr:'Prisoners = never PR',cats:['people','never-pr']},
+  {name:'MODREC',sub:'Ministry of Defence Research Ethics Committee',trigger:'Activity under responsibility of the Ministry of Defence',seq:'external',pr:'No direct impact — process outside IRAS',cats:[]},
+  {name:'Pharmacy assurance (CTIMP)',sub:'Institutional pharmacy / MHRA additional',trigger:'CTIMP with GMO, ATMP, or gene therapy component',seq:'parallel',pr:'CTIMP = never PR',cats:['mhra','never-pr']},
+];
+
+const seqLabel={before:'Before REC',after:'After REC',parallel:'Parallel',external:'External'};
+const seqClass={before:'seq-before',after:'seq-after',parallel:'seq-parallel',external:'seq-out'};
+
+function buildTable(filter){
+  const tbody=document.getElementById('rct-body');
+  const filtered=tableData.filter(r=>filter==='all'||r.cats.includes(filter));
+  tbody.innerHTML=filtered.map(r=>`
+    <tr>
+      <td><div class="rct-body">${r.name}</div><div class="rct-sub">${r.sub}</div></td>
+      <td class="rct-trigger">${r.trigger}</td>
+      <td><span class="rct-seq ${seqClass[r.seq]}">${seqLabel[r.seq]}</span></td>
+      <td class="rct-trigger">${r.pr.includes('never')?`<span class="rct-never">${r.pr}</span>`:r.pr}</td>
+    </tr>`).join('');
+}
+
+function setFTab(el){
+  document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  buildTable(el.dataset.cf);
+}
+
+buildTable('all');
+</script>
+</body>
+</html>

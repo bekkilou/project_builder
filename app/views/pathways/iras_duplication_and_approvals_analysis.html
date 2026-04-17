@@ -1,0 +1,243 @@
+
+<h2 class="sr-only">Two-part analysis: question duplication across sheets, and external approvals/permissions triggered by each module</h2>
+
+<style>
+  .tabs { display:flex; gap:0; border-bottom:0.5px solid var(--color-border-tertiary); margin-bottom:1.25rem; }
+  .tab { padding:8px 16px; font-size:13px; color:var(--color-text-secondary); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-0.5px; }
+  .tab.active { color:var(--color-text-primary); border-bottom-color:var(--color-text-primary); font-weight:500; }
+  .panel { display:none; }
+  .panel.active { display:block; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { font-size:11px; font-weight:500; color:var(--color-text-secondary); text-align:left; padding:6px 10px; border-bottom:0.5px solid var(--color-border-tertiary); white-space:nowrap; }
+  td { padding:7px 10px; border-bottom:0.5px solid var(--color-border-tertiary); vertical-align:top; color:var(--color-text-primary); line-height:1.5; }
+  .uid { font-family:var(--font-mono); font-size:11px; color:var(--color-text-tertiary); white-space:nowrap; }
+  .badge { display:inline-block; font-size:11px; padding:2px 7px; border-radius:4px; font-weight:500; margin:1px 2px; white-space:nowrap; }
+  .b-warn { background:var(--color-background-warning); color:var(--color-text-warning); }
+  .b-danger { background:var(--color-background-danger); color:var(--color-text-danger); }
+  .b-info { background:var(--color-background-info); color:var(--color-text-info); }
+  .b-success { background:var(--color-background-success); color:var(--color-text-success); }
+  .b-muted { background:var(--color-background-secondary); color:var(--color-text-secondary); }
+  .section-hdr td { background:var(--color-background-secondary); font-size:11px; font-weight:500; color:var(--color-text-secondary); padding:4px 10px; letter-spacing:.04em; text-transform:uppercase; }
+  .sheet-tag { font-size:11px; font-family:var(--font-mono); background:var(--color-background-secondary); border:0.5px solid var(--color-border-tertiary); padding:1px 5px; border-radius:3px; color:var(--color-text-secondary); margin:1px; display:inline-block; }
+  .risk-high { color:var(--color-text-danger); font-weight:500; }
+  .risk-med { color:var(--color-text-warning); }
+  .note { font-size:12px; color:var(--color-text-secondary); margin-top:3px; line-height:1.4; }
+  .body-row { font-size:12px; color:var(--color-text-secondary); line-height:1.4; }
+  .tt-wrap { overflow-x:auto; }
+</style>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('dupes')">Question duplication</div>
+  <div class="tab" onclick="showTab('approvals')">External approvals &amp; permissions</div>
+</div>
+
+<div id="dupes" class="panel active">
+<div class="tt-wrap">
+<table>
+<thead><tr>
+  <th>Type</th><th>IDs affected</th><th>Sheets</th><th>Issue</th><th>Risk / action</th>
+</tr></thead>
+<tbody>
+
+<tr class="section-hdr"><td colspan="5">Cross-sheet duplication — same UID appears in multiple sheets</td></tr>
+
+<tr>
+  <td><span class="badge b-danger">UID clash</span></td>
+  <td><span class="uid">IQA0032</span></td>
+  <td><span class="sheet-tag">A</span><span class="sheet-tag">C2</span></td>
+  <td>Same UID and near-identical label used in both Project filter (Sheet A) and Bioresource (C2). Wording differs slightly: A uses "In which countries…do you want your project to take place", C2 uses "In which countries of the UK will the project take place". Visibility rules also differ — A suppresses when bioresource=Yes; C2 surfaces it for bioresource only.</td>
+  <td class="risk-high">High — same ID, different routing logic. Will cause data model collision. Needs a new UID for the C2 instance, or confirmed as deliberate shared field with conditional display.</td>
+</tr>
+<tr>
+  <td><span class="badge b-danger">UID clash</span></td>
+  <td><span class="uid">IQA0033</span><br><span class="uid">IQA0034</span></td>
+  <td><span class="sheet-tag">A</span><span class="sheet-tag">C2</span></td>
+  <td>Both questions ("Where will samples be held?" / "From where will samples be obtained?") appear identically in Sheet A and Sheet C2. The A instances are flagged with a note "removed and added to bioresource tab" (17/2/25) but they still carry active UIDs in Sheet A.</td>
+  <td class="risk-high">High — conflicting notes suggest A instances should be deleted. If retained in both, storage and display logic will be ambiguous. Confirm which sheet is authoritative; retire A instances if C2 is the live location.</td>
+</tr>
+<tr>
+  <td><span class="badge b-warn">UID clash</span></td>
+  <td><span class="uid">IQA0238</span></td>
+  <td><span class="sheet-tag">A</span><span class="sheet-tag">C8</span></td>
+  <td>Children's age ranges asked in both Project filter (A) and Children module (C8). The A instance was moved there in Jan 2025 to drive CTIMP vs non-CTIMP routing. The C8 instance has a slightly different age range set (2–11 years vs 2–9 and 10–15 in sheet A). Answer options diverge.</td>
+  <td class="risk-high">High — answer option mismatch between instances. If both persist, applicant may give different answers to the same question. C8 instance should either be retired or explicitly scoped to a different display context.</td>
+</tr>
+
+<tr class="section-hdr"><td colspan="5">Intra-sheet duplication — Sheet C5 (Ionising Radiation)</td></tr>
+
+<tr>
+  <td><span class="badge b-danger">Repeated rows</span></td>
+  <td><span class="uid">IQA0330</span></td>
+  <td><span class="sheet-tag">C5</span></td>
+  <td>"Participant cohort" row appears 9 times with the same UID. Appears to be used as a repeating sub-table header across different procedure cohort blocks (patient, healthy volunteer, radiology imaging, radioactive substances, brachytherapy). Same label, same ID for each block.</td>
+  <td class="risk-med">Medium — likely intentional as a repeating sub-group header within a dynamic table structure, but sharing the same UID will cause issues in a database or form engine. Each cohort block may need a distinct UID suffix or compound key.</td>
+</tr>
+<tr>
+  <td><span class="badge b-danger">Repeated rows</span></td>
+  <td><span class="uid">IQA0347</span> <span class="uid">IQA0348</span> <span class="uid">IQA0349</span> <span class="uid">IQA0350</span> <span class="uid">IQA0351</span> <span class="uid">IQA0352</span></td>
+  <td><span class="sheet-tag">C5</span></td>
+  <td>Procedure detail fields ("Body part", "Effective dose", "When/how often", "Max examinations", etc.) appear 2–4 times each with the same UID. These correspond to different radiation procedure types (x-ray, radioactive substance, brachytherapy) but share IDs across the blocks.</td>
+  <td class="risk-high">High — same UID across multiple procedure sub-tables will cause data overwrite in any flat schema. Needs a table/iteration model (e.g. IQA0349[procedure_type]) or unique UIDs per procedure type block.</td>
+</tr>
+<tr>
+  <td><span class="badge b-warn">Repeated rows</span></td>
+  <td><span class="uid">IQA0381</span> <span class="uid">IQA0388</span> <span class="uid">IQA0389</span></td>
+  <td><span class="sheet-tag">C5</span></td>
+  <td>Appear 2–3 times. IQA0388 ("Detail of procedure to be performed") and IQA0389 ("Status of the sponsor") each appear more than once across procedure sub-sections with the same UID.</td>
+  <td class="risk-med">Medium — same issue as above; needs either unique compound UIDs or a loop/iteration construct in the data model.</td>
+</tr>
+
+<tr class="section-hdr"><td colspan="5">Intra-sheet duplication — Sheet C7 (Adults Lacking Capacity)</td></tr>
+
+<tr>
+  <td><span class="badge b-warn">Parallel questions</span></td>
+  <td><span class="uid">IQA0281</span> / <span class="uid">IQA0297</span><br><span class="uid">IQA0285</span> / <span class="uid">IQA0303</span><br><span class="uid">IQA0288</span> / <span class="uid">IQA0306</span><br><span class="uid">IQA0289</span> / <span class="uid">IQA0307</span><br><span class="uid">IQA0290</span> / <span class="uid">IQA0308</span></td>
+  <td><span class="sheet-tag">C7</span></td>
+  <td>Five question pairs with identical labels appear across the CTIMP ALC and non-CTIMP ALC sections. Different UIDs — so this is legitimate parallel structure — but the wording is word-for-word identical. Examples: "Describe how you will ensure members of the research team…" (IQA0281 = CTIMP, IQA0297 = non-CTIMP) and "Is it possible that a participant requiring urgent treatment…" (IQA0285 / IQA0303).</td>
+  <td class="risk-med">Low–medium on data model (UIDs are distinct), but raises usability and maintenance risk. If these questions are genuinely the same, a shared question with CTIMP/non-CTIMP as a routing variable would be simpler. Track whether review criteria differ between the two tracks — if not, consolidate.</td>
+</tr>
+
+<tr class="section-hdr"><td colspan="5">Intra-sheet duplication — Sheet C4 (Devices)</td></tr>
+
+<tr>
+  <td><span class="badge b-warn">Parallel questions</span></td>
+  <td><span class="uid">IQA03010</span> / <span class="uid">IQA03011</span></td>
+  <td><span class="sheet-tag">C4</span></td>
+  <td>Both have the label "Select the type of research project" and appear to offer the same device type classification options (UKCA/CE marking, post-market, IVD performance evaluation). Different UIDs, but no visible distinction in routing purpose from the label alone.</td>
+  <td class="risk-med">Medium — needs clarification: are these two instances for different audience contexts (sponsored vs non-sponsored), or is one a legacy copy? Notes on IQA03011 reference MHRA review determination so it may carry different downstream logic.</td>
+</tr>
+
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="approvals" class="panel">
+<div class="tt-wrap">
+<table>
+<thead><tr>
+  <th>Body / approval</th><th>Module(s)</th><th>Triggered by</th><th>Notes</th>
+</tr></thead>
+<tbody>
+
+<tr class="section-hdr"><td colspan="4">Regulatory — medicines &amp; devices</td></tr>
+
+<tr>
+  <td><strong>MHRA</strong><br><span class="note">Clinical Trials / Devices authorisation</span></td>
+  <td><span class="sheet-tag">A</span><span class="sheet-tag">C3</span><span class="sheet-tag">C4</span></td>
+  <td>CTIMP = Yes (IQA0017); Device clinical investigation = Yes (IQA0020); C4 device type = "clinical investigation for UKCA/CE marking" or "combined CTIMP+device"</td>
+  <td>C3 (CTIMP placeholder) references MHRA CTA triage form. C4 contains a signposting screen (IQA03014/03015) explicitly telling applicants they are "likely to need to apply to MHRA". NI has a separate question (IQA03012) because MHRA must know the project involves Northern Ireland.</td>
+</tr>
+<tr>
+  <td><strong>UKCA / CE marking</strong><br><span class="note">Device conformity assessment</span></td>
+  <td><span class="sheet-tag">C4</span></td>
+  <td>Device type selection (IQA03010/03011) — drives entire C4 sub-section for investigations involving UKCA/CE UKNI/CE marked or new devices</td>
+  <td>13 questions in C4 explicitly reference UKCA/CE marking. Whether devices are UK-market, EU-only or unmarketted determines PR eligibility (unmarketted = never PR). IVDs have a separate track (IVDD/IVD questions in C4).</td>
+</tr>
+<tr>
+  <td><strong>Pharmacy assurance</strong><br><span class="note">CTIMP-specific</span></td>
+  <td><span class="sheet-tag">A</span><span class="sheet-tag">C3</span></td>
+  <td>CTIMP = Yes. GMO/ATMP content noted as linking to a separate pharmacy question set (not in scope of this workbook version)</td>
+  <td>Sheet A notes reference "pharmacy module" as future linkage. GMO question (IQA03273/IQA03282) was deleted in Dec 2024 — GMOs and ATMPs deferred to pharmacy module. Gene therapy / stem cell trials flagged for specialist REC routing.</td>
+</tr>
+
+<tr class="section-hdr"><td colspan="4">Radiation — ARSAC &amp; administration</td></tr>
+
+<tr>
+  <td><strong>ARSAC</strong><br><span class="note">Administration of Radioactive Substances Advisory Committee</span></td>
+  <td><span class="sheet-tag">C5</span></td>
+  <td>Ionising radiation = Yes (IQA0021), then procedure type includes "diagnostic/therapeutic administration of radioactive substances" (IQA0326)</td>
+  <td>Sheet C5 contains a large dedicated block for ARSAC data (40+ questions). Medical Physics Expert (MPE) must complete dose fields. Dedicated CRE/MPE reviewer request questions (IQA0373, IQA0376). Brachytherapy has its own sub-section. This is the most question-intensive external body in the workbook.</td>
+</tr>
+<tr>
+  <td><strong>HRA reviewer assignment</strong><br><span class="note">CRE / MPE specialist reviewers</span></td>
+  <td><span class="sheet-tag">C5</span></td>
+  <td>Ionising radiation present — applicant can request specific CRE (Clinical Radiation Expert) or MPE (Medical Physics Expert) reviewers (IQA0373, IQA0376)</td>
+  <td>Unique to the IR module — no equivalent reviewer-request mechanism visible in other modules.</td>
+</tr>
+
+<tr class="section-hdr"><td colspan="4">Ethics &amp; governance oversight</td></tr>
+
+<tr>
+  <td><strong>CAG / CAG equivalent</strong><br><span class="note">Confidentiality Advisory Group</span></td>
+  <td><span class="sheet-tag">A</span><span class="sheet-tag">C9</span></td>
+  <td>IQA0098: reason for no consent includes OPT0333 "access to identifiable patient data by people without an existing legal basis"</td>
+  <td>CAG equivalent referenced for non-England contexts. CAG/Section 251 pathway is signposted from consent questions — the actual CAG question set is not yet in this workbook. IQA0099 (C9) requires justification of why consent won't be sought, which feeds the CAG assessment.</td>
+</tr>
+<tr>
+  <td><strong>NHS REC</strong><br><span class="note">Research Ethics Committee — full review</span></td>
+  <td><span class="sheet-tag">A</span><span class="sheet-tag">D</span></td>
+  <td>Multiple "never PR" triggers (see truth table). Sheet D (Application booking) is the explicit REC type selection screen.</td>
+  <td>Sheet D contains a placeholder for the booking workflow including an AI-processing consent field and language about confirming review type eligibility. Specialist REC routing flagged for: CTIMPs, gene therapy/stem cell, prisoners research.</td>
+</tr>
+
+<tr class="section-hdr"><td colspan="4">Nation-specific regulatory approvals</td></tr>
+
+<tr>
+  <td><strong>HMPPS</strong><br><span class="note">HM Prison &amp; Probation Service — England &amp; Wales</span></td>
+  <td><span class="sheet-tag">A</span></td>
+  <td>Prisoners = Yes (IQA0027) AND nation = England or Wales (IQA0320)</td>
+  <td>HMPPS approval required before or alongside REC. Undergraduates ineligible; Masters need HMPPS/MoJ support; PhDs accepted. Approval required for staff research in prisons too (to be clarified).</td>
+</tr>
+<tr>
+  <td><strong>NIPS</strong><br><span class="note">Northern Ireland Prison Service</span></td>
+  <td><span class="sheet-tag">A</span></td>
+  <td>Prisoners = Yes AND nation = Northern Ireland (IQA0320)</td>
+  <td>NIPS issues approval only after REC approval is in place — reverse sequencing to HMPPS. Signposting only; NIPS questions not in this workbook.</td>
+</tr>
+<tr>
+  <td><strong>SPS RAEC</strong><br><span class="note">Scottish Prison Service Research Access &amp; Ethics Committee</span></td>
+  <td><span class="sheet-tag">A</span></td>
+  <td>Prisoners = Yes AND nation = Scotland (IQA0320)</td>
+  <td>RAEC approval recommended before NHS REC (to avoid wasted effort if RAEC refuses). Does not accept undergraduate applications.</td>
+</tr>
+<tr>
+  <td><strong>MODREC</strong><br><span class="note">Ministry of Defence Research Ethics Committee</span></td>
+  <td><span class="sheet-tag">A</span></td>
+  <td>MOD activity = Yes (IQA0028)</td>
+  <td>As of Aug 2025 notes, MODREC is out of scope for IRAS integration. System will signpost applicants to MODREC's own process rather than routing through IRAS.</td>
+</tr>
+
+<tr class="section-hdr"><td colspan="4">Regulatory — fertility &amp; tissue</td></tr>
+
+<tr>
+  <td><strong>HFEA</strong><br><span class="note">Human Fertilisation &amp; Embryology Authority</span></td>
+  <td><span class="sheet-tag">A</span></td>
+  <td>HFEA-regulated activities = Yes (IQA0029) or HFEA Register data access = Yes (IQA0321)</td>
+  <td>Two separate questions distinguish between regulated activities (licence required for embryo storage/use, gamete use to create embryos) and data access (HFEA Register). Register access always requires REC review. Open question on whether SWR needed when NHS clinic involved. Potential to merge IQA0029 and IQA0321 flagged in Aug 2025 note.</td>
+</tr>
+<tr>
+  <td><strong>HTA licence</strong><br><span class="note">Human Tissue Authority</span></td>
+  <td><span class="sheet-tag">C6</span></td>
+  <td>Human biological samples module active; IQA0259 asks applicant to provide details of existing HTA licences</td>
+  <td>Not a trigger question in the same way — applicant is asked to declare their HTA licence, not route to HTA for approval through IRAS. IQA0269 references destruction arrangements for material, linked to HTA obligations.</td>
+</tr>
+
+<tr class="section-hdr"><td colspan="4">Portfolio / funding system access</td></tr>
+
+<tr>
+  <td><strong>CPMS</strong><br><span class="note">Central Portfolio Management System</span></td>
+  <td><span class="sheet-tag">A</span></td>
+  <td>CPMS access = Yes (IQA0005). System pushes data to CPMS on "continue".</td>
+  <td>Covers SoECAT creation, interactive costing tool, feasibility services and CRN access. Separate email contact required (IQA0006). URLs conditional on commercial/non-commercial status (IQA0004).</td>
+</tr>
+<tr>
+  <td><strong>NIHR eligibility</strong><br><span class="note">National Institute for Health Research</span></td>
+  <td><span class="sheet-tag">A</span></td>
+  <td>Multiple filter questions feed NIHR eligibility column: participant groups (IQA0088), UK nations (IQA0032), commercial status (IQA0004), NIHR funding (IQA03271), age ranges (IQA0238/0318)</td>
+  <td>NIHR eligibility is determined by the system from answers rather than being a direct external approval trigger. Study setting, age limits, and participant type all feed into it.</td>
+</tr>
+
+</tbody>
+</table>
+</div>
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>

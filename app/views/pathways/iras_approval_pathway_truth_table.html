@@ -1,0 +1,191 @@
+
+<h2 class="sr-only">IRAS approval pathway truth table showing which questions affect PR eligibility, REC booking, REC dataset, SWR, and NIHR eligibility</h2>
+
+<style>
+  .filter-bar { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:1rem; }
+  .pill { font-size:12px; padding:4px 10px; border-radius:20px; border:0.5px solid var(--color-border-secondary); background:var(--color-background-secondary); color:var(--color-text-secondary); cursor:pointer; user-select:none; transition:background .15s, color .15s; }
+  .pill.active { background:var(--color-background-primary); color:var(--color-text-primary); border-color:var(--color-border-primary); font-weight:500; }
+  .tt-wrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { font-size:11px; font-weight:500; color:var(--color-text-secondary); text-align:left; padding:6px 10px; border-bottom:0.5px solid var(--color-border-tertiary); white-space:nowrap; }
+  td { padding:7px 10px; border-bottom:0.5px solid var(--color-border-tertiary); vertical-align:top; color:var(--color-text-primary); }
+  tr.hidden { display:none; }
+  .uid { font-family:var(--font-mono); font-size:11px; color:var(--color-text-tertiary); white-space:nowrap; }
+  .q-label { max-width:320px; line-height:1.4; }
+  .badge { display:inline-block; font-size:11px; padding:2px 7px; border-radius:4px; white-space:nowrap; font-weight:500; }
+  .b-yes  { background:var(--color-background-success); color:var(--color-text-success); }
+  .b-no   { background:var(--color-background-secondary); color:var(--color-text-tertiary); }
+  .b-na   { background:var(--color-background-secondary); color:var(--color-text-tertiary); font-style:italic; }
+  .b-never { background:var(--color-background-danger); color:var(--color-text-danger); }
+  .b-cond { background:var(--color-background-warning); color:var(--color-text-warning); }
+  .section-hdr td { background:var(--color-background-secondary); font-size:11px; font-weight:500; color:var(--color-text-secondary); padding:4px 10px; letter-spacing:.04em; text-transform:uppercase; }
+  .legend { display:flex; flex-wrap:wrap; gap:10px; margin:0 0 1rem; font-size:12px; color:var(--color-text-secondary); align-items:center; }
+  .search-row { margin-bottom:12px; }
+  #q-search { width:100%; padding:6px 10px; font-size:13px; border:0.5px solid var(--color-border-secondary); border-radius:var(--border-radius-md); background:var(--color-background-primary); color:var(--color-text-primary); box-sizing:border-box; }
+  #q-search:focus { outline:none; border-color:var(--color-border-primary); }
+  .counts { font-size:12px; color:var(--color-text-secondary); margin-bottom:8px; }
+</style>
+
+<div class="search-row">
+  <input id="q-search" type="search" placeholder="Search questions or IDs…" oninput="applyFilters()">
+</div>
+
+<div class="filter-bar" id="filter-bar">
+  <span class="pill active" data-filter="all" onclick="setFilter(this,'all')">All questions</span>
+  <span class="pill" data-filter="pr" onclick="setFilter(this,'pr')">PR determinant</span>
+  <span class="pill" data-filter="never-pr" onclick="setFilter(this,'never-pr')">Never PR</span>
+  <span class="pill" data-filter="swr" onclick="setFilter(this,'swr')">SWR required</span>
+  <span class="pill" data-filter="nihr" onclick="setFilter(this,'nihr')">NIHR eligibility</span>
+</div>
+
+<div class="legend">
+  <span><span class="badge b-yes">Yes</span> Contributes to this pathway</span>
+  <span><span class="badge b-never">Never PR</span> Specific answer disqualifies PR</span>
+  <span><span class="badge b-cond">Conditional</span> Depends on answer</span>
+  <span><span class="badge b-na">n/a</span> Not applicable</span>
+  <span><span class="badge b-no">No</span> Does not apply</span>
+</div>
+
+<div class="counts" id="row-count"></div>
+
+<div class="tt-wrap">
+<table id="tt">
+<thead>
+<tr>
+  <th>ID</th>
+  <th class="q-label">Question / field</th>
+  <th>Section</th>
+  <th>PR eligibility</th>
+  <th>REC booking</th>
+  <th>REC dataset</th>
+  <th>SWR dataset</th>
+  <th>NIHR eligibility</th>
+</tr>
+</thead>
+<tbody id="tt-body">
+</tbody>
+</table>
+</div>
+
+<script>
+const rows = [
+  { section:"Project details", uid:"IQA0002", label:"Short project title", pr:null, rec_b:"yes", rec_d:"yes", swr:"yes", nihr:null },
+  { section:"Project details", uid:"IQA0001", label:"Identify your role", pr:null, rec_b:null, rec_d:"no", swr:"no", nihr:null },
+  { section:"Project details", uid:"IQA0003", label:"Full project title", pr:null, rec_b:null, rec_d:"yes", swr:"yes", nihr:null },
+  { section:"Project details", uid:"IQA0004", label:"Is this project likely to be managed as commercial research?", pr:null, rec_b:null, rec_d:"no", swr:"yes", nihr:null },
+  { section:"Project details", uid:"IQA03271", label:"Are you seeking NIHR funding for this project?", pr:null, rec_b:null, rec_d:"no", swr:"yes", nihr:"yes" },
+  { section:"Project details", uid:"IQA0005", label:"Do you wish to access one or more of the CPMS services?", pr:null, rec_b:null, rec_d:"no", swr:"no", nihr:null },
+  { section:"Project details", uid:"IQA0006", label:"Provide the email of the CPMS initial contact", pr:null, rec_b:null, rec_d:"no", swr:"no", nihr:null },
+  { section:"Project scope — activities & participants", uid:"IQA0088", label:"Select which groups will participate or provide data or samples in this project", pr:"yes", rec_b:"yes", rec_d:"yes", swr:"yes", nihr:"yes", neverPR:"Patients in nursing homes / residential care NI or social care settings → never PR" },
+  { section:"Project scope — activities & participants", uid:"IQA0061", label:"Select all the activities that will be involved in this project", pr:"yes", rec_b:"yes", rec_d:"yes", swr:"yes", nihr:null },
+  { section:"Project scope — activities & participants", uid:"IQA0317", label:"Are you involving adults or children in your project?", pr:null, rec_b:null, rec_d:"yes", swr:null, nihr:"yes" },
+  { section:"Project scope — activities & participants", uid:"IQA0238", label:"Specify the ages of child participants", pr:null, rec_b:null, rec_d:null, swr:null, nihr:"yes" },
+  { section:"Project scope — activities & participants", uid:"IQA0318", label:"What ages are your adult participants?", pr:null, rec_b:null, rec_d:null, swr:null, nihr:"yes" },
+  { section:"Project scope — study type", uid:"IQA0012", label:"Is any part of the project being undertaken as an educational project?", pr:null, rec_b:null, rec_d:"yes", swr:"yes", nihr:null },
+  { section:"Project scope — study type", uid:"IQA0014", label:"Is this application to establish a research bioresource?", pr:"never-trigger", rec_b:"yes", rec_d:"yes", swr:"yes", nihr:null, neverPR:"Yes → never PR" },
+  { section:"Project scope — study type", uid:"IQA0015", label:"Will the bioresource be established within a NHS or HSC diagnostic archive?", pr:null, rec_b:null, rec_d:"no", swr:"yes", nihr:null },
+  { section:"Project scope — study type", uid:"IQA0017", label:"Is this project a CTIMP?", pr:"yes", rec_b:"yes", rec_d:"yes", swr:"yes", nihr:null, neverPR:"Yes → never PR" },
+  { section:"Project scope — study type", uid:"IQA0018", label:"Select the option: CTIMP only or combined CTIMP + device", pr:null, rec_b:"yes", rec_d:"yes", swr:"yes", nihr:null },
+  { section:"Project scope — study type", uid:"IQA0020", label:"Is this project a clinical investigation or study of a medical device?", pr:"yes", rec_b:"yes", rec_d:"yes", swr:"yes", nihr:null, neverPR:"Devices not marketed in EU and UK → never PR" },
+  { section:"Project scope — study type", uid:"IQA0021", label:"Does the project involve exposing participants to any ionising radiation?", pr:"yes", rec_b:null, rec_d:"yes", swr:"yes", nihr:null },
+  { section:"Project scope — study type", uid:"IQA0022", label:"Will you be taking or using any human biological samples?", pr:null, rec_b:null, rec_d:"yes", swr:"yes", nihr:null },
+  { section:"Consent & capacity", uid:"IQA0097", label:"Will you seek consent from or on behalf of participants?", pr:null, rec_b:null, rec_d:null, swr:null, nihr:null },
+  { section:"Consent & capacity", uid:"IQA0098", label:"Select the reasons consent/assent will not be obtained", pr:"yes", rec_b:"yes", rec_d:"yes", swr:"yes", nihr:null, neverPR:"OPT0336 (adults lacking capacity) selected → never PR" },
+  { section:"Consent & capacity", uid:"IQA0024", label:"Will identifiable patient data be accessed outside the care team without prior consent?", pr:"yes", rec_b:"yes", rec_d:"yes", swr:"yes", nihr:null },
+  { section:"Consent & capacity", uid:"IQA0025", label:"When recruiting adults, what capacity will they have to consent?", pr:"yes", rec_b:"yes", rec_d:"yes", swr:"yes", nihr:null, neverPR:"OPT0135 or OPT0136 (any adults lacking capacity) → never PR" },
+  { section:"Consent & capacity", uid:"IQA0026", label:"Will you include any participants who are children?", pr:"no", rec_b:"yes", rec_d:"yes", swr:"yes", nihr:null },
+  { section:"Special regulatory requirements", uid:"IQA0027", label:"Will you include prisoners or young offenders in HMPPS / probation custody?", pr:"yes", rec_b:"yes", rec_d:"no", swr:"yes", nihr:null, neverPR:"Yes → never PR" },
+  { section:"Special regulatory requirements", uid:"IQA0320", label:"In which UK nations will you include prisoners or young offenders?", pr:null, rec_b:null, rec_d:null, swr:null, nihr:null },
+  { section:"Special regulatory requirements", uid:"IQA0028", label:"Will this project involve any activity under the responsibility of the MOD?", pr:"yes", rec_b:null, rec_d:"no", swr:"yes", nihr:null },
+  { section:"Special regulatory requirements", uid:"IQA0029", label:"Will this project involve activities or data regulated by the HFEA?", pr:"yes", rec_b:null, rec_d:"no", swr:"yes", nihr:null },
+  { section:"Special regulatory requirements", uid:"IQA0321", label:"Will this project involve accessing data from the HFEA Register?", pr:null, rec_b:null, rec_d:null, swr:null, nihr:null },
+  { section:"Research location", uid:"IQA0032", label:"Which UK nations will the project take place in?", pr:null, rec_b:"yes", rec_d:"no", swr:"yes", nihr:"yes" },
+  { section:"Research location", uid:"IQA0142", label:"Is this project taking place in countries other than the UK?", pr:null, rec_b:null, rec_d:"no", swr:"no", nihr:null },
+  { section:"Research location", uid:"IQA0143", label:"List the countries outside the UK participating in this project", pr:null, rec_b:null, rec_d:"no", swr:"no", nihr:null },
+  { section:"Research location", uid:"IQA0033", label:"Where in the UK will the human biological samples or data be held?", pr:null, rec_b:null, rec_d:"yes", swr:"no", nihr:null },
+  { section:"Research location", uid:"IQA0034", label:"From where in the UK will human biological samples or data be obtained?", pr:null, rec_b:null, rec_d:"yes", swr:"no", nihr:null },
+  { section:"Research location", uid:"IQA0144", label:"Where will the project be taking place?", pr:null, rec_b:"yes", rec_d:"yes", swr:"yes", nihr:null },
+  { section:"Research location", uid:"IQA0145", label:"Give details of other organisations responsible for conducting the project", pr:null, rec_b:null, rec_d:"yes", swr:"yes", nihr:null },
+  { section:"Research location", uid:"IQA0146", label:"Will you allow research sites to use Participant Identification Centres (PICs)?", pr:null, rec_b:null, rec_d:"yes", swr:"yes", nihr:null },
+];
+
+function badge(val, uid, field) {
+  if (!val) return `<span class="badge b-na">n/a</span>`;
+  if (val === "yes") return `<span class="badge b-yes">Yes</span>`;
+  if (val === "no") return `<span class="badge b-no">No</span>`;
+  if (val === "never-trigger") return `<span class="badge b-never">Yes / never PR</span>`;
+  return `<span class="badge b-na">${val}</span>`;
+}
+
+function prBadge(row) {
+  if (row.neverPR && row.pr === "never-trigger") return `<span class="badge b-never">Never PR</span>`;
+  if (row.neverPR && row.pr === "yes") return `<span class="badge b-yes">Yes</span><br><span class="badge b-never" style="margin-top:3px">Conditionally never PR</span>`;
+  if (row.pr === "yes") return `<span class="badge b-yes">Yes</span>`;
+  if (row.pr === "no") return `<span class="badge b-no">No</span>`;
+  return `<span class="badge b-na">n/a</span>`;
+}
+
+let activeFilter = "all";
+let activeSearch = "";
+
+function buildTable() {
+  const tbody = document.getElementById("tt-body");
+  let html = "";
+  let lastSection = "";
+  rows.forEach((r, i) => {
+    if (r.section !== lastSection) {
+      html += `<tr class="section-hdr" data-section="${r.section}"><td colspan="8">${r.section}</td></tr>`;
+      lastSection = r.section;
+    }
+    const tip = r.neverPR ? `title="${r.neverPR}"` : "";
+    html += `<tr data-idx="${i}" data-section="${r.section}" data-pr="${r.pr||""}" data-swr="${r.swr||""}" data-nihr="${r.nihr||""}" data-label="${(r.label+' '+r.uid).toLowerCase()}">
+      <td class="uid">${r.uid}</td>
+      <td class="q-label">${r.label}${r.neverPR ? `<div style="font-size:11px;color:var(--color-text-danger);margin-top:3px">${r.neverPR}</div>` : ""}</td>
+      <td style="font-size:12px;color:var(--color-text-secondary);white-space:nowrap">${r.section}</td>
+      <td ${tip}>${prBadge(r)}</td>
+      <td>${badge(r.rec_b)}</td>
+      <td>${badge(r.rec_d)}</td>
+      <td>${badge(r.swr)}</td>
+      <td>${badge(r.nihr)}</td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+}
+
+function applyFilters() {
+  activeSearch = document.getElementById("q-search").value.toLowerCase();
+  const dataRows = document.querySelectorAll("#tt-body tr:not(.section-hdr)");
+  let visible = 0;
+  dataRows.forEach(tr => {
+    const matchFilter = 
+      activeFilter === "all" ||
+      (activeFilter === "pr" && (tr.dataset.pr === "yes" || tr.dataset.pr === "never-trigger")) ||
+      (activeFilter === "never-pr" && (tr.dataset.pr === "never-trigger" || tr.querySelector(".b-never"))) ||
+      (activeFilter === "swr" && tr.dataset.swr === "yes") ||
+      (activeFilter === "nihr" && tr.dataset.nihr === "yes");
+    const matchSearch = !activeSearch || tr.dataset.label.includes(activeSearch);
+    const show = matchFilter && matchSearch;
+    tr.classList.toggle("hidden", !show);
+    if (show) visible++;
+  });
+
+  // hide section headers if all their rows are hidden
+  document.querySelectorAll("#tt-body tr.section-hdr").forEach(hdr => {
+    const sec = hdr.dataset.section;
+    const anyVisible = [...document.querySelectorAll(`#tt-body tr[data-section="${sec}"]:not(.section-hdr)`)].some(r => !r.classList.contains("hidden"));
+    hdr.classList.toggle("hidden", !anyVisible);
+  });
+
+  document.getElementById("row-count").textContent = `Showing ${visible} of ${rows.length} questions`;
+}
+
+function setFilter(el, f) {
+  document.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
+  el.classList.add("active");
+  activeFilter = f;
+  applyFilters();
+}
+
+buildTable();
+applyFilters();
+</script>

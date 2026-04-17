@@ -1,0 +1,321 @@
+
+<h2 class="sr-only">Expanded IRAS truth table with external approval routes, and intent overlap analysis between modules C1–C9 and core sheets A/B</h2>
+<style>
+.tabs{display:flex;gap:0;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1.25rem}
+.tab{padding:8px 16px;font-size:13px;color:var(--color-text-secondary);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-0.5px;user-select:none}
+.tab.active{color:var(--color-text-primary);border-bottom-color:var(--color-text-primary);font-weight:500}
+.panel{display:none}.panel.active{display:block}
+.tt-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-align:left;padding:5px 8px;border-bottom:0.5px solid var(--color-border-tertiary);white-space:nowrap;background:var(--color-background-secondary)}
+td{padding:5px 8px;border-bottom:0.5px solid var(--color-border-tertiary);vertical-align:top;color:var(--color-text-primary);line-height:1.45}
+.shdr td{background:var(--color-background-secondary);font-size:10px;font-weight:500;color:var(--color-text-secondary);padding:3px 8px;letter-spacing:.05em;text-transform:uppercase}
+tr.hidden{display:none}
+.uid{font-family:var(--font-mono);font-size:10px;color:var(--color-text-tertiary);white-space:nowrap}
+.b{display:inline-block;font-size:10px;padding:1px 5px;border-radius:3px;font-weight:500;white-space:nowrap;margin:1px 1px 0 0}
+.by{background:var(--color-background-success);color:var(--color-text-success)}
+.bn{background:var(--color-background-secondary);color:var(--color-text-tertiary)}
+.bna{background:var(--color-background-secondary);color:var(--color-text-tertiary);font-style:italic}
+.bnpr{background:var(--color-background-danger);color:var(--color-text-danger)}
+.bext{background:var(--color-background-warning);color:var(--color-text-warning)}
+.ql{max-width:260px;line-height:1.4}
+.note{font-size:10px;color:var(--color-text-danger);margin-top:2px}
+.filter-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:.75rem}
+.pill{font-size:11px;padding:3px 9px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:pointer;user-select:none}
+.pill.active{background:var(--color-background-primary);color:var(--color-text-primary);border-color:var(--color-border-primary);font-weight:500}
+#tt-search{width:100%;padding:5px 10px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);box-sizing:border-box;margin-bottom:.75rem}
+#tt-search:focus{outline:none;border-color:var(--color-border-primary)}
+.count{font-size:11px;color:var(--color-text-secondary);margin-bottom:6px}
+
+.overlap-section{margin-bottom:1.5rem}
+.overlap-sheet-hdr{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.06em;padding:4px 0;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:.5rem}
+.overlap-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:8px 12px;margin-bottom:6px}
+.overlap-label{font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px}
+.overlap-uid{font-family:var(--font-mono);font-size:10px;color:var(--color-text-tertiary);margin-right:8px}
+.overlap-desc{font-size:12px;color:var(--color-text-secondary);line-height:1.5;margin-top:3px}
+.overlap-refs{font-size:11px;color:var(--color-text-tertiary);margin-top:4px}
+.otype{display:inline-block;font-size:10px;padding:1px 6px;border-radius:3px;font-weight:500}
+.ot-extend{background:var(--color-background-info);color:var(--color-text-info)}
+.ot-dupe{background:var(--color-background-danger);color:var(--color-text-danger)}
+.ot-specialis{background:var(--color-background-success);color:var(--color-text-success)}
+.ot-pre-pop{background:var(--color-background-warning);color:var(--color-text-warning)}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:1rem;font-size:11px;color:var(--color-text-secondary);align-items:center}
+</style>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('tt',this)">Truth table</div>
+  <div class="tab" onclick="showTab('overlap',this)">Intent overlap: C1–C9 vs A/B</div>
+</div>
+
+<div id="tt" class="panel active">
+<input id="tt-search" type="search" placeholder="Search questions or IDs…" oninput="applyTT()">
+<div class="filter-bar">
+  <span class="pill active" data-f="all" onclick="setPill(this)">All</span>
+  <span class="pill" data-f="never-pr" onclick="setPill(this)">Never PR</span>
+  <span class="pill" data-f="ext" onclick="setPill(this)">External approvals</span>
+  <span class="pill" data-f="swr" onclick="setPill(this)">SWR</span>
+  <span class="pill" data-f="nihr" onclick="setPill(this)">NIHR</span>
+  <span class="pill" data-f="b" onclick="setPill(this)">Sheet B</span>
+</div>
+<div class="count" id="tt-count"></div>
+<div class="legend">
+  <span><span class="b by">Yes</span> Contributes</span>
+  <span><span class="b bnpr">Never PR</span> Disqualifies PR</span>
+  <span><span class="b bext">MHRA</span> External body triggered</span>
+  <span><span class="b bna">n/a</span> Not applicable</span>
+</div>
+<div class="tt-wrap"><table id="main-tt">
+<thead><tr>
+  <th>ID</th><th class="ql">Question</th><th>Sheet</th>
+  <th>PR</th><th>REC<br>booking</th><th>REC<br>dataset</th><th>SWR</th><th>NIHR</th>
+  <th>External approvals triggered</th>
+</tr></thead>
+<tbody id="tt-body"></tbody>
+</table></div>
+</div>
+
+<div id="overlap" class="panel">
+<div class="legend">
+  <span><span class="otype ot-dupe">Duplication risk</span> Same or near-identical ask</span>
+  <span><span class="otype ot-extend">Extension</span> Adds detail to an A/B gate question</span>
+  <span><span class="otype ot-specialis">Specialised</span> Module-only; no A/B equivalent</span>
+  <span><span class="otype ot-pre-pop">Pre-populate</span> Could/should draw from A/B answer</span>
+</div>
+<div id="overlap-body"></div>
+</div>
+
+<script>
+const rows = [
+  // Sheet A
+  {s:'A',uid:'IQA0002',sec:'Project details',label:'Short project title',pr:null,rb:1,rd:1,swr:1,nihr:null,ext:[]},
+  {s:'A',uid:'IQA0001',sec:'Project details',label:'Identify your role',pr:null,rb:null,rd:0,swr:0,nihr:null,ext:[]},
+  {s:'A',uid:'IQA0003',sec:'Project details',label:'Full project title',pr:null,rb:null,rd:1,swr:1,nihr:null,ext:[]},
+  {s:'A',uid:'IQA0004',sec:'Project details',label:'Managed as commercial research?',pr:null,rb:null,rd:0,swr:1,nihr:null,ext:[]},
+  {s:'A',uid:'IQA03271',sec:'Project details',label:'Seeking NIHR funding?',pr:null,rb:null,rd:0,swr:1,nihr:1,ext:[]},
+  {s:'A',uid:'IQG0001',sec:'Project details',label:'CPMS services on-screen instruction',pr:null,rb:null,rd:null,swr:null,nihr:null,ext:['CPMS']},
+  {s:'A',uid:'IQA0005',sec:'Project details',label:'Access CPMS services?',pr:null,rb:null,rd:0,swr:0,nihr:null,ext:['CPMS']},
+  {s:'A',uid:'IQA0006',sec:'Project details',label:'CPMS initial contact email',pr:null,rb:null,rd:0,swr:0,nihr:null,ext:['CPMS']},
+  {s:'A',uid:'IQA0088',sec:'Scope — participants',label:'Select participant groups',pr:1,rb:1,rd:1,swr:1,nihr:1,ext:[],neverPR:'Patients in care settings (NI) or social care → never PR'},
+  {s:'A',uid:'IQA0061',sec:'Scope — activities',label:'Select research activities',pr:1,rb:1,rd:1,swr:1,nihr:null,ext:[]},
+  {s:'A',uid:'IQA0317',sec:'Scope — participants',label:'Adults or children involved?',pr:null,rb:null,rd:1,swr:null,nihr:1,ext:[]},
+  {s:'A',uid:'IQA0238',sec:'Scope — participants',label:'Ages of child participants',pr:null,rb:null,rd:null,swr:null,nihr:1,ext:[]},
+  {s:'A',uid:'IQA0318',sec:'Scope — participants',label:'Ages of adult participants',pr:null,rb:null,rd:null,swr:null,nihr:1,ext:[]},
+  {s:'A',uid:'IQA0012',sec:'Scope — study type',label:'Educational project?',pr:null,rb:null,rd:1,swr:1,nihr:null,ext:[]},
+  {s:'A',uid:'IQA0014',sec:'Scope — study type',label:'Establishing a research bioresource?',pr:'never',rb:1,rd:1,swr:1,nihr:null,ext:[],neverPR:'Yes → never PR'},
+  {s:'A',uid:'IQA0015',sec:'Scope — study type',label:'Bioresource within NHS/HSC diagnostic archive?',pr:null,rb:null,rd:0,swr:1,nihr:null,ext:[]},
+  {s:'A',uid:'IQA0017',sec:'Scope — study type',label:'Is this project a CTIMP?',pr:1,rb:1,rd:1,swr:1,nihr:null,ext:['MHRA','Pharmacy module'],neverPR:'Yes → never PR'},
+  {s:'A',uid:'IQA0018',sec:'Scope — study type',label:'CTIMP only or combined CTIMP + device?',pr:null,rb:1,rd:1,swr:1,nihr:null,ext:['MHRA']},
+  {s:'A',uid:'IQA03273',sec:'Scope — study type',label:'IMP contain GMOs? (deleted Dec 2024)',pr:null,rb:null,rd:0,swr:0,nihr:null,ext:['Pharmacy module','Specialist REC (gene therapy/stem cell)']},
+  {s:'A',uid:'IQA0020',sec:'Scope — study type',label:'Medical device investigation?',pr:1,rb:1,rd:1,swr:1,nihr:null,ext:['MHRA','UKCA/CE marking'],neverPR:'Unmarketted devices → never PR'},
+  {s:'A',uid:'IQA0021',sec:'Scope — study type',label:'Ionising radiation exposure?',pr:1,rb:null,rd:1,swr:1,nihr:null,ext:['ARSAC']},
+  {s:'A',uid:'IQA0022',sec:'Scope — study type',label:'Taking or using human biological samples?',pr:null,rb:null,rd:1,swr:1,nihr:null,ext:[]},
+  {s:'A',uid:'IQA0097',sec:'Consent',label:'Will you seek consent from participants?',pr:null,rb:null,rd:null,swr:null,nihr:null,ext:[]},
+  {s:'A',uid:'IQA0098',sec:'Consent',label:'Reasons consent/assent will not be obtained',pr:1,rb:1,rd:1,swr:1,nihr:null,ext:['CAG','CAG equivalent'],neverPR:'OPT0336 (adults lacking capacity) → never PR'},
+  {s:'A',uid:'IQA0024',sec:'Consent',label:'Identifiable patient data accessed without consent?',pr:1,rb:1,rd:1,swr:1,nihr:null,ext:['CAG']},
+  {s:'A',uid:'IQA0025',sec:'Consent',label:'Adult participants\' capacity to consent',pr:1,rb:1,rd:1,swr:1,nihr:null,ext:[],neverPR:'Any adults lacking capacity → never PR'},
+  {s:'A',uid:'IQA0026',sec:'Consent',label:'Will you include children as participants?',pr:0,rb:1,rd:1,swr:1,nihr:null,ext:[]},
+  {s:'A',uid:'IQA0027',sec:'Special regulatory',label:'Prisoners or young offenders in custody?',pr:1,rb:1,rd:0,swr:1,nihr:null,ext:['HMPPS','NIPS','SPS RAEC'],neverPR:'Yes → never PR'},
+  {s:'A',uid:'IQA0320',sec:'Special regulatory',label:'UK nations for prisoner participants',pr:null,rb:null,rd:null,swr:null,nihr:null,ext:['HMPPS','NIPS','SPS RAEC']},
+  {s:'A',uid:'IQA0028',sec:'Special regulatory',label:'MOD activity involved?',pr:1,rb:null,rd:0,swr:1,nihr:null,ext:['MODREC']},
+  {s:'A',uid:'IQA0029',sec:'Special regulatory',label:'HFEA-regulated activities?',pr:1,rb:null,rd:0,swr:1,nihr:null,ext:['HFEA']},
+  {s:'A',uid:'IQA0321',sec:'Special regulatory',label:'Accessing HFEA Register data?',pr:null,rb:null,rd:null,swr:null,nihr:null,ext:['HFEA']},
+  {s:'A',uid:'IQA0032',sec:'Research location',label:'Which UK nations?',pr:null,rb:1,rd:0,swr:1,nihr:1,ext:[]},
+  {s:'A',uid:'IQA0142',sec:'Research location',label:'Countries other than UK?',pr:null,rb:null,rd:0,swr:0,nihr:null,ext:[]},
+  {s:'A',uid:'IQA0143',sec:'Research location',label:'List countries outside UK',pr:null,rb:null,rd:0,swr:0,nihr:null,ext:[]},
+  {s:'A',uid:'IQA0033',sec:'Research location',label:'Where in UK will samples/data be held? (bioresource)',pr:null,rb:null,rd:1,swr:0,nihr:null,ext:[]},
+  {s:'A',uid:'IQA0034',sec:'Research location',label:'Where in UK will samples/data be obtained? (bioresource)',pr:null,rb:null,rd:1,swr:0,nihr:null,ext:[]},
+  {s:'A',uid:'IQA0144',sec:'Research location',label:'Where will the project take place?',pr:null,rb:1,rd:1,swr:1,nihr:null,ext:['MHRA']},
+  {s:'A',uid:'IQA0145',sec:'Research location',label:'Other organisations conducting the project',pr:null,rb:null,rd:1,swr:1,nihr:null,ext:[]},
+  {s:'A',uid:'IQA0146',sec:'Research location',label:'Will sites use PICs?',pr:null,rb:null,rd:1,swr:1,nihr:null,ext:[]},
+  // Sheet B — key questions only
+  {s:'B',uid:'IQA0036',sec:'Project information',label:'Protocol reference number',pr:null,rb:null,rd:0,swr:0,nihr:null,ext:[]},
+  {s:'B',uid:'IQA0037',sec:'Project information',label:'EU Clinical Trial (EUCT) number',pr:null,rb:null,rd:0,swr:0,nihr:null,ext:['MHRA']},
+  {s:'B',uid:'IQA0040',sec:'Project information',label:'Research project public summary',pr:null,rb:null,rd:1,swr:1,nihr:1,ext:[]},
+  {s:'B',uid:'IQA0049',sec:'Research design',label:'Select research methodology/methodologies',pr:1,rb:null,rd:1,swr:1,nihr:null,ext:[]},
+  {s:'B',uid:'IQA0060',sec:'Research activities',label:'What will happen to participants, tissue or data?',pr:null,rb:null,rd:1,swr:1,nihr:null,ext:[]},
+  {s:'B',uid:'IQA0062',sec:'Research activities',label:'What is the intervention or treatment being studied?',pr:1,rb:null,rd:1,swr:1,nihr:null,ext:[]},
+  {s:'B',uid:'IQA0072',sec:'Research activities',label:'Potential benefits for participants and society',pr:null,rb:null,rd:1,swr:1,nihr:null,ext:[]},
+  {s:'B',uid:'IQA0073',sec:'Research activities',label:'Potential safety concerns, risks and burdens',pr:null,rb:null,rd:1,swr:1,nihr:null,ext:[]},
+  {s:'B',uid:'IQA0083',sec:'Participants',label:'Primary conditions or problems being studied',pr:null,rb:null,rd:1,swr:1,nihr:1,ext:[]},
+  {s:'B',uid:'IQA0084',sec:'Participants',label:'Principal inclusion criteria',pr:null,rb:null,rd:1,swr:1,nihr:null,ext:[]},
+  {s:'B',uid:'IQA0085',sec:'Participants',label:'Principal exclusion criteria',pr:null,rb:null,rd:1,swr:1,nihr:null,ext:[]},
+  {s:'B',uid:'IQA0088',sec:'Participants',label:'Select participant groups (B instance)',pr:1,rb:1,rd:1,swr:1,nihr:1,ext:[]},
+  {s:'B',uid:'IQA0093',sec:'Participants',label:'Potentially vulnerable participants?',pr:1,rb:null,rd:1,swr:1,nihr:null,ext:[]},
+  {s:'B',uid:'IQA0095',sec:'Consent',label:'Only children as participants?',pr:null,rb:null,rd:1,swr:null,nihr:null,ext:[]},
+  {s:'B',uid:'IQA0096',sec:'Consent',label:'Only adults lacking capacity?',pr:1,rb:1,rd:1,swr:1,nihr:null,ext:[],neverPR:'Yes → never PR (ALC)'},
+  {s:'B',uid:'IQA0097',sec:'Consent',label:'Seek consent prior to participation?',pr:null,rb:null,rd:1,swr:1,nihr:null,ext:[]},
+  {s:'B',uid:'IQA0098',sec:'Consent',label:'Reasons consent will not be obtained (B instance)',pr:1,rb:1,rd:1,swr:1,nihr:null,ext:['CAG'],neverPR:'ALC-related selection → never PR'},
+  {s:'B',uid:'IQA0099',sec:'Consent',label:'Justify why consent not sought',pr:null,rb:null,rd:1,swr:1,nihr:null,ext:['CAG','Section 251/CAG equiv']},
+  {s:'B',uid:'IQA0133',sec:'Governance',label:'Which organisation is the primary sponsor?',pr:null,rb:null,rd:1,swr:1,nihr:null,ext:[]},
+  {s:'B',uid:'IQA0142',sec:'Governance',label:'Project taking place outside UK?',pr:null,rb:null,rd:0,swr:0,nihr:null,ext:[]},
+  {s:'B',uid:'IQA0251',sec:'Confidentiality/IG',label:'Study limited to data only?',pr:null,rb:null,rd:1,swr:1,nihr:null,ext:[]},
+  {s:'B',uid:'IQA0259',sec:'Tissue',label:'HTA licence details',pr:null,rb:null,rd:1,swr:null,nihr:null,ext:['HTA']},
+];
+
+function badge(v, never, neverText){
+  if(never) return `<span class="b bnpr" title="${neverText||''}">Never PR</span>`;
+  if(v===1) return `<span class="b by">Yes</span>`;
+  if(v===0) return `<span class="b bn">No</span>`;
+  if(v===null||v===undefined) return `<span class="b bna">n/a</span>`;
+  if(v==='never') return `<span class="b bnpr">Never PR</span>`;
+  return `<span class="b bna">${v}</span>`;
+}
+
+function buildTT(){
+  const tbody = document.getElementById('tt-body');
+  let html='', lastSec='';
+  rows.forEach((r,i)=>{
+    const sec = r.s+':'+r.sec;
+    if(sec!==lastSec){
+      html+=`<tr class="shdr" data-sec="${sec}"><td colspan="9">${r.s} — ${r.sec}</td></tr>`;
+      lastSec=sec;
+    }
+    const prBadge = r.neverPR
+      ? `<span class="b bnpr" title="${r.neverPR}">Never PR</span>`
+      : badge(r.pr);
+    const extHTML = r.ext && r.ext.length
+      ? r.ext.map(e=>`<span class="b bext">${e}</span>`).join(' ')
+      : `<span class="b bna">—</span>`;
+    const neverNote = r.neverPR ? `<div class="note">${r.neverPR}</div>` : '';
+    html+=`<tr data-idx="${i}" data-sheet="${r.s}" data-never="${r.neverPR?'1':''}" data-ext="${(r.ext||[]).length>0?'1':''}" data-swr="${r.swr===1?'1':''}" data-nihr="${r.nihr===1?'1':''}" data-label="${(r.uid+' '+r.label).toLowerCase()}">
+      <td class="uid">${r.uid}</td>
+      <td class="ql">${r.label}${neverNote}</td>
+      <td><span style="font-size:10px;background:var(--color-background-secondary);padding:1px 4px;border-radius:3px;color:var(--color-text-secondary)">${r.s}</span></td>
+      <td>${prBadge}</td>
+      <td>${badge(r.rb)}</td>
+      <td>${badge(r.rd)}</td>
+      <td>${badge(r.swr)}</td>
+      <td>${badge(r.nihr)}</td>
+      <td>${extHTML}</td>
+    </tr>`;
+  });
+  tbody.innerHTML=html;
+}
+
+let activeF='all', activeSearch='';
+function applyTT(){
+  activeSearch=document.getElementById('tt-search').value.toLowerCase();
+  const dataRows=document.querySelectorAll('#tt-body tr:not(.shdr)');
+  let vis=0;
+  dataRows.forEach(tr=>{
+    const mf = activeF==='all'
+      || (activeF==='never-pr' && tr.dataset.never==='1')
+      || (activeF==='ext' && tr.dataset.ext==='1')
+      || (activeF==='swr' && tr.dataset.swr==='1')
+      || (activeF==='nihr' && tr.dataset.nihr==='1')
+      || (activeF==='b' && tr.dataset.sheet==='B');
+    const ms = !activeSearch || tr.dataset.label.includes(activeSearch);
+    const show=mf&&ms;
+    tr.classList.toggle('hidden',!show);
+    if(show) vis++;
+  });
+  document.querySelectorAll('#tt-body tr.shdr').forEach(hdr=>{
+    const sec=hdr.dataset.sec;
+    const any=[...document.querySelectorAll(`#tt-body tr[data-sheet]`)].filter(r=>r.dataset.label&&!r.classList.contains('hidden'));
+    // check any visible in this section
+    const secRows=[...document.querySelectorAll('#tt-body tr:not(.shdr)')].filter(r=>r.previousElementSibling===hdr||Array.from(hdr.parentElement.children).indexOf(r)>Array.from(hdr.parentElement.children).indexOf(hdr));
+    // simpler: hide if next shdr follows with no visible rows between
+    hdr.classList.remove('hidden');
+  });
+  document.getElementById('tt-count').textContent=`Showing ${vis} of ${rows.length} questions`;
+}
+
+function setPill(el){
+  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  activeF=el.dataset.f;
+  applyTT();
+}
+
+// Overlap data
+const overlaps = [
+  {sheet:'C1',title:'Educational project module',qs:[
+    {uid:'IQA0224',label:'The university is expected to take on the role of sponsor',type:'extend',desc:'Governance question specific to student projects — sponsor role defaults to university. Sheet B (IQA0133) asks the same governance question generically for all project types. Risk: the sponsor answer in C1 may not align with or overwrite the B instance.',refs:['B:IQA0133 — Which organisation is the primary sponsor?']},
+    {uid:'IQA0225',label:'Justify why the university is not taking on the role of sponsor',type:'extend',desc:'Conditional follow-on to IQA0224. Extends, rather than duplicates, B sponsor question — but only displayed in student context. Should share the same data field or clearly reference the B:IQA0133 answer.',refs:['B:IQA0133 — Primary sponsor']},
+    {uid:'IQA0234',label:'Job title (of supervisor/academic)',type:'specialis',desc:'Captured specifically for the student context (supervisor role). Not covered in Sheet B generically — B captures CI and sponsor but not academic supervisor. Genuinely new field for this module.',refs:[]},
+  ]},
+  {sheet:'C2',title:'Research bioresource module',qs:[
+    {uid:'IQA0032',label:'In which countries of the UK will the project take place?',type:'dupe',desc:'Exact UID and near-identical label to A:IQA0032. The A instance is noted as "removed and added to bioresource tab" (Feb 2025) but persists in Sheet A. Creates a live UID clash — both will attempt to write to the same field. One must be retired or the C2 instance given a new UID.',refs:['A:IQA0032 — Which UK Nations (project filter)']},
+  ]},
+  {sheet:'C3',title:'CTIMP module (placeholder)',qs:[
+    {uid:'IQT0055',label:'CTIMP module header / placeholder',type:'specialis',desc:'Sheet C3 is largely a placeholder awaiting MHRA CTIMP dataset content. The few rows present are drawn from the Pega IRAS MHRA CTA triage form. No substantive overlap with A/B yet — the gate question (A:IQA0017) already identifies CTIMPs; C3 will house the detailed MHRA dataset. No action needed until C3 is built out.',refs:['A:IQA0017 — Is this project a CTIMP?']},
+  ]},
+  {sheet:'C4',title:'Devices module',qs:[
+    {uid:'IQA0309',label:'Is the study sponsored, funded or supported by a device manufacturer?',type:'extend',desc:'Sponsor/funder question specific to the device context. Sheet B captures primary sponsor (IQA0133) generically. This asks a narrower question about manufacturer involvement, relevant for declaring conflicts of interest with the device under investigation. Extend rather than duplicate — but should reference or pre-populate from B:IQA0133.',refs:['B:IQA0133 — Primary sponsor','B:IQA0116 — Payments, benefits or incentives']},
+    {uid:'IQA03012',label:'Will you be conducting this project in Northern Ireland?',type:'dupe',desc:'A:IQA0032 already captures UK nations at filter stage. This asks the same question again specifically for MHRA purposes (NI requires different MHRA notification). Rather than duplicating, this should be a derived display rule based on A:IQA0032 = NI. Creates a data inconsistency risk if applicant gives different answers.',refs:['A:IQA0032 — Which UK nations?']},
+    {uid:'IQA03248',label:'Details of medical devices to be used in the study/project',type:'extend',desc:'Specific device description extending the filter gate (A:IQA0020). Not asked at filter level — this is the detail block. Appropriate module-level extension, not a duplication.',refs:['A:IQA0020 — Medical device investigation?']},
+  ]},
+  {sheet:'C5',title:'Ionising radiation module',qs:[
+    {uid:'IQA0329/IQA0339',label:'Are radiation exposures applicable to patient / healthy volunteer participants?',type:'pre-pop',desc:'Asks whether exposures apply to patient or HV groups. A:IQA0088 already captures participant type at filter stage. These questions could pre-populate from that answer rather than re-asking. Risk: inconsistency if applicant gives conflicting answers.',refs:['A:IQA0088 — Select participant groups']},
+    {uid:'IQA0387/IQA0340',label:'Number of patient / healthy volunteer participants (UK)',type:'extend',desc:'Participant counts broken down by type. Sheet B (IQA0084/0085) covers inclusion/exclusion criteria but not exact counts. This is ARSAC-specific data — appropriate specialised extension, not a duplication.',refs:['B:IQA0084 — Inclusion criteria','B:IQA0085 — Exclusion criteria']},
+    {uid:'IQA0341',label:'Age range (specify numerically)',type:'pre-pop',desc:'A:IQA0238 and IQA0318 already capture age ranges for children and adults at filter level. The IR module re-asks for age range numerically (e.g. "greater than 50 years"). Should pre-populate or cross-reference from filter answers rather than re-asking.',refs:['A:IQA0238 — Ages of child participants','A:IQA0318 — Ages of adult participants']},
+    {uid:'IQA0389',label:'Status of the sponsor',type:'pre-pop',desc:'Sponsor status (commercial/non-commercial) is asked again in the IR module. A:IQA0004 already captures commercial research status; B:IQA0133 captures the primary sponsor. This should derive from those answers.',refs:['A:IQA0004 — Commercial research?','B:IQA0133 — Primary sponsor']},
+    {uid:'IQA0363',label:'Provide details of known organs at risk and dose to organs at risk',type:'specialis',desc:'Genuinely specialised ARSAC/radiotherapy question with no A/B equivalent. The general risks question (B:IQA0073) is too broad to cover radiological organ dose detail.',refs:['B:IQA0073 — Potential safety concerns (general)']},
+    {uid:'IQA0330 (×9)',label:'Participant cohort (repeated sub-table header)',type:'dupe',desc:'Same UID used 9 times across procedure sub-blocks. As noted in duplication analysis, this is likely a repeating table structure but shares one UID across all instances. Needs compound keys per procedure type.',refs:[]},
+  ]},
+  {sheet:'C6',title:'Tissue / human biological samples module',qs:[
+    {uid:'IQA0254',label:'Will you be collecting new samples from participants?',type:'extend',desc:'Extends A:IQA0022 ("will you take or use human biological samples?") by drilling into collection vs. existing samples. A:IQA0022 is the gate; this is the detail. Appropriate extension.',refs:['A:IQA0022 — Human biological samples?']},
+    {uid:'IQA0257',label:'Will these participants be living or deceased?',type:'extend',desc:'A:IQA0088 includes "people known to be deceased" as a participant type. This asks the same question again in the tissue context. Should derive from or cross-reference A:IQA0088 rather than re-asking, or be explicitly conditional on types not already answered.',refs:['A:IQA0088 — Select participant groups (includes deceased)']},
+    {uid:'IQA0258',label:'Will samples be removed from the deceased in England, NI, Scotland or Wales?',type:'pre-pop',desc:'Nation-specific tissue/HTA question. Could derive from A:IQA0032 (UK nations). Asking again creates risk of inconsistency, though the framing is different (it is asking about deceased-specific tissue removal jurisdiction).',refs:['A:IQA0032 — Which UK nations?']},
+    {uid:'IQA0261',label:'Does this project come within the scope of the consent for the original tissue collection?',type:'extend',desc:'Tissue-specific consent question extending the filter consent questions (A:IQA0097/0098). Not covered at filter level — appropriate module extension.',refs:['A:IQA0097 — Seek consent?','A:IQA0098 — Reasons consent not obtained']},
+    {uid:'IQA0265',label:'What consent arrangements apply to collection and use of samples?',type:'extend',desc:'Tissue-specific consent arrangement detail. Sheet B:IQT0010 handles general consent; this adds tissue-specific consent obligation. The intent differs (tissue consent vs. participant consent) so appropriate module extension, but logic should be consistent with B consent answers.',refs:['B:IQT0010 — Consent section','A:IQA0097 — Seek consent?']},
+    {uid:'IQA0259',label:'HTA licence details',type:'specialis',desc:'Genuinely unique to the tissue module — applicant declares their existing HTA licence. No equivalent in A or B.',refs:[]},
+  ]},
+  {sheet:'C7',title:'Adults lacking capacity (ALC) module',qs:[
+    {uid:'IQA0282 / IQA0297',label:'Arrangements to identify and seek consent from legal representative',type:'extend',desc:'Both CTIMP-ALC and non-CTIMP-ALC sections ask this. The gate question A:IQA0025 already establishes ALC status; B:IQA0096 confirms ALC-only. These are appropriate module extensions, adding the procedural detail needed for ethics review. However the identical wording across both tracks (IQA0282 vs IQA0297) suggests consolidation opportunity.',refs:['A:IQA0025 — Adult capacity to consent','B:IQA0096 — Only adults lacking capacity?']},
+    {uid:'IQA0285 / IQA0303',label:'Is it possible a participant requiring urgent treatment might need to be recruited without consent?',type:'dupe',desc:'Identical wording in both CTIMP-ALC (IQA0285) and non-CTIMP-ALC (IQA0303). Different UIDs but same question. If the ethics criteria genuinely differ between CTIMP and non-CTIMP for this point, the wording should differ too. Otherwise consolidate with a routing condition.',refs:[]},
+    {uid:'IQA0289/0307 and IQA0290/0308',label:'"Nothing done to which participant would object" — steps to ensure',type:'dupe',desc:'Two pairs: IQA0289/0307 (would object) and IQA0290/0308 (contrary to advance decision). Both pairs appear identically in CTIMP and non-CTIMP ALC sections. Word-for-word identical wording — the strongest case for consolidation in the whole workbook.',refs:[]},
+    {uid:'IQA0298',label:'For participants in England, Wales or NI: arrangements to consult personal welfare attorney',type:'pre-pop',desc:'Nation-scoped ALC question. A:IQA0032 already captures UK nations at filter level — this question could be conditionally displayed based on that answer rather than asking the nation again within the module.',refs:['A:IQA0032 — Which UK nations?']},
+    {uid:'IQA0278',label:'Clinical trial must relate to life-threatening or debilitating condition (CTIMP-ALC)',type:'specialis',desc:'Statutory requirement specific to CTIMP-ALC (Medicines for Human Use Clinical Trials Regulations 2004). No A/B equivalent — genuinely specialised legislative criterion.',refs:[]},
+  ]},
+  {sheet:'C8',title:'Children module',qs:[
+    {uid:'IQA0238',label:'Specify ages of child participants',type:'dupe',desc:'Exact UID match with A:IQA0238. Sheet A notes this was moved there in Jan 2025 to drive CTIMP routing. C8 retains the same UID but with a different age range value set (2–11 years in C8 vs. 2–9 and 10–15 in Sheet A). This is a confirmed data model collision requiring resolution.',refs:['A:IQA0238 — Ages of child participants (filter)']},
+    {uid:'IQA0240',label:'Describe arrangements for obtaining consent from a person with parental responsibility',type:'extend',desc:'Module-specific consent detail for children. The filter (A:IQA0097) and B consent section (IQT0010) establish the intent; this adds the child-specific procedural requirement. Appropriate extension.',refs:['A:IQA0097 — Seek consent?','B:IQT0010 — Consent section']},
+    {uid:'IQA0248 / IQA0249',label:'Arrangements to seek consent to continue participation as child reaches 16 / 18',type:'extend',desc:'Transition-of-capacity consent — no equivalent in A or B. Genuinely new question for the children module addressing a child ageing out of the children consent framework during the study.',refs:[]},
+  ]},
+  {sheet:'C9',title:'Consent module',qs:[
+    {uid:'IQA0099',label:'Justify why you will not seek consent',type:'dupe',desc:'Also appears in Sheet B:IQA0099 with identical UID and near-identical label. B instance is within the Consent section (IQT0010). C9 is a new standalone consent module. If both are live, the same justification may be captured twice. B instance should be retired in favour of C9, or C9 should reference/pre-populate from B.',refs:['B:IQA0099 — Justify why consent not sought']},
+    {uid:'IQA0100',label:'Consent using simplified methods',type:'dupe',desc:'Also in B:IQA0100. Same UID, same intent. C9 is the designated consent module — the B instance should be flagged for migration or retirement.',refs:['B:IQA0100 — Simplified consent methods']},
+    {uid:'IQA0105',label:'Consent arrangements for persons who might not hear verbal information etc.',type:'dupe',desc:'In B:IQA0105 (Consent section). Same content, same UID. Same migration question as IQA0099/0100 — the C9 module consolidation is incomplete while these questions persist in B.',refs:['B:IQA0105 — Consent for communication needs']},
+    {uid:'IQA0109',label:'Proceed to complete Adults Lacking Capacity',type:'extend',desc:'Routing/navigation instruction directing to C7. Not a duplication — this is a signpost. Shows the module dependency: C9 acts as gateway routing to C7 (ALC) when relevant.',refs:['C7 — ALC module','A:IQA0025 — Adult capacity to consent']},
+  ]},
+];
+
+function buildOverlap(){
+  const body=document.getElementById('overlap-body');
+  const typeLabel={dupe:'Duplication risk',extend:'Extension',specialis:'Specialised',pre_pop:'Pre-populate'};
+  const typeClass={dupe:'ot-dupe',extend:'ot-extend',specialis:'ot-specialis','pre-pop':'ot-pre-pop'};
+  let html='';
+  overlaps.forEach(sheet=>{
+    html+=`<div class="overlap-section">
+      <div class="overlap-sheet-hdr">${sheet.sheet} — ${sheet.title}</div>`;
+    sheet.qs.forEach(q=>{
+      const tc=typeClass[q.type]||'ot-extend';
+      const tl=q.type==='pre-pop'?'Pre-populate':q.type==='dupe'?'Duplication risk':q.type==='specialis'?'Specialised':'Extension';
+      const refs=q.refs.length?`<div class="overlap-refs">Related A/B questions: ${q.refs.join(' · ')}</div>`:'';
+      html+=`<div class="overlap-card">
+        <div class="overlap-label">
+          <span class="overlap-uid">${q.uid}</span>
+          <span class="otype ${tc}">${tl}</span>
+        </div>
+        <div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-top:3px">${q.label}</div>
+        <div class="overlap-desc">${q.desc}</div>
+        ${refs}
+      </div>`;
+    });
+    html+='</div>';
+  });
+  body.innerHTML=html;
+}
+
+function showTab(id,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+}
+
+buildTT();
+applyTT();
+buildOverlap();
+</script>
