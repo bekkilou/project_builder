@@ -4,17 +4,16 @@ module.exports = {
   "fullProjectTitle": "The Full Title of My Research Project",
 
   // Checkboxes (arrays)
-  "UKNations": ["England", "Wales"],
+  "UKNations": ["England", "Scotland", "Wales"],
   "participantGroups": ["nhs_patients_service_users", "nhs_hsc_staff"],
-  "researchActivities": ["clinical_people_activities", "treatment", "non_clinical_staff_activities"],
+  "researchActivities": ["previously_collected_data", "non_clinical_people_interviews_surveys", "non_clinical_staff_activities"],
   "adultsAndChildren": ["adults"],
   "adultAge": ["18-64"],
   "hmppsNations": ["England"],
 
   // Radios (single string values)
   "nhsHscOrg": "yes",
-  "isCTIMP": "yes",
-  "ctimpCombined": "combined",
+  "isCTIMP": "no",
   "isClinical": "no",
   "isIonising": "no",
   "isBioSample": "no",
@@ -22,7 +21,6 @@ module.exports = {
   "isCapable": "yes",
   "noConsent": "no",
   "isHMPPS": "no",
-  "hmppsNations": "England",
   "isMOD": "no",
   "isHFEA": "no",
 
