@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" class="govuk-template">
+<head>
+  <meta charset="utf-8">
+  <title>Your approvals pathway – IRAS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- GOV.UK Frontend -->
+  <link rel="stylesheet" href="https://unpkg.com/govuk-frontend@5.5.0/dist/govuk/govuk-frontend.min.css">
+</head>
+
+<body class="govuk-template__body">
+<script>
+  document.body.className += ' js-enabled';
+</script>
+
+<a href="#main-content" class="govuk-skip-link">Skip to main content</a>
+
+<header class="govuk-header" role="banner">
+  <div class="govuk-header__container govuk-width-container">
+    <div class="govuk-header__content">
+      <span class="govuk-header__logotype-text">
+        IRAS – Integrated Research Application System
+      </span>
+    </div>
+  </div>
+</header>
+
+<div class="govuk-width-container">
+
+  <main class="govuk-main-wrapper" id="main-content">
+
+    <h1 class="govuk-heading-xl">
+      Your approvals pathway
+    </h1>
+
+    <p class="govuk-body-l">
+      Based on your project information, these steps must be completed before your research can start.
+    </p>
+
+    <div class="govuk-inset-text">
+      <strong>You must complete all required steps</strong> before your research can begin,
+      including NHS R&amp;D capacity and capability at each participating site.
+    </div>
+
+    <!-- Task list pattern -->
+    <ol class="govuk-task-list">
+
+      <li class="govuk-task-list__item">
+        <span class="govuk-task-list__name-and-hint">
+          <span class="govuk-task-list__name">
+            Prepare and submit your IRAS application
+          </span>
+          <span class="govuk-task-list__hint">
+            One application is shared with all required review bodies
+          </span>
+        </span>
+        <strong class="govuk-tag govuk-tag--blue">
+          To do
+        </strong>
+      </li>
+
+      <li class="govuk-task-list__item">
+        <span class="govuk-task-list__name-and-hint">
+          <span class="govuk-task-list__name">
+            Complete required reviews
+          </span>
+          <span class="govuk-task-list__hint">
+            Ethics and governance reviews for your study
+          </span>
+        </span>
+        <strong class="govuk-tag govuk-tag--blue">
+          2 required
+        </strong>
+      </li>
+
+      <li class="govuk-task-list__item">
+        <span class="govuk-task-list__name-and-hint">
+          <span class="govuk-task-list__name">
+            Confirm NHS site capacity and capability
+          </span>
+          <span class="govuk-task-list__hint">
+            Each participating NHS organisation must confirm they can support the study
+          </span>
+        </span>
+        <strong class="govuk-tag">
+          Cannot start yet
+        </strong>
+      </li>
+
+    </ol>
+
+    <!-- Secondary detail -->
+    <details class="govuk-details">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+          See which reviews are required and why
+        </span>
+      </summary>
+      <div class="govuk-details__text">
+
+        <dl class="govuk-summary-list">
+
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Research Ethics Committee (REC)
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Ethical review under the Governance Arrangements for Research Ethics Committees (GAfREC)
+            </dd>
+            <dd class="govuk-summary-list__actions">
+              <strong class="govuk-tag govuk-tag--green">Required</strong>
+            </dd>
+          </div>
+
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Health Research Authority (HRA)
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Study‑wide governance review for NHS research in England
+            </dd>
+            <dd class="govuk-summary-list__actions">
+              <strong class="govuk-tag govuk-tag--green">Required</strong>
+            </dd>
+          </div>
+
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              MHRA authorisation
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Not required – this study is not a CTIMP
+            </dd>
+            <dd class="govuk-summary-list__actions">
+              <strong class="govuk-tag govuk-tag--grey">Not required</strong>
+            </dd>
+          </div>
+
+        </dl>
+
+      </div>
+    </details>
+
+  </main>
+</div>
+
+<script src="https://unpkg.com/govuk-frontend@5.5.0/dist/govuk/govuk-frontend.min.js"></script>
+<script>
+  window.GOVUKFrontend.initAll();
+</script>
+</body>
+</html>
